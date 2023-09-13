@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="JavaScript的变量提升及作用域JavaScript的语法简直不要太灵活，灵活到导出是坑，甚至有人说JavaScript语言不够成熟。。  Code once,debug everywhere.  下面简单整理下常见的坑坑。 变量提升(hoisting)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript的变量提升及作用域">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/14/javascript_coping_and_hoisting/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="JavaScript的变量提升及作用域JavaScript的语法简直不要太灵活，灵活到导出是坑，甚至有人说JavaScript语言不够成熟。。  Code once,debug everywhere.  下面简单整理下常见的坑坑。 变量提升(hoisting)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-14T14:21:23.000Z">
+<meta property="article:modified_time" content="2017-12-23T06:01:16.982Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/14/javascript_coping_and_hoisting/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/14/javascript_coping_and_hoisting/","path":"2017/12/14/javascript_coping_and_hoisting/","title":"JavaScript的变量提升及作用域"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JavaScript的变量提升及作用域 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JavaScript%E7%9A%84%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87%E5%8F%8A%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-number">1.</span> <span class="nav-text">JavaScript的变量提升及作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E6%8F%90%E5%8D%87-hoisting"><span class="nav-number">1.1.</span> <span class="nav-text">变量提升(hoisting)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%8B%E3%80%8B%E3%80%8B2017-12-19-%E8%A1%A5%E5%85%85%E3%80%8A%E3%80%8A%E3%80%8A"><span class="nav-number"></span> <span class="nav-text">》》》2017-12-19-补充《《《1234567891011var x &#x3D; 0;function f(){  var x &#x3D; y &#x3D; 1; &#x2F;&#x2F; x在函数内部声明，y不是！}f();console.log(x, y); &#x2F;&#x2F; 0, 1&#x2F;&#x2F; x是全局变量。&#x2F;&#x2F; y是隐式声明的全局变量。&#x2F;&#x2F; 第4行可以近似理解为 y &#x3D; 1;var x &#x3D; y;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8D%E5%AD%97%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F"><span class="nav-number">0.1.</span> <span class="nav-text">名字解析顺序</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/14/javascript_coping_and_hoisting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JavaScript的变量提升及作用域 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JavaScript的变量提升及作用域
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-14 22:21:23" itemprop="dateCreated datePublished" datetime="2017-12-14T22:21:23+08:00">2017-12-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2017-12-23 14:01:16" itemprop="dateModified" datetime="2017-12-23T14:01:16+08:00">2017-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="JavaScript的变量提升及作用域"><a href="#JavaScript的变量提升及作用域" class="headerlink" title="JavaScript的变量提升及作用域"></a>JavaScript的变量提升及作用域</h3><p>JavaScript的语法简直不要太灵活，灵活到导出是坑，甚至有人说JavaScript语言不够成熟。。</p>
+<blockquote>
+<p>Code once,debug everywhere.</p>
+</blockquote>
+<p>下面简单整理下常见的坑坑。</p>
+<h4 id="变量提升-hoisting"><a href="#变量提升-hoisting" class="headerlink" title="变量提升(hoisting)"></a>变量提升(hoisting)</h4><p>javascript的变量声明具有<strong>hoisting</strong>机制，JavaScript引擎在执行的时候，会把所有变量的<strong>声明</strong>都提升到当前作用域的最前面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var v = &quot;hello&quot;;</span><br><span class="line">(function()&#123;</span><br><span class="line">    console.log(v);</span><br><span class="line">    var v = &quot;world&quot;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>倘若这是网页中的一部分，则第三行代码输出<code>undefined</code>,若是在浏览器DevTools的console中运行的话，则是两条<code>undefined</code>结果，第一条是<code>console.log()</code>输出的，第二条是执行(闭包)函数时返回的默认值(没有定义返回值时)<code>undefined</code>。<br>其实上边👆的代码等价于：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var v = &quot;hello&quot;;</span><br><span class="line">(function()&#123;</span><br><span class="line">    var v; //declaration hoisting 变量声明提升</span><br><span class="line">    console.log(v);</span><br><span class="line">    v = &quot;world&quot;;</span><br><span class="line">&#125;)();</span><br><span class="line">//第三行中，只重新声明了v，没有定义(初始化赋值),所以返回undefined。</span><br></pre></td></tr></table></figure>
+<p>下面给我们稍加改动下，，👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var v = &quot;hello&quot;;</span><br><span class="line">if(true)&#123;</span><br><span class="line">    console.log(v);</span><br><span class="line">    var v = &quot;world&quot;;</span><br><span class="line">&#125;</span><br><span class="line">// hello</span><br></pre></td></tr></table></figure>
+<p>如果JavaScript有块作用域的话，应该会报错吧，，内容大概是第4行变量v已经被定义什么的。这样说不太明显，，看这个：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for(var i = 0;i &lt; 10; i++)&#123;</span><br><span class="line"> console.log(i);</span><br><span class="line">&#125;</span><br><span class="line">console.log(i);//10</span><br><span class="line">console.log(window.i);//10</span><br></pre></td></tr></table></figure>
+<p>上边在<code>for</code>循环中声明的变量<code>i</code>应该只存在与<code>for</code>循环的代码块中，但是却可以在代码块外访问，外边声明的变量默认是window对象的属性。由此可见<strong>javascript是没有块级作用域的</strong>。但<strong>函数是JavaScript中唯一拥有自身作用域的结构</strong>。就像文章开头的第一个代码块一样，再小改下👇：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var v = &quot;hello&quot;;</span><br><span class="line">(function()&#123;</span><br><span class="line">    console.log(&quot;v inside:&quot;+v);</span><br><span class="line">    var v = &quot;world&quot;;</span><br><span class="line">&#125;)();</span><br><span class="line">console.log(&quot;v outside:&quot;+v);</span><br><span class="line"></span><br><span class="line">//v inside:undefined</span><br><span class="line">//v outside:hello</span><br></pre></td></tr></table></figure>
+<p>此时，闭包函数外是访问不到内部的变量<code>v = &quot;world&quot;</code>的，，所以，outside输出的值为hello。若是不死心，，我们再改：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">var v = &quot;hello&quot;;</span><br><span class="line">(function()&#123;</span><br><span class="line">    var v = &quot;world&quot;;</span><br><span class="line">    console.log(&quot;v inside:&quot;+v);</span><br><span class="line">&#125;)();</span><br><span class="line">console.log(&quot;v outside:&quot;+v);</span><br><span class="line"></span><br><span class="line">//v inside:world</span><br><span class="line">//v outside:hello</span><br><span class="line">//此处不解释。</span><br></pre></td></tr></table></figure>
+<p>还是关于函数内的块级作用域，，我再换种方式：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var i = function()&#123;</span><br><span class="line">    var h = 9;</span><br><span class="line">    console.log(&quot;inside h:&quot;+h);</span><br><span class="line">&#125;</span><br><span class="line">console.log(&quot;outside h:&quot;+h)</span><br><span class="line"></span><br><span class="line">// 第5行直接报错：h is not defined。</span><br></pre></td></tr></table></figure>
+<p>其实，我们还可以再改，，关于隐式声明的全局变量<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/var">^1</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var i = function()&#123;</span><br><span class="line">    h = 9;              //此处去掉关键字var</span><br><span class="line">    console.log(&quot;inside h:&quot;+h);</span><br><span class="line">&#125;</span><br><span class="line">i();</span><br><span class="line">console.log(&quot;outside h:&quot;+h);</span><br><span class="line"></span><br><span class="line">// inside h:9</span><br><span class="line">// outside h:9</span><br><span class="line">// 在函数内部声明变量时省略var关键字，会默认当做全局变量。</span><br><span class="line">// 另外，如果没有第五行的i()；函数i调用，则第六行还是会报错Uncaught ReferenceError: h is not defined</span><br></pre></td></tr></table></figure>
+
+<h2 id="》》》2017-12-19-补充《《《"><a href="#》》》2017-12-19-补充《《《" class="headerlink" title="》》》2017-12-19-补充《《《"></a>》》》2017-12-19-补充《《《<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var x = 0;</span><br><span class="line"></span><br><span class="line">function f()&#123;</span><br><span class="line">  var x = y = 1; // x在函数内部声明，y不是！</span><br><span class="line">&#125;</span><br><span class="line">f();</span><br><span class="line"></span><br><span class="line">console.log(x, y); // 0, 1</span><br><span class="line">// x是全局变量。</span><br><span class="line">// y是隐式声明的全局变量。</span><br><span class="line">// 第4行可以近似理解为 y = 1;var x = y;</span><br></pre></td></tr></table></figure></h2><p>需要注意的是，提升的不光有变量，函数声明也会提升，但是通过函数字面量定义的函数不会被提升，详见[JavaScript执行顺序]。(<a target="_blank" rel="noopener" href="https://someoneiscoding.github.io/2017/12/02/JavaScript%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/">https://someoneiscoding.github.io/2017/12/02/JavaScript%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/</a>)</p>
+<h4 id="名字解析顺序"><a href="#名字解析顺序" class="headerlink" title="名字解析顺序"></a>名字解析顺序</h4><p>javascript中一个名字(name)以四种方式进入作用域(scope)，其优先级顺序如下：<br>1、语言内置：所有的作用域中都有 this 和 arguments 关键字<br>2、形式参数：函数的参数在函数作用域中都是有效的<br>3、函数声明：形如function foo() {}<br>4、变量声明：如 var;<br>名字<strong>声明</strong>的优先级如上👆所示，也就是说如果一个变量的名字与函数的名字相同，那么函数的名字会覆盖变量的名字，无论其在代码中的顺序如何。但名字的<strong>初始化</strong>却是按其在代码中书写的顺序进行的，不受以上优先级的影响。看代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(function()&#123;</span><br><span class="line">    function foo()&#123;&#125;</span><br><span class="line">    console.log(typeof foo); //function</span><br><span class="line">    var foo;     </span><br><span class="line">    console.log(typeof foo); //function</span><br><span class="line"> </span><br><span class="line">    foo = &quot;foo&quot;;</span><br><span class="line">    console.log(typeof foo); //string</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/13/2017_12_week_2nd/" rel="prev" title="2017_12-第二周">
+                  <i class="fa fa-chevron-left"></i> 2017_12-第二周
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/19/2017_12_week_3rd/" rel="next" title="2017_12-第三周">
+                  2017_12-第三周 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

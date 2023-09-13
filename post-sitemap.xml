@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2023/09/13/2023_09_week_2nd/</loc>
+        <lastmod>2023-09-13T12:40:40.476Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2023/08/30/2023_08_week_4th/</loc>
+        <lastmod>2023-08-30T13:16:14.630Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2023/08/23/2023_08_week_3rd/</loc>
+        <lastmod>2023-08-23T11:52:35.822Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2023/02/12/Object_wait_notify/</loc>
+        <lastmod>2023-02-14T12:35:50.509Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/08/03/Monitor-The_Universal_Key_of_Concurrent_Programming/</loc>
+        <lastmod>2023-02-10T15:14:53.109Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2023/01/28/ProustQA_2022/</loc>
+        <lastmod>2023-01-28T14:53:41.095Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2022/01/12/ProustQA_2021/</loc>
+        <lastmod>2023-01-28T14:39:37.540Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2021/09/04/about_newSingleThreadExecutor/</loc>
+        <lastmod>2021-09-04T07:38:41.028Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2021/06/11/transation-isolated/</loc>
+        <lastmod>2021-07-01T18:46:34.182Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2021/01/23/ProustQA_2020/</loc>
+        <lastmod>2021-01-23T13:23:43.531Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2020/01/05/knowledge%26make-money/</loc>
+        <lastmod>2020-01-05T13:50:11.505Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2020/01/01/ProustQA_2019/</loc>
+        <lastmod>2020-01-01T15:37:16.923Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/08/31/Fate%26FreeWill/</loc>
+        <lastmod>2019-09-01T06:05:27.809Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/13/2017_12_week_2nd/</loc>
+        <lastmod>2019-09-01T06:02:36.907Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/</loc>
+        <lastmod>2019-09-01T06:01:40.423Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/11/20/2018_11_week_3rd/</loc>
+        <lastmod>2019-09-01T05:58:22.961Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/03/23/about_HashMap/</loc>
+        <lastmod>2019-09-01T05:57:53.401Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/04/09/about_HashSet/</loc>
+        <lastmod>2019-09-01T05:57:38.150Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/03/08/about_java_microcosmic_i++/</loc>
+        <lastmod>2019-09-01T05:55:40.829Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/10/18/about_tcp/</loc>
+        <lastmod>2019-09-01T05:53:12.529Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/10/Death_and_religion/</loc>
+        <lastmod>2019-09-01T05:50:30.943Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/10/19/establishment_release_of_tcp-connections/</loc>
+        <lastmod>2019-09-01T05:49:14.413Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/07/27/ideal_life/</loc>
+        <lastmod>2019-09-01T05:47:17.628Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/06/javascript_sync_async_event-loop/</loc>
+        <lastmod>2019-09-01T05:45:24.604Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/</loc>
+        <lastmod>2019-09-01T05:42:58.388Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/11/14/tcp_retransmission_mechanism/</loc>
+        <lastmod>2019-09-01T05:41:45.417Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/20/time_flies/</loc>
+        <lastmod>2019-09-01T05:40:01.217Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/07/08/truly_random/</loc>
+        <lastmod>2019-09-01T05:38:25.553Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/09/25/WeChat_third_platform/</loc>
+        <lastmod>2019-09-01T05:37:11.854Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/</loc>
+        <lastmod>2019-09-01T05:34:48.190Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/07/callback_function_in_javascript/</loc>
+        <lastmod>2019-09-01T05:28:22.240Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/07/16/What_kind_of_intelligent_system_does_the_world_need/</loc>
+        <lastmod>2019-07-16T14:37:33.503Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/03/13/Java_happens_before/</loc>
+        <lastmod>2019-07-16T13:38:38.573Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/06/09/existential_psychodynamics/</loc>
+        <lastmod>2019-06-09T06:39:04.835Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/04/03/about_ArrayList/</loc>
+        <lastmod>2019-04-09T14:03:38.223Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/03/17/about_LinkedList/</loc>
+        <lastmod>2019-04-09T14:02:55.541Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2019/03/17/2018_12_week_1st/</loc>
+        <lastmod>2019-03-18T14:33:14.000Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/09/20/simple_implementation_of_email_early_warning/</loc>
+        <lastmod>2019-01-22T09:43:41.410Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/12/31/ProustQA_2018/</loc>
+        <lastmod>2018-12-31T11:51:34.280Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/11/10/about_nginx_log_analyse/</loc>
+        <lastmod>2018-11-21T14:41:02.000Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket%26component_access_token/</loc>
+        <lastmod>2018-11-10T04:35:09.254Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/10/30/About_WeChat_Open_account_manage_auth/</loc>
+        <lastmod>2018-10-30T15:30:08.586Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/07/12/Abstraction_Maslow%27s-hierarchy-of-needs/</loc>
+        <lastmod>2018-07-14T06:03:11.759Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/07/13/WeChat-card-coupons-preview-interface-/</loc>
+        <lastmod>2018-07-14T02:57:30.000Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/</loc>
+        <lastmod>2018-07-12T02:48:28.336Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/05/04/about_code_switch/</loc>
+        <lastmod>2018-06-27T01:09:38.000Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/06/25/branch_prediction/</loc>
+        <lastmod>2018-06-25T17:03:27.650Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/</loc>
+        <lastmod>2018-05-09T08:52:38.759Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/</loc>
+        <lastmod>2018-05-09T08:52:24.880Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/13/High_walls_and_eggs/</loc>
+        <lastmod>2018-02-07T16:57:38.015Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/10/immediately-invoked_function_expression(IIFE)/</loc>
+        <lastmod>2018-01-27T05:11:08.000Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/13/serialization_and_deserialization_of_java/</loc>
+        <lastmod>2018-01-17T15:28:41.925Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/17/top-n_after_sql_group/</loc>
+        <lastmod>2018-01-17T15:28:05.832Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/23/javascript_oop-inheritance_of_non-constructor/</loc>
+        <lastmod>2018-01-09T13:35:46.230Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/23/javascript_oop-inheritance_of_constructor/</loc>
+        <lastmod>2018-01-09T13:35:26.866Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2018/01/02/ProustQA_2017/</loc>
+        <lastmod>2018-01-09T13:01:21.766Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/19/2017_12_week_3rd/</loc>
+        <lastmod>2017-12-23T06:02:15.045Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/14/javascript_coping_and_hoisting/</loc>
+        <lastmod>2017-12-23T06:01:16.982Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/11/javascript_oop-encapsulation/</loc>
+        <lastmod>2017-12-23T06:00:44.311Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/02/execution_sequence_of_javascript/</loc>
+        <lastmod>2017-12-19T01:13:34.515Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/10/2017_12_week_1st/</loc>
+        <lastmod>2017-12-10T14:58:23.277Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/12/07/why_does_the_peacock_spread_its_tail/</loc>
+        <lastmod>2017-12-10T11:41:52.815Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/10/03/there_is_no_title_in_diary/</loc>
+        <lastmod>2017-10-03T03:23:52.730Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/10/02/my_first_shot/</loc>
+        <lastmod>2017-10-03T02:00:26.592Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/2017/10/02/hello_world/</loc>
+        <lastmod>2017-10-02T08:56:51.483Z</lastmod>
+        <changefreq>always</changefreq>
+        <priority>1</priority>
+    
+    
+    </url>
+
+</urlset>
+

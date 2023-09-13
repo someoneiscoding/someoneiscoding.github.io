@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    <sitemap>
+        <loc>https://www.someoneiscoding.com/post-sitemap.xml</loc>
+        <lastmod>2023-09-13T12:40:40.476Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>https://www.someoneiscoding.com/page-sitemap.xml</loc>
+        <lastmod>2023-08-30T10:34:16.786Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>https://www.someoneiscoding.com/category-sitemap.xml</loc>
+        <lastmod>2019-07-16T14:37:33.503Z</lastmod>
+    </sitemap>
+
+    <sitemap>
+        <loc>https://www.someoneiscoding.com/tag-sitemap.xml</loc>
+        <lastmod>2017-10-02T08:56:51.483Z</lastmod>
+    </sitemap>
+
+</sitemapindex>
+

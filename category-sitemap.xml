@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="sitemap.xsl"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/Quote/</loc>
+        <lastmod>2019-07-16T14:37:33.503Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/%E5%91%93%E8%AF%AD/</loc>
+        <lastmod>2019-09-01T06:05:27.809Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/%E6%91%98/</loc>
+        <lastmod>2020-01-05T13:50:11.505Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/ProustQA/</loc>
+        <lastmod>2023-01-28T14:53:41.095Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/</loc>
+        <lastmod>2023-02-14T12:35:50.509Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/categories/%E5%91%A8%E8%AE%B0/</loc>
+        <lastmod>2023-09-13T12:40:40.476Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+</urlset>
+

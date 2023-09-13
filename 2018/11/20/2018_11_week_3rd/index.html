@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="shadowssocks日志级别配置Context这个，，闲得无聊，看了看shadowsocks.log文件👇 123456# 江湖险恶啊，，请求IP地址处理了下下。2018-11-20 07:45:21 INFO     connecting mtalk.google.com:5228 from 1*4.2*6.2*0.10:423732018-11-20 07:46:21 INFO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018年11月第三周">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/11/20/2018_11_week_3rd/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="shadowssocks日志级别配置Context这个，，闲得无聊，看了看shadowsocks.log文件👇 123456# 江湖险恶啊，，请求IP地址处理了下下。2018-11-20 07:45:21 INFO     connecting mtalk.google.com:5228 from 1*4.2*6.2*0.10:423732018-11-20 07:46:21 INFO">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E5%BE%AE%E4%BF%A1%E9%98%B2%E7%9B%97%E9%93%BE.jpeg">
+<meta property="article:published_time" content="2018-11-20T13:28:22.000Z">
+<meta property="article:modified_time" content="2019-09-01T05:58:22.961Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="shadowscoks">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E5%BE%AE%E4%BF%A1%E9%98%B2%E7%9B%97%E9%93%BE.jpeg">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/11/20/2018_11_week_3rd/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/11/20/2018_11_week_3rd/","path":"2018/11/20/2018_11_week_3rd/","title":"2018年11月第三周"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2018年11月第三周 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#shadowssocks%E6%97%A5%E5%BF%97%E7%BA%A7%E5%88%AB%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">shadowssocks日志级别配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Context"><span class="nav-number">1.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BC%80%E6%90%9E"><span class="nav-number">1.2.</span> <span class="nav-text">开搞</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%A6%E5%A4%96"><span class="nav-number">1.3.</span> <span class="nav-text">另外</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E4%BF%A1%E9%98%B2%E7%9B%97%E9%93%BE"><span class="nav-number">2.</span> <span class="nav-text">微信防盗链</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Context-1"><span class="nav-number">2.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#meta%E6%A0%87%E7%AD%BE"><span class="nav-number">2.2.</span> <span class="nav-text">meta标签</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#img-referrerPolicy"><span class="nav-number">2.3.</span> <span class="nav-text">img.referrerPolicy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#link-referrerpolicy"><span class="nav-number">2.4.</span> <span class="nav-text">link.referrerpolicy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E6%98%AF%EF%BC%8C%EF%BC%8C"><span class="nav-number">2.5.</span> <span class="nav-text">需要注意的是，，</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">3.</span> <span class="nav-text">其他</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/11/20/2018_11_week_3rd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2018年11月第三周 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2018年11月第三周
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-11-20 21:28:22" itemprop="dateCreated datePublished" datetime="2018-11-20T21:28:22+08:00">2018-11-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-09-01 13:58:22" itemprop="dateModified" datetime="2019-09-01T13:58:22+08:00">2019-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%91%A8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">周记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="shadowssocks日志级别配置"><a href="#shadowssocks日志级别配置" class="headerlink" title="shadowssocks日志级别配置"></a>shadowssocks日志级别配置</h4><h5 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h5><p>这个，，闲得无聊，看了看<code>shadowsocks.log</code>文件👇</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 江湖险恶啊，，请求IP地址处理了下下。</span><br><span class="line"><span class="number">2018</span>-<span class="number">11</span>-<span class="number">20</span> <span class="number">07</span>:<span class="number">45</span>:<span class="number">21</span> INFO     connecting mtalk.google.com:<span class="number">5228</span> from <span class="number">1</span>*<span class="number">4</span>.<span class="number">2</span>*<span class="number">6</span>.<span class="number">2</span>*<span class="number">0</span>.<span class="number">10</span>:<span class="number">42373</span></span><br><span class="line"><span class="number">2018</span>-<span class="number">11</span>-<span class="number">20</span> <span class="number">07</span>:<span class="number">46</span>:<span class="number">21</span> INFO     connecting mtalk.google.com:<span class="number">5228</span> from <span class="number">1</span>*<span class="number">4</span>.<span class="number">2</span>*<span class="number">6</span>.<span class="number">2</span>*<span class="number">0</span>.<span class="number">10</span>:<span class="number">42376</span></span><br><span class="line"><span class="number">2018</span>-<span class="number">11</span>-<span class="number">20</span> <span class="number">07</span>:<span class="number">46</span>:<span class="number">39</span> INFO     connecting notifications.google.com:<span class="number">443</span> from <span class="number">1</span>*<span class="number">4</span>.<span class="number">2</span>*<span class="number">6</span>.<span class="number">2</span>*<span class="number">0</span>.<span class="number">10</span>:<span class="number">42377</span></span><br><span class="line"><span class="number">2018</span>-<span class="number">11</span>-<span class="number">20</span> <span class="number">07</span>:<span class="number">47</span>:<span class="number">22</span> INFO     connecting mtalk.google.com:<span class="number">5228</span> from <span class="number">1</span>*<span class="number">4</span>.<span class="number">2</span>*<span class="number">6</span>.<span class="number">2</span>*<span class="number">0</span>.<span class="number">10</span>:<span class="number">42239</span></span><br><span class="line"><span class="number">2018</span>-<span class="number">11</span>-<span class="number">20</span> <span class="number">07</span>:<span class="number">47</span>:<span class="number">58</span> INFO     connecting clients4.google.com:<span class="number">443</span> from <span class="number">1</span>*<span class="number">4</span>.<span class="number">2</span>*<span class="number">6</span>.<span class="number">2</span>*<span class="number">0</span>.<span class="number">10</span>:<span class="number">42346</span></span><br></pre></td></tr></table></figure>
+<p>日志信息中没啥特别有用的信息，，关键是这么长时间了，日志文件已经很大了👇</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@host ~]<span class="comment"># ls -lh /var/log/shadowsocks.log</span></span><br><span class="line">-rw-r--r-- 1 root root 56M Nov 20 08:21 /var/log/shadowsocks.log</span><br></pre></td></tr></table></figure>
+<p>已然55M了，既然目前没有时间精力去搞输出更详细的日志，，那么只好想办法把这些日志信息要么按日期时间分割下，要么提高下日志输出级别(正常请求信息不输出，只输出WARN级别以上的信息)。</p>
+<h5 id="开搞"><a href="#开搞" class="headerlink" title="开搞"></a>开搞</h5><p>很用力地翻了<a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks/wiki">文档</a>，没找到什么关于日志的信息。只知道日志文件在<code>/var/log/shadowsocks.log</code>，然并卵。只好自己动手翻源码了，好可怕。。。</p>
+<p>这个Python，，零零星星翻过两遍，在<a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000">廖雪峰的博客网站</a>上，并没有实际深入去了解，更别说做项目了(关键是工作中暂时用不到..)，有点怂。<br>打开项目之后，并不知道从哪儿开始看…不过，我们可以搜索关键字信息啊，哈哈…笑得一点底气都没有…直接搜『&#x2F;var&#x2F;log&#x2F;shadowsocks.log』，我们可以看到在<code>⁨shadowsocks-2.8.2⁩/⁨shadowsocks⁩/shell.py</code>文件中👇</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 日志文件配置路径 R224</span></span><br><span class="line">config[<span class="string">&#x27;log-file&#x27;</span>] = config.get(<span class="string">&#x27;log-file&#x27;</span>, <span class="string">&#x27;/var/log/shadowsocks.log&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">## config？难道是我想的那种config么？？？继续往下看 R245</span></span><br><span class="line">logging.getLogger(<span class="string">&#x27;&#x27;</span>).handlers = []</span><br><span class="line">    logging.addLevelName(VERBOSE_LEVEL, <span class="string">&#x27;VERBOSE&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> config[<span class="string">&#x27;verbose&#x27;</span>] &gt;= <span class="number">2</span>:</span><br><span class="line">        level = VERBOSE_LEVEL</span><br><span class="line">    <span class="keyword">elif</span> config[<span class="string">&#x27;verbose&#x27;</span>] == <span class="number">1</span>:</span><br><span class="line">        level = logging.DEBUG</span><br><span class="line">    <span class="keyword">elif</span> config[<span class="string">&#x27;verbose&#x27;</span>] == -<span class="number">1</span>:</span><br><span class="line">        level = logging.WARN</span><br><span class="line">    <span class="keyword">elif</span> config[<span class="string">&#x27;verbose&#x27;</span>] &lt;= -<span class="number">2</span>:</span><br><span class="line">        level = logging.ERROR</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        level = logging.INFO</span><br><span class="line">    verbose = config[<span class="string">&#x27;verbose&#x27;</span>]</span><br><span class="line">    logging.basicConfig(level=level, <span class="built_in">format</span>=<span class="string">&#x27;%(asctime)s %(levelname)-8s %(message)s&#x27;</span>, datefmt=<span class="string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>)</span><br><span class="line"><span class="comment">## 看到这儿好像问题解决了。。</span></span><br></pre></td></tr></table></figure>
+<p>原来配置文件中可以通过 verbose 来设置日志的输出级别，结合脚本代码和日志信息，可以看到默认级别为 INFO，那么接下来我们只需要在<code>/etc/shadowsocks.conf</code>中添加<code>&quot;verbose&quot;: -1</code>就可将日志级别提升至<code>WARN</code>了~别忘了重启服务噢</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@host ~]<span class="comment"># ssserver -c /etc/shadowsocks.json -d restart</span></span><br><span class="line">INFO: loading config from /etc/shadowsocks.json</span><br><span class="line">stopped</span><br><span class="line">started</span><br></pre></td></tr></table></figure>
+<p>亲测有效~但是！WARNING日志也很多，，无奈直接改成了<code>&quot;verbose&quot;:-2</code>。<br>关于其他配置，有兴趣的同学可以查阅下<code>shell.py</code>文件中的<code>config</code>对象的具体信息。</p>
+<h5 id="另外"><a href="#另外" class="headerlink" title="另外"></a>另外</h5><p>日志输出信息是在<code>⁨shadowsocks-2.8.2⁩/shadowsocks⁩/tcprelay.py</code>文件中</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># R293</span><br><span class="line">logging.info(&#x27;connecting %s:%d from %s:%d&#x27; %(common.to_str(remote_addr), remote_port, self._client_address<span class="string">[0]</span>, self._client_address<span class="string">[1]</span>))</span><br></pre></td></tr></table></figure>
+<p>看样子我们可以控制日志具体输出哪些内容的，，对python比较了解的同学可以尝试修改下，可以试着添加上请求用户的信息~</p>
+<h4 id="微信防盗链"><a href="#微信防盗链" class="headerlink" title="微信防盗链"></a>微信防盗链</h4><h5 id="Context-1"><a href="#Context-1" class="headerlink" title="Context"></a>Context</h5><p>微信公众号使用开发模式后，部分功能就只能使用API接口去实现了，，比如『自定义菜单』功能。所以这个时候，需要在后台实现类公众号后台的自定义菜单功能。这其中就会涉及到素材引用的问题，，倘若直接在自己服务器中的后台中引用，就会出现如下图片👇<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E5%BE%AE%E4%BF%A1%E9%98%B2%E7%9B%97%E9%93%BE.jpeg" alt="@微信防盗链"></p>
+<p>但如果直接在浏览器中输入图片地址就可以正常访问。后来得知是<code>referrerPolicy</code>在作怪。</p>
+<h5 id="meta标签"><a href="#meta标签" class="headerlink" title="meta标签"></a>meta标签</h5><p>我们需要做的是在请求图片资源的时候隐藏自己的<code>referrer</code>，避免腾讯识别出我们的服务器不是自己人。<br>具体做法是添加<code>meta</code>标签(详细信息参考<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Referrer-Policy">MDN-Referrer-Policy</a>)👇</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># content值也可以是no-referrer</span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;referrer&quot;</span> <span class="attr">content</span>=<span class="string">&quot;same-origin&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>倘若，，引用的图片是通过CSS中<code>background-color</code>引用的，那就悲催了。。想办法将<code>div</code>元素转为<code>img</code>元素，通过<code>src</code>属性引用图片，这样也是可以的。</p>
+<h5 id="img-referrerPolicy"><a href="#img-referrerPolicy" class="headerlink" title="img.referrerPolicy"></a>img.referrerPolicy</h5><p>如果不想用meta标签，也可以在img元素中添加<code>referrerPolicy</code>属性，也可以正常引用(详见<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLImageElement/referrerPolicy">HTMLImageElement-referrerPolicy</a>)。如果无效，请尝试清空缓存之后重新请求，亲测有效~</p>
+<h5 id="link-referrerpolicy"><a href="#link-referrerpolicy" class="headerlink" title="link.referrerpolicy"></a>link.referrerpolicy</h5><p>如果是引用外部样式，，可以在link标签中添加<code>referrerpolicy</code>属性，，详见<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/link">Element-link</a>。</p>
+<h5 id="需要注意的是，，"><a href="#需要注意的是，，" class="headerlink" title="需要注意的是，，"></a>需要注意的是，，</h5><p>img.referrerPolicy和link.referrerpolicy属于实验功能，使用前务必检查自己的浏览是否支持！<br>另外，，不能通过<code>ducument.referrer=&#39;no-referrer&#39;</code>去修改，因为<code>ducument.referrer</code>是只读属性..详见<a target="_blank" rel="noopener" href="https://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-95229140">ducument.referrer</a></p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p><code>text-overflow</code>样式用来控制文字溢出盒子之后的处理逻辑，，<br>值为<code>clip</code>，则直接裁切(即隐藏)<br>值为<code>ellipsis</code>，则显示溢出省略标记<code>…</code></p>
+<p><code>white-space: nowrap</code> 文本不换行</p>
+<p><code>word-wrap</code>用来控制文本超出元素边界后的对英文单词换行的处理逻辑，适用于块元素，行元素需设置width、height。<br>值为<code>break-word</code>，则以单词为单位换行；<br>值为<code>break-all</code>，则以字母为单位换行。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/shadowscoks/" rel="tag"># shadowscoks</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/11/10/about_nginx_log_analyse/" rel="prev" title="关于 nginx 日志分析">
+                  <i class="fa fa-chevron-left"></i> 关于 nginx 日志分析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/31/ProustQA_2018/" rel="next" title="普鲁斯特问卷-2018">
+                  普鲁斯特问卷-2018 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

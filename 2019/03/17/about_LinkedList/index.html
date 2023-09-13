@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="LinkedList 的 DOC 注释12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455&#x2F;** * Doubly-linked list implementation of the &amp;#123;@code List&amp;#125; and &amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于 LinkedList">
+<meta property="og:url" content="https://www.someoneiscoding.com/2019/03/17/about_LinkedList/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="LinkedList 的 DOC 注释12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455&#x2F;** * Doubly-linked list implementation of the &amp;#123;@code List&amp;#125; and &amp;#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-03-17T09:45:05.000Z">
+<meta property="article:modified_time" content="2019-04-09T14:02:55.541Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="源码">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="LinkedList">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2019/03/17/about_LinkedList/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2019/03/17/about_LinkedList/","path":"2019/03/17/about_LinkedList/","title":"关于 LinkedList"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于 LinkedList | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedList-%E7%9A%84-DOC-%E6%B3%A8%E9%87%8A"><span class="nav-number">1.</span> <span class="nav-text">LinkedList 的 DOC 注释</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedList-%E7%9A%84%E7%B1%BB%E5%B1%9E%E6%80%A7%E5%8F%8A%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">LinkedList 的类属性及构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A6%96%E5%B0%BE%E8%8A%82%E7%82%B9%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">首尾节点的操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%9E%E9%A6%96%E5%B0%BE%E8%8A%82%E7%82%B9%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">非首尾节点的操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2019/03/17/about_LinkedList/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于 LinkedList | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于 LinkedList
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-17 17:45:05" itemprop="dateCreated datePublished" datetime="2019-03-17T17:45:05+08:00">2019-03-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-04-09 22:02:55" itemprop="dateModified" datetime="2019-04-09T22:02:55+08:00">2019-04-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="LinkedList-的-DOC-注释"><a href="#LinkedList-的-DOC-注释" class="headerlink" title="LinkedList 的 DOC 注释"></a>LinkedList 的 DOC 注释</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Doubly-linked list implementation of the &#123;<span class="doctag">@code</span> List&#125; and &#123;<span class="doctag">@code</span> Deque&#125;</span></span><br><span class="line"><span class="comment"> * interfaces.  Implements all optional list operations, and permits all</span></span><br><span class="line"><span class="comment"> * elements (including &#123;<span class="doctag">@code</span> null&#125;).</span></span><br><span class="line"><span class="comment"> * 该双向链表实现了 List 接口和 Deque 接口。实现了 list 的所有可选操作，并且允许(添加)所有元素(包括 null)。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;All of the operations perform as could be expected for a doubly-linked</span></span><br><span class="line"><span class="comment"> * list.  Operations that index into the list will traverse the list from</span></span><br><span class="line"><span class="comment"> * the beginning or the end, whichever is closer to the specified index.</span></span><br><span class="line"><span class="comment"> * 对于该双向链表，所有操作都是可预期的。如果对 list 的操作涉及到指定索引位置的元素，那么将判断指定的索引离 begin 更近，还是离 end 更近。这样能进行更少次数的迭代，性能更好。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;&lt;strong&gt;Note that this implementation is not synchronized.&lt;/strong&gt;</span></span><br><span class="line"><span class="comment"> * If multiple threads access a linked list concurrently, and at least</span></span><br><span class="line"><span class="comment"> * one of the threads modifies the list structurally, it &lt;i&gt;must&lt;/i&gt; be</span></span><br><span class="line"><span class="comment"> * synchronized externally.  (A structural modification is any operation</span></span><br><span class="line"><span class="comment"> * that adds or deletes one or more elements; merely setting the value of</span></span><br><span class="line"><span class="comment"> * an element is not a structural modification.)  This is typically</span></span><br><span class="line"><span class="comment"> * accomplished by synchronizing on some object that naturally</span></span><br><span class="line"><span class="comment"> * encapsulates the list.</span></span><br><span class="line"><span class="comment"> * 需要注意的是 LinkedList 类并不是线程安全的。如果多线程同时访问 linked list，而且至少一个线程会修改 list 的结构，那么它的外部必须使用 synchronized 关键字。(结构性修改指的是 插入(add)或者删除(remove)操作，修改一个元素的值并不是结构性修改)。这通常通过同步(synchronized 修饰)一个 封装了 list 的对象来实现。</span></span><br><span class="line"><span class="comment"> * If no such object exists, the list should be &quot;wrapped&quot; using the</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> Collections#synchronizedList Collections.synchronizedList&#125;</span></span><br><span class="line"><span class="comment"> * method.  This is best done at creation time, to prevent accidental</span></span><br><span class="line"><span class="comment"> * unsynchronized access to the list:&lt;pre&gt;</span></span><br><span class="line"><span class="comment"> *   List list = Collections.synchronizedList(new LinkedList(...));&lt;/pre&gt;</span></span><br><span class="line"><span class="comment"> * 如果手头儿没有这样的对象，list 应该被 Collections.synchronizedList() 包裹起来。最好在初始化 LinkedList 对象时候就这样去做，以免不可预知的对 list 的非同步访问。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;The iterators returned by this class&#x27;s &#123;<span class="doctag">@code</span> iterator&#125; and</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> listIterator&#125; methods are &lt;i&gt;fail-fast&lt;/i&gt;: if the list is</span></span><br><span class="line"><span class="comment"> * structurally modified at any time after the iterator is created, in</span></span><br><span class="line"><span class="comment"> * any way except through the Iterator&#x27;s own &#123;<span class="doctag">@code</span> remove&#125; or</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> add&#125; methods, the iterator will throw a &#123;<span class="doctag">@link</span></span></span><br><span class="line"><span class="comment"> * ConcurrentModificationException&#125;.  Thus, in the face of concurrent</span></span><br><span class="line"><span class="comment"> * modification, the iterator fails quickly and cleanly, rather than</span></span><br><span class="line"><span class="comment"> * risking arbitrary, non-deterministic behavior at an undetermined</span></span><br><span class="line"><span class="comment"> * time in the future.</span></span><br><span class="line"><span class="comment"> * 通过LinkedList 的 iterator() 方法，或者 listIterator(int) 方法返回的 iterator 都是 fail-fast(快速失效)的：如果在创建 iterator 之后，任何对 list 的结构性修改，都会抛出 ConcurrentModificationException，除了 iterator 本身的 remove() 和 add() 方法。因此，在面临并发对 list 的修改时，iterator 会快速而干净的失效，而不是在未来不确定的时间冒着任意的、不确定的风险。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Note that the fail-fast behavior of an iterator cannot be guaranteed</span></span><br><span class="line"><span class="comment"> * as it is, generally speaking, impossible to make any hard guarantees in the</span></span><br><span class="line"><span class="comment"> * presence of unsynchronized concurrent modification.  Fail-fast iterators</span></span><br><span class="line"><span class="comment"> * throw &#123;<span class="doctag">@code</span> ConcurrentModificationException&#125; on a best-effort basis.</span></span><br><span class="line"><span class="comment"> * Therefore, it would be wrong to write a program that depended on this</span></span><br><span class="line"><span class="comment"> * exception for its correctness:   &lt;i&gt;the fail-fast behavior of iterators</span></span><br><span class="line"><span class="comment"> * should be used only to detect bugs.&lt;/i&gt;</span></span><br><span class="line"><span class="comment"> * 另外，需要注意的是，，iterator 的 fail-fast 行为是不能被保证的，，通常来说，在并发非同步对 list 的修改时，任何硬性的保证都是不可能的。fail-fast 会让 iterator 尽可能抛出 ConcurrentModificationException。因此，在程序中通过依赖抛出 ConcurrentModificationException 异常来保证自身的正常运行是错误的：fail-fast 行为只应该用来 debug。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;This class is a member of the</span></span><br><span class="line"><span class="comment"> * &lt;a href=&quot;&#123;<span class="doctag">@docRoot</span>&#125;/../technotes/guides/collections/index.html&quot;&gt;</span></span><br><span class="line"><span class="comment"> * Java Collections Framework&lt;/a&gt;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>  Josh Bloch</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span>     List</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span>     ArrayList</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.2</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;E&gt; the type of elements held in this collection</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LinkedList</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">extends</span> <span class="title class_">AbstractSequentialList</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">List</span>&lt;E&gt;, Deque&lt;E&gt;, Cloneable, java.io.Serializable</span><br></pre></td></tr></table></figure>
+
+<h4 id="LinkedList-的类属性及构造方法"><a href="#LinkedList-的类属性及构造方法" class="headerlink" title="LinkedList 的类属性及构造方法"></a>LinkedList 的类属性及构造方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">transient</span> <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Pointer to first node. // 指向 LinkedList 的第一个节点</span></span><br><span class="line"><span class="comment"> * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment"> *            (first.prev == null &amp;&amp; first.item != null)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; first;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Pointer to last node. // 指向 LinkedList 的最后一个节点</span></span><br><span class="line"><span class="comment"> * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment"> *            (last.next == null &amp;&amp; last.item != null)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; last;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs an empty list.</span></span><br><span class="line"><span class="comment"> * 构造一个空 list</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">LinkedList</span><span class="params">()</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs a list containing the elements of the specified</span></span><br><span class="line"><span class="comment"> * collection, in the order they are returned by the collection&#x27;s</span></span><br><span class="line"><span class="comment"> * iterator.</span></span><br><span class="line"><span class="comment"> * 通过指定的 collection 构造一个包含元素的 list，其顺序由 collection 的迭代器决定。</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span>  c the collection whose elements are to be placed into this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified collection is null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">LinkedList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>();</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Appends all of the elements in the specified collection to the end of</span></span><br><span class="line"><span class="comment"> * this list, in the order that they are returned by the specified</span></span><br><span class="line"><span class="comment"> * collection&#x27;s iterator.  The behavior of this operation is undefined if</span></span><br><span class="line"><span class="comment"> * the specified collection is modified while the operation is in</span></span><br><span class="line"><span class="comment"> * progress.  (Note that this will occur if the specified collection is</span></span><br><span class="line"><span class="comment"> * this list, and it&#x27;s nonempty.)</span></span><br><span class="line"><span class="comment"> * 将指定的 collection 的所有元素拼接到 list 的末尾元素之后，顺序由指定的 collection 的迭代器决定。在执行该操作(addAll())的时候，如果 collection 被修改了，该操作的行为将不可预知(请注意，如果指定的 collection 正好是该 list 对象自己，那么这种情况将会发生)。</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c collection containing elements to be added to this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if this list changed as a result of the call</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified collection is null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> addAll(size, c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Inserts all of the elements in the specified collection into this</span></span><br><span class="line"><span class="comment"> * list, starting at the specified position.  Shifts the element</span></span><br><span class="line"><span class="comment"> * currently at that position (if any) and any subsequent elements to</span></span><br><span class="line"><span class="comment"> * the right (increases their indices).  The new elements will appear</span></span><br><span class="line"><span class="comment"> * in the list in the order that they are returned by the</span></span><br><span class="line"><span class="comment"> * specified collection&#x27;s iterator.</span></span><br><span class="line"><span class="comment"> * 从指定的位置开始将指定 collection 中的所有元素插入到该 list 中。指定位置的元素(如果有的话)及其右边的元素将会右移(原索引值增大)。新的元素将会以指定 collection 的迭代器 返回的顺序出现在 list 中。</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> index index at which to insert the first element</span></span><br><span class="line"><span class="comment"> *              from the specified collection</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c collection containing elements to be added to this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="doctag">@code</span> true&#125; if this list changed as a result of the call</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> IndexOutOfBoundsException &#123;<span class="doctag">@inheritDoc</span>&#125;</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NullPointerException if the specified collection is null</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">addAll</span><span class="params">(<span class="type">int</span> index, Collection&lt;? extends E&gt; c)</span> &#123;</span><br><span class="line">    <span class="comment">// 判断索引是否非法</span></span><br><span class="line">    checkPositionIndex(index);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 collection 转为数组</span></span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="type">int</span> <span class="variable">numNew</span> <span class="operator">=</span> a.length;</span><br><span class="line">    <span class="comment">// 如果为空数组，返回 false</span></span><br><span class="line">    <span class="keyword">if</span> (numNew == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    Node&lt;E&gt; pred, succ;</span><br><span class="line">    <span class="comment">// 如果索引值与容器的大小相同，即当前 LinkedList 实例中无任何元素</span></span><br><span class="line">    <span class="keyword">if</span> (index == size) &#123;</span><br><span class="line">        succ = <span class="literal">null</span>;</span><br><span class="line">        pred = last;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        succ = node(index);</span><br><span class="line">        pred = succ.prev;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (Object o : a) &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span> <span class="type">E</span> <span class="variable">e</span> <span class="operator">=</span> (E) o;</span><br><span class="line">        <span class="comment">// 构建 Node 节点对象 newNode</span></span><br><span class="line">        Node&lt;E&gt; newNode = <span class="keyword">new</span> <span class="title class_">Node</span>&lt;&gt;(pred, e, <span class="literal">null</span>);</span><br><span class="line">        <span class="comment">// 如果指定位置的元素位于列表头部，则 newNode 为 first 节点</span></span><br><span class="line">        <span class="keyword">if</span> (pred == <span class="literal">null</span>)</span><br><span class="line">            first = newNode;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">// 否则，前一个节点的 next 属性指向 newNode</span></span><br><span class="line">            pred.next = newNode;</span><br><span class="line">        <span class="comment">// pred 指向 newNode，开始下一轮遍历(相当于常规 for 循环的 i++)</span></span><br><span class="line">        pred = newNode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果原 list 为空列表，则经过遍历之后，last 指向 pred</span></span><br><span class="line">    <span class="keyword">if</span> (succ == <span class="literal">null</span>) &#123;</span><br><span class="line">        last = pred;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果指定索引位置有值，遍历添加 collection 中的元素之后，指定索引位置的元素及其右侧的所有元素统一右移，，将新增的所有元素中的最后一个元素的 next 指向 右移的元素中的第一个元素；右移的元素中的第一个元素的 prev 属性指向新增元素中的最后一个。</span></span><br><span class="line">        pred.next = succ;</span><br><span class="line">        succ.prev = pred;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 原 size 加上 新增元素的数量</span></span><br><span class="line">    size += numNew;</span><br><span class="line">    <span class="comment">// list 的结构性更改次数 +1</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">checkPositionIndex</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!isPositionIndex(index))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IndexOutOfBoundsException</span>(outOfBoundsMsg(index));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Tells if the argument is the index of a valid position for an</span></span><br><span class="line"><span class="comment"> * iterator or an add operation.</span></span><br><span class="line"><span class="comment"> * 判断参数代表的索引位置在 iterator 或者 add() 中是否可用</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">isPositionIndex</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="comment">// 不小于零，且不大于 size</span></span><br><span class="line">    <span class="keyword">return</span> index &gt;= <span class="number">0</span> &amp;&amp; index &lt;= size;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the (non-null) Node at the specified element index.</span></span><br><span class="line"><span class="comment"> * 返回指定位置的非空节点</span></span><br><span class="line"><span class="comment"> * 此处遍历 list 查找指定位置的元素时，先判断 index 距离 begin 节点近还是 end 节点。如此可以减少遍历次数，有助于性能表现。大概这就是维护成双向列表而非单向列表的原因吧。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Node&lt;E&gt; <span class="title function_">node</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="comment">// assert isElementIndex(index);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 指定的索引值是否小于中位数(翻译成人话就是，判断索引是否在列表的前半段)</span></span><br><span class="line">    <span class="keyword">if</span> (index &lt; (size &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        Node&lt;E&gt; x = first;</span><br><span class="line">        <span class="comment">// 就是硬遍历，直到指定索引位置</span></span><br><span class="line">        <span class="comment">//  因为 i &lt; index，所以会遍历到指定索引位置的前一个节点，这时取其 next 指向的节点即可。</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; index; i++)</span><br><span class="line">            x = x.next;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Node&lt;E&gt; x = last;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> size - <span class="number">1</span>; i &gt; index; i--)</span><br><span class="line">            x = x.prev;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 私有静态内部类</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Node</span>&lt;E&gt; &#123;</span><br><span class="line">    E item;</span><br><span class="line">    Node&lt;E&gt; next;</span><br><span class="line">    Node&lt;E&gt; prev;</span><br><span class="line"></span><br><span class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</span><br><span class="line">        <span class="comment">// item 为当前节点的值</span></span><br><span class="line">        <span class="built_in">this</span>.item = element;</span><br><span class="line">        <span class="comment">// next 指向当前节点的下一个节点</span></span><br><span class="line">        <span class="built_in">this</span>.next = next;</span><br><span class="line">        <span class="comment">// prev 指向当前节点的前一个节点</span></span><br><span class="line">        <span class="built_in">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>关于关键字 transient，，<br>一个对象只要实现了 Serializable 接口，该对象就可以被序列化。然而在实际开发过程中，常常会遇到这样的问题，该类有些属性需要序列化，其他属性不需要被序列化。例如一个用户有一些敏感信息（如密码，银行卡号等），为了安全起见，不希望在网络操作（主要涉及序列化）中被传输，这些信息对应的变量就可以加上 transient 关键字，这样变量的生命周期仅存在于调用者的内存中而不会被写到磁盘里持久化。)</p>
+</blockquote>
+<h4 id="首尾节点的操作"><a href="#首尾节点的操作" class="headerlink" title="首尾节点的操作"></a>首尾节点的操作</h4><p>因为 first 和 last 属性的存在，所以在 LinkedList 中首尾节点的操作效率很高，以 getFirst() 和 removeFirst() 方法为例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the first element in this list.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the first element in this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NoSuchElementException if this list is empty</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> E <span class="title function_">getFirst</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>();</span><br><span class="line">    <span class="keyword">return</span> f.item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删</span></span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Removes and returns the first element from this list.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the first element from this list</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NoSuchElementException if this list is empty</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> E <span class="title function_">removeFirst</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>();</span><br><span class="line">    <span class="keyword">return</span> unlinkFirst(f);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Unlinks non-null first node f.</span></span><br><span class="line"><span class="comment"> * 首先 first 节点的 prev 肯定是 null，先复制它的 next 节点，然后将它的 item 和 next 置空，至此，，first 节点就是一个空的 Node 对象了，最终被 GC。然后判断 next 节点，如果它为null，则说明该 LinkedList 对象只有一个 Node，否则将 first 指向 刚才复制的 next 节点。最后 size 减 1，modCount 加 1。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> E <span class="title function_">unlinkFirst</span><span class="params">(Node&lt;E&gt; f)</span> &#123;</span><br><span class="line">    <span class="comment">// assert f == first &amp;&amp; f != null;</span></span><br><span class="line">    <span class="comment">// 断言 f 为 first 节点，且 f 不为空</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">E</span> <span class="variable">element</span> <span class="operator">=</span> f.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = f.next;</span><br><span class="line">    f.item = <span class="literal">null</span>;</span><br><span class="line">    f.next = <span class="literal">null</span>; <span class="comment">// help GC</span></span><br><span class="line">    first = next;</span><br><span class="line">    <span class="keyword">if</span> (next == <span class="literal">null</span>)</span><br><span class="line">        last = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        next.prev = <span class="literal">null</span>;</span><br><span class="line">    size--;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// &#x27;改&#x27;就不说了</span></span><br><span class="line"><span class="comment">// &#x27;增&#x27;其实是 removeFirst() 反向操作，略。</span></span><br></pre></td></tr></table></figure>
+<p>关于 modCount 👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The number of times this list has been structurally modified.</span></span><br><span class="line"><span class="comment"> * 该列表在结构上被修改的次数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">transient</span> <span class="type">int</span> <span class="variable">modCount</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">modCount 为 AbstractList(</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LinkedList</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">AbstractSequentialList</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">List</span>&lt;E&gt;, Deque&lt;E&gt;, Cloneable, java.io.Serializable =&gt;</span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractSequentialList</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">AbstractList</span>&lt;E&gt; =&gt;</span><br><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractList</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">AbstractCollection</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">List</span>&lt;E&gt;)的属性</span><br></pre></td></tr></table></figure>
+
+<h4 id="非首尾节点的操作"><a href="#非首尾节点的操作" class="headerlink" title="非首尾节点的操作"></a>非首尾节点的操作</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Removes the element at the specified position in this list.</span></span><br><span class="line"><span class="comment"> * 删除该列表指定位置的元素</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> E <span class="title function_">remove</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line"> checkElementIndex(index);</span><br><span class="line">    <span class="keyword">return</span> unlink(node(index));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the (non-null) Node at the specified element index.</span></span><br><span class="line"><span class="comment"> * 返回指定位置的非空node，，判断 index 在 LinkedList 的前半部分还是后半部分，然后取循环次数少的分支进行遍历。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Node&lt;E&gt; <span class="title function_">node</span><span class="params">(<span class="type">int</span> index)</span> &#123;</span><br><span class="line">    <span class="comment">// assert isElementIndex(index);</span></span><br><span class="line">    <span class="comment">// 保证不会抛出 IndexOutOfBoundsException 异常</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// &gt;&gt;：带符号右移。正数右移高位补0，负数右移高位补1。</span></span><br><span class="line">    <span class="comment">// 比如：4 &gt;&gt; 1，4 的二进制为 100，移位之后变为 10，即十进制 2。</span></span><br><span class="line">    <span class="keyword">if</span> (index &lt; (size &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        Node&lt;E&gt; x = first;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; index; i++)</span><br><span class="line">            x = x.next;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        Node&lt;E&gt; x = last;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> size - <span class="number">1</span>; i &gt; index; i--)</span><br><span class="line">            x = x.prev;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Unlinks non-null node x.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">E <span class="title function_">unlink</span><span class="params">(Node&lt;E&gt; x)</span> &#123;</span><br><span class="line">    <span class="comment">// assert x != null;</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">E</span> <span class="variable">element</span> <span class="operator">=</span> x.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = x.next;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; prev = x.prev;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果要移除的元素位于头节点，则直接将头节点指向下一个节点。</span></span><br><span class="line">    <span class="comment">// 否则将前一个节点的 next 属性指向下一个节点，并将当前节点的 prev 属性置空</span></span><br><span class="line">    <span class="keyword">if</span> (prev == <span class="literal">null</span>) &#123;</span><br><span class="line">        first = next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        prev.next = next;</span><br><span class="line">        x.prev = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果要移除的元素位于尾节点，则直接将尾节点指向前一个节点。</span></span><br><span class="line">    <span class="comment">// 否则将下一个节点的 prev 属性指向前一个节点，并将当前节点的 next 属性置空</span></span><br><span class="line">    <span class="keyword">if</span> (next == <span class="literal">null</span>) &#123;</span><br><span class="line">        last = prev;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        next.prev = prev;</span><br><span class="line">        x.next = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将当前节点的 item 属性置空</span></span><br><span class="line">    x.item = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 长度 -1</span></span><br><span class="line">    size--;</span><br><span class="line">    <span class="comment">// 结构性修改次数 +1</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 增</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> index, E element)</span> &#123;</span><br><span class="line">    checkPositionIndex(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (index == size)</span><br><span class="line">        linkLast(element);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        linkBefore(element, node(index));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// linkLast 与 linkBefore 方法类似，以 linkBefore 为例</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">linkBefore</span><span class="params">(E e, Node&lt;E&gt; succ)</span> &#123;</span><br><span class="line">    <span class="comment">// assert succ != null;</span></span><br><span class="line">    <span class="comment">// succ 为插入前 index 位置的节点，需要做的是将新节点的 prev 属性指向 succ.prev，将新节点的 next 属性指向 succ。</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; pred = succ.prev;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> <span class="title class_">Node</span>&lt;&gt;(pred, e, succ);</span><br><span class="line">    succ.prev = newNode;</span><br><span class="line">    <span class="keyword">if</span> (pred == <span class="literal">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        pred.next = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外值得注意的是，<strong>LinkedList 支持插入 null 值，原因在于 Node 的构造方法。插入 null 值时，其实是将 null 值给了 node 节点的 item 属性，node 节点的 prev 和 next 还是 非 null 的</strong>。</p>
+<p>—- update@2019-03-18 22：23：47 下面—-<br>发现个知识点，，今天点开 LinkedList 中实现的 <code>Deque</code>接口，DOC注释中这样写道：👇</p>
+<blockquote>
+<p>A linear collection that supports element insertion and removal at both ends.  The name deque is short for “double ended queue” and is usually pronounced “deck”.<br>Deque 是支持双端插入和删除元素的线性集合，<strong>deque</strong> 是 <em>double ended queue</em> 的缩写，通常读作 <strong>deck</strong>。</p>
+</blockquote>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><blockquote>
+<p><code>LinkedList</code> 的本质是双向链表。与 <code>ArrayList</code> 相比，<code>LinkedList</code> 的插入和删除速度更快，但是随机访问速度则很慢。测试表明，对于 10 万条的数据，与 <code>ArrayList</code> 相比，随机提取元素时存在数百倍的差距。除继承 <code>AbstractList</code> 抽象外，<code>LinkedList</code> 还实现了另一个接口 <code>Deque</code>，即 <code>double-ended-queue</code>。这个接口同时具有队列和栈的性质。<code>LinkedList</code> 包含 3 个重要的成员：<code>size</code>、<code>first</code>、<code>last</code>。<code>size</code> 是双向链表中节点的个数。<code>first</code> 和 <code>last</code> 分别指向第一个和最后一个节点的引用。<code>LinkedList</code> 的优点在于可以将零散的内存单元附加引用的方式关联起来，形成按链路顺序查找的线性结构，内存利用率较高。</p>
+<p>码出高效 Java 开发手册 P156</p>
+</blockquote>
+<hr>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/28101975">清浅池塘—LinkedList 初探</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33733931">何柄融—ArrayList 和 LinkedList 的区别和使用场景</a>(有删改)</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%BA%90%E7%A0%81/" rel="tag"># 源码</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/LinkedList/" rel="tag"># LinkedList</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/03/13/Java_happens_before/" rel="prev" title="先行发生原则">
+                  <i class="fa fa-chevron-left"></i> 先行发生原则
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/03/17/2018_12_week_1st/" rel="next" title="2018_12_week_1st">
+                  2018_12_week_1st <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

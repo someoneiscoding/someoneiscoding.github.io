@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="关于java中的序列化Context最近在精简项目代码，去除无用的依赖以及没有没有使用的模块。这其中免不了删除实体类中的无效字段。于是，，问题来了： 1java.io.InvalidClassException: entity.User; local class incompatible: stream classdesc serialVersionUID &#x3D; 855047139086060020">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于java中的序列化">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/01/13/serialization_and_deserialization_of_java/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="关于java中的序列化Context最近在精简项目代码，去除无用的依赖以及没有没有使用的模块。这其中免不了删除实体类中的无效字段。于是，，问题来了： 1java.io.InvalidClassException: entity.User; local class incompatible: stream classdesc serialVersionUID &#x3D; 855047139086060020">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-01-13T06:53:12.000Z">
+<meta property="article:modified_time" content="2018-01-17T15:28:41.925Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="序列化">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/01/13/serialization_and_deserialization_of_java/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/01/13/serialization_and_deserialization_of_java/","path":"2018/01/13/serialization_and_deserialization_of_java/","title":"关于java中的序列化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于java中的序列化 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Ejava%E4%B8%AD%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.</span> <span class="nav-text">关于java中的序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Context"><span class="nav-number">1.1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%9C%AA%E7%99%BB%E5%BD%95%EF%BC%9F"><span class="nav-number">1.2.</span> <span class="nav-text">用户未登录？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.3.1.</span> <span class="nav-text">什么时候使用序列化</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">静态变量序列化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%88%B6%E7%B1%BB%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">1.5.</span> <span class="nav-text">父类的序列化</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/01/13/serialization_and_deserialization_of_java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于java中的序列化 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于java中的序列化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-01-13 14:53:12" itemprop="dateCreated datePublished" datetime="2018-01-13T14:53:12+08:00">2018-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-01-17 23:28:41" itemprop="dateModified" datetime="2018-01-17T23:28:41+08:00">2018-01-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="关于java中的序列化"><a href="#关于java中的序列化" class="headerlink" title="关于java中的序列化"></a>关于java中的序列化</h3><h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>最近在精简项目代码，去除无用的依赖以及没有没有使用的模块。这其中免不了删除实体类中的无效字段。于是，，问题来了：<span id="context"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.io.InvalidClassException: entity.User; local <span class="keyword">class</span> <span class="title class_">incompatible</span>: stream <span class="type">classdesc</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">8550471390860600205</span>, local <span class="keyword">class</span> <span class="title class_">serialVersionUID</span> = -<span class="number">7433272285406297333</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="用户未登录？"><a href="#用户未登录？" class="headerlink" title="用户未登录？"></a>用户未登录？</h4><p>改完之后，在测试某接口的时候，只是返回用户未登录的信息，没想太多，，于是调用模拟测试账号登录行为的接口，然后重新测试刚才的接口，但还是返回用户未登录的信息。。</p>
+<p>这就怪了，，正常来说，用户在正常登陆时，通过SQL查到用户信息后，保存部分字段到Redis中，之后每次用户发送请求时直接通过用户ID从Redis中获取用户相关信息。所以，，首先怀疑的是用户在登陆后发送其他请求时，通过Redis获取用户信息时出问题了，然后一点点看代码。调试到这儿的时候发生问题了👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ByteArrayInputStream</span> <span class="variable">bais</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 反序列化</span></span><br><span class="line">    bais = <span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(bytes);</span><br><span class="line">    <span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(bais);</span><br><span class="line">    <span class="keyword">return</span> ois.readObject();</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    <span class="comment">//Tools.error(e);</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+<p>👆这是从Redis中获取用户信息后的反序列化时的部分代码，，正常来说，应该是返回从流中反序列化后得到的User实例。但实际调试过程中，运行到第6行之后，又跳到第10行，，咦，什么鬼？？两个<code>return</code>？？嗯，，当然不是，肯定是在<code>ois.readObject()</code>报错了，再看第8行，妈蛋，，打印报错信息的代码被注释了！OK，反注释之后就出现了<a href="#context">Context</a>中的报错信息。</p>
+<h4 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h4><p>报错信息大意为，，entity.User中本地类文件冲突，流中的类描述serialVersionUID与本地相应类的描述serialVersionUID不一致。出于安全考虑，反序列化失败。<br>关于序列化，之前不甚了解，，正好借此机会好好了解下~</p>
+<h5 id="什么时候使用序列化"><a href="#什么时候使用序列化" class="headerlink" title="什么时候使用序列化"></a>什么时候使用序列化</h5><ol>
+<li>把的内存中的对象持久化到一个文件中或者数据库中时候；</li>
+<li>套接字在网络上传送对象的时候；</li>
+</ol>
+<p><code>serialVersionUID</code>适用于Java的序列化机制。简单来说，Java 的序列化机制是通过判断类的<code>serialVersionUID</code>来验证版本一致性的。在进行反序列化时，JVM 会把传来的字节流中的<code>serialVersionUID</code>与本地相应实体类的<code>serialVersionUID</code>进行比较，如果相同就认为是一致的，可以进行反序列化，否则就会出现序列化版本不一致的异常，即是<code>InvalidCastException</code>。</p>
+<p>serialVersionUID有两种显示的生成方式：        </p>
+<ol>
+<li>默认的1L，比如：<code>private static final long serialVersionUID = 1L</code>;        </li>
+<li>根据类名、接口名、成员方法及属性等来生成一个64位的哈希字段，比如：<br><code>private static final long serialVersionUID = xxxxL</code>;</li>
+</ol>
+<p>当一个类实现了<code>Serializable</code>接口，如果没有显示的定义<code>serialVersionUID</code>，Eclipse 会提供相应的提醒。面对这种情况，我们只需要在 Eclipse 中点击类中 warning 图标一下，Eclipse就会自动给定两种生成的方式。</p>
+<p>当实现 java.io.Serializable 接口的类没有显式地定义一个<code>serialVersionUID</code>变量时候，Java序列化机制会根据编译的 Class 自动生成一个<code>serialVersionUID</code>作序列化版本比较用，这种情况下，如果 Class 文件(类名，方法明等)没有发生变化(增加空格，换行，增加注释等等)，就算再编译多次，<code>serialVersionUID</code>也不会变化的。</p>
+<p>所以，在项目中 User 类中并没有显式的定义<code>serialVersionUID</code>。所以，在我精简代码后，<code>serialVersionUID</code>发生变化，导致反序列化失败。解决方法也很简单，，显式声明与流中相同的<code>serialVersionUID</code>即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">8550471390860600205L</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="静态变量序列化"><a href="#静态变量序列化" class="headerlink" title="静态变量序列化"></a>静态变量序列化</h4><p>下面代码中<code>Test</code>实体类实现了<code>Serializable</code>接口，并初始化了一个静态变量<code>staticVar</code>。将对象序列化后，修改静态变量的数值，再将序列化对象读取出来，然后通过读取出来的对象获得静态变量的数值并打印出来那么结果是 10 还是 5 呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">serialVersionUID</span> <span class="operator">=</span> <span class="number">1L</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">staticVar</span> <span class="operator">=</span> <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//初始时staticVar为5</span></span><br><span class="line">            <span class="type">ObjectOutputStream</span> <span class="variable">out</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;result.obj&quot;</span>));</span><br><span class="line">            out.writeObject(<span class="keyword">new</span> <span class="title class_">Test</span>());</span><br><span class="line">            out.close();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//序列化后修改为10</span></span><br><span class="line">            Test.staticVar = <span class="number">10</span>;</span><br><span class="line">            <span class="type">ObjectInputStream</span> <span class="variable">oin</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;result.obj&quot;</span>));</span><br><span class="line">            <span class="type">Test</span> <span class="variable">t</span> <span class="operator">=</span> (Test) oin.readObject();</span><br><span class="line">            oin.close();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//再读取，通过t.staticVar打印新的值</span></span><br><span class="line">            System.out.println(t.staticVar);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后的输出是 10，对于无法理解的读者认为，打印的 staticVar 是从读取的对象里获得的，应该是保存时的状态才对。之所以打印 10 的原因在于序列化时，并不保存静态变量，这其实比较容易理解，<strong>序列化保存的是对象的状态，静态变量属于类的状态</strong>，因此序列化并不保存静态变量。</p>
+<p>但是，<code>serialVersionUID</code>也是<code>static</code>的，那它是怎么被保存的呢？在jdk_7中，，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">java.io.ObjectOutputStream</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes class descriptor representing a standard (i.e., not a dynamic</span></span><br><span class="line"><span class="comment"> * proxy) class to stream.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">writeNonProxyDesc</span><span class="params">(ObjectStreamClass desc, <span class="type">boolean</span> unshared)</span></span><br><span class="line">    <span class="keyword">throws</span> IOException</span><br><span class="line">&#123;</span><br><span class="line">    bout.writeByte(TC_CLASSDESC);</span><br><span class="line">    handles.assign(unshared ? <span class="literal">null</span> : desc);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (protocol == PROTOCOL_VERSION_1) &#123;</span><br><span class="line">        <span class="comment">// do not invoke class descriptor write hook with old protocol</span></span><br><span class="line">        desc.writeNonProxy(<span class="built_in">this</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        writeClassDescriptor(desc);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">Class</span> <span class="variable">cl</span> <span class="operator">=</span> desc.forClass();</span><br><span class="line">    bout.setBlockDataMode(<span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">if</span> (cl != <span class="literal">null</span> &amp;&amp; isCustomSubclass()) &#123;</span><br><span class="line">        ReflectUtil.checkPackageAccess(cl);</span><br><span class="line">    &#125;</span><br><span class="line">    annotateClass(cl);</span><br><span class="line">    bout.setBlockDataMode(<span class="literal">false</span>);</span><br><span class="line">    bout.writeByte(TC_ENDBLOCKDATA);</span><br><span class="line"></span><br><span class="line">    writeClassDesc(desc.getSuperDesc(), <span class="literal">false</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*将指定的类描述符写入 ObjectOutputStream。类描述符用于标识写入流中的对象的类。ObjectOutputStream 的子类可以重写此方法，从而定制将类描述符写入序列化流中的方式。然后，应该重写 ObjectInputStream 中的相应方法（ readClassDescriptor），以便根据其定制的流表示形式来重构类描述符。默认情况下，此方法根据 Object Serialization 规范中定义的格式写入类描述符。*/</span></span><br><span class="line"><span class="comment">/*注意，仅当 ObjectOutputStream 没有使用旧的序列化流格式（通过调用 ObjectOutputStream 的 useProtocolVersion 方法设置）时才调用此方法。如果此序列化流在使用旧的格式（即 PROTOCOL_VERSION_1），则以不可重写或自定义的方式在内部写入类描述符。*/</span></span><br><span class="line"></span><br><span class="line">java.io.ObjectStreamClass</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Writes non-proxy class descriptor information to given output stream.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">writeNonProxy</span><span class="params">(ObjectOutputStream out)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    out.writeUTF(name);</span><br><span class="line">    out.writeLong(getSerialVersionUID());<span class="comment">//写入获取的serialVersionUID</span></span><br><span class="line"></span><br><span class="line">    <span class="type">byte</span> <span class="variable">flags</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (externalizable) &#123;</span><br><span class="line">        flags |= ObjectStreamConstants.SC_EXTERNALIZABLE;</span><br><span class="line">        <span class="type">int</span> <span class="variable">protocol</span> <span class="operator">=</span> out.getProtocolVersion();</span><br><span class="line">        <span class="keyword">if</span> (protocol != ObjectStreamConstants.PROTOCOL_VERSION_1) &#123;</span><br><span class="line">            flags |= ObjectStreamConstants.SC_BLOCK_DATA;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (serializable) &#123;</span><br><span class="line">        flags |= ObjectStreamConstants.SC_SERIALIZABLE;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (hasWriteObjectData) &#123;</span><br><span class="line">        flags |= ObjectStreamConstants.SC_WRITE_METHOD;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isEnum) &#123;</span><br><span class="line">        flags |= ObjectStreamConstants.SC_ENUM;</span><br><span class="line">    &#125;</span><br><span class="line">    out.writeByte(flags);</span><br><span class="line"></span><br><span class="line">    out.writeShort(fields.length);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; fields.length; i++) &#123;</span><br><span class="line">        <span class="type">ObjectStreamField</span> <span class="variable">f</span> <span class="operator">=</span> fields[i];</span><br><span class="line">        out.writeByte(f.getTypeCode());</span><br><span class="line">        out.writeUTF(f.getName());</span><br><span class="line">        <span class="keyword">if</span> (!f.isPrimitive()) &#123;</span><br><span class="line">            out.writeTypeString(f.getTypeString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">java.io.ObjectStreamClass</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Return the serialVersionUID for this class.  The serialVersionUID</span></span><br><span class="line"><span class="comment"> * defines a set of classes all with the same name that have evolved from a</span></span><br><span class="line"><span class="comment"> * common root class and agree to be serialized and deserialized using a</span></span><br><span class="line"><span class="comment"> * common format.  NonSerializable classes have a serialVersionUID of 0L.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span>  the SUID of the class described by this descriptor</span></span><br><span class="line"><span class="comment"> * 回此类的 serialVersionUID。serialVersionUID 定义了一组具有相同名称的类，它们的名称都是从公共根类演化而来的，并且能够使用公共格式进行序列化和反序列化。NonSerializable 类的 serialVersionUID 为 0L。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getSerialVersionUID</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// REMIND: synchronize instead of relying on volatile?</span></span><br><span class="line">    <span class="keyword">if</span> (suid == <span class="literal">null</span>) &#123;</span><br><span class="line">        suid = AccessController.doPrivileged(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">PrivilegedAction</span>&lt;Long&gt;() &#123;</span><br><span class="line">                <span class="keyword">public</span> Long <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> computeDefaultSUID(cl);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> suid.longValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，，<code>transient</code>关键字修饰的变量也不会被序列化。</p>
+<h4 id="父类的序列化"><a href="#父类的序列化" class="headerlink" title="父类的序列化"></a>父类的序列化</h4><p>context：一个子类实现了<code>Serializable</code>接口，它的父类都没有实现<code>Serializable</code>接口，序列化该子类对象，然后反序列化后输出父类定义的某变量的数值，该变量数值与序列化时的数值不同。</p>
+<p>解决：要想将父类对象也序列化，就需要让父类也实现<code>Serializable</code>接口。如果父类不实现的话的，就需要有默认的无参的构造函数。在父类没有实现<code>Serializable</code>接口时，虚拟机是不会序列化父对象的，而一个 Java 对象的构造必须先有父对象，才有子对象，反序列化也不例外。所以反序列化时，为了构造父对象，只能调用父类的无参构造函数作为默认的父对象。因此当我们取父对象的变量值时，它的值是调用父类无参构造函数后的值。如果你考虑到这种序列化的情况，在父类无参构造函数中对变量进行初始化，否则的话，父类变量值都是默认声明的值，如 int 型的默认是 0，string 型的默认是 null。</p>
+<p>另外，，如果父类已经实现<code>Serializable</code>接口，其子类就无需再显式的实现<code>Serializable</code>接口了。</p>
+<hr>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/duanxz/p/3511695.html">https://www.cnblogs.com/duanxz/p/3511695.html</a> - 学无止境</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" rel="tag"># 序列化</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/01/13/High_walls_and_eggs/" rel="prev" title="高墙与鸡蛋">
+                  <i class="fa fa-chevron-left"></i> 高墙与鸡蛋
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/01/17/top-n_after_sql_group/" rel="next" title="SQL分组取前N条记录">
+                  SQL分组取前N条记录 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
