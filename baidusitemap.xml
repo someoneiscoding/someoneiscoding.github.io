@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.someoneiscoding.com/2018/11/10/about_nginx_log_analyse/</loc>
+    <lastmod>2023-10-23</lastmod>
+  </url>
+  <url>
     <loc>https://www.someoneiscoding.com/2023/09/13/2023_09_week_2nd/</loc>
     <lastmod>2023-09-13</lastmod>
   </url>
@@ -155,10 +159,6 @@
   <url>
     <loc>https://www.someoneiscoding.com/2018/12/31/ProustQA_2018/</loc>
     <lastmod>2018-12-31</lastmod>
-  </url>
-  <url>
-    <loc>https://www.someoneiscoding.com/2018/11/10/about_nginx_log_analyse/</loc>
-    <lastmod>2018-11-21</lastmod>
   </url>
   <url>
     <loc>https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/</loc>

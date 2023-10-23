@@ -212,13 +212,6 @@
     </url>
 
     <url>
-        <loc>https://www.someoneiscoding.com/tags/nginx/</loc>
-        <lastmod>2018-11-21T14:41:02.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-    </url>
-
-    <url>
         <loc>https://www.someoneiscoding.com/tags/%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/</loc>
         <lastmod>2019-01-22T09:43:41.410Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -508,6 +501,13 @@
     <url>
         <loc>https://www.someoneiscoding.com/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
         <lastmod>2023-09-13T12:40:40.476Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://www.someoneiscoding.com/tags/nginx/</loc>
+        <lastmod>2023-10-23T01:56:39.715Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
     </url>
