@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="理解与使用Javascript中的回调函数有点小感慨在这不得不提一下Python，在人工智能火起来之前就在断断续续的看教程。现在因为人工智能的原因，更要好好学习一下，，在学习的过程中了，第一次好像明白『函数式编程』到底是怎么一回事儿了。放张图，各位体会下，，👇因为最近工作的原因，先后遇到了几个关于js的问题，没想到需要阅读的Tab页越来越多，需要总结的页是越来越多。这个过程中，没想到朝夕相处的j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解与使用Javascript中的回调函数">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/07/callback_function_in_javascript/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="理解与使用Javascript中的回调函数有点小感慨在这不得不提一下Python，在人工智能火起来之前就在断断续续的看教程。现在因为人工智能的原因，更要好好学习一下，，在学习的过程中了，第一次好像明白『函数式编程』到底是怎么一回事儿了。放张图，各位体会下，，👇因为最近工作的原因，先后遇到了几个关于js的问题，没想到需要阅读的Tab页越来越多，需要总结的页是越来越多。这个过程中，没想到朝夕相处的j">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901132806-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E6%8A%BD%E8%B1%A1%E5%B1%82%E6%AC%A1.png">
+<meta property="article:published_time" content="2017-12-07T13:36:58.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.756Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901132806-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E6%8A%BD%E8%B1%A1%E5%B1%82%E6%AC%A1.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/07/callback_function_in_javascript/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/07/callback_function_in_javascript/","path":"2017/12/07/callback_function_in_javascript/","title":"理解与使用Javascript中的回调函数"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>理解与使用Javascript中的回调函数 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3%E4%B8%8E%E4%BD%BF%E7%94%A8Javascript%E4%B8%AD%E7%9A%84%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">理解与使用Javascript中的回调函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E7%82%B9%E5%B0%8F%E6%84%9F%E6%85%A8"><span class="nav-number">1.1.</span> <span class="nav-text">有点小感慨</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%9B%9E%E8%B0%83%E6%88%96%E8%80%85%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">什么是回调或者高阶函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8this%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E6%B3%95%E4%BD%9C%E4%B8%BA%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E6%97%B6%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">使用this对象的方法作为回调函数时的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Call%E5%92%8CApply%E5%87%BD%E6%95%B0%E6%9D%A5%E4%BF%9D%E5%AD%98this"><span class="nav-number">1.4.</span> <span class="nav-text">使用Call和Apply函数来保存this</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E8%B0%83%E5%9C%B0%E7%8B%B1%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">1.5.</span> <span class="nav-text">回调地狱问题以及解决方案</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/07/callback_function_in_javascript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="理解与使用Javascript中的回调函数 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          理解与使用Javascript中的回调函数
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-07 21:36:58" itemprop="dateCreated datePublished" datetime="2017-12-07T21:36:58+08:00">2017-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="理解与使用Javascript中的回调函数"><a href="#理解与使用Javascript中的回调函数" class="headerlink" title="理解与使用Javascript中的回调函数"></a>理解与使用Javascript中的回调函数</h3><h4 id="有点小感慨"><a href="#有点小感慨" class="headerlink" title="有点小感慨"></a>有点小感慨</h4><p>在这不得不提一下Python，在人工智能火起来之前就在断断续续的看教程。现在因为人工智能的原因，更要好好学习一下，，在学习的过程中了，第一次好像明白『函数式编程』到底是怎么一回事儿了。放张图，各位体会下，，👇<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901132806-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E6%8A%BD%E8%B1%A1%E5%B1%82%E6%AC%A1.png" alt="编程语言的抽象层次"><br>因为最近工作的原因，先后遇到了几个关于js的问题，没想到需要阅读的Tab页越来越多，需要总结的页是越来越多。这个过程中，没想到朝夕相处的js中也有类似的特性，，比如闭包，之前特地去了解，可还是半知半解，，如今从Python反观js，一下子通透了~哈哈，下面进入正文</p>
+<hr>
+<p>Javascript中，函数是<a target="_blank" rel="noopener" href="http://cnodejs.org/topic/545ca6be0ed03d8070d09992">第一类对象</a>，这意味着函数可以像对象一样按照第一类管理被使用。既然函数实际上是对象：它们能被“存储”在变量中，能作为函数参数被传递，能在函数中被创建，能从函数中返回。</p>
+<p>因为函数是第一类对象，我们可以在Javascript使用回调函数。在下面的文章中，我们将学到关于回调函数的方方面面。回调函数可能是在Javascript中使用最多的函数式编程技巧，虽然在字面上看起来它们一直一小段Javascript或者jQuery代码，但是对于许多开发者来说它任然是一个谜。在阅读本文之后你能了解怎样使用回调函数。</p>
+<p>回调函数是从一个叫<strong>函数式编程</strong>的编程范式中衍生出来的概念。<strong>简单来说，函数式编程就是使用函数作为变量</strong>。函数式编程过去 - 甚至是现在，依旧没有被广泛使用 - 它过去常被看做是那些受过特许训练的，大师级别的程序员的秘传技巧。</p>
+<p>幸运的是，函数是编程的技巧现在已经被充分阐明因此像我和你这样的普通人也能去轻松使用它。函数式编程中的一个主要技巧就是回调函数。在后面内容中你会发现实现回调函数其实就和普通函数传参一样简单。这个技巧是如此的简单以致于我常常感到很奇怪为什么它经常被包含在讲述Javascript高级技巧的章节中。</p>
+<h4 id="什么是回调或者高阶函数"><a href="#什么是回调或者高阶函数" class="headerlink" title="什么是回调或者高阶函数"></a>什么是回调或者高阶函数</h4><p>一个回调函数，也被称为<strong>高阶函数，是一个被作为参数传递给另一个函数</strong>（在这里我们把另一个函数叫做“otherFunction”）的函数，回调函数在otherFunction中被调用。一个回调函数本质上是一种编程模式（为一个常见问题创建的解决方案），因此，使用回调函数也叫做回调模式。</p>
+<ul>
+<li>变量可以指向函数</li>
+<li>函数的参数可以接收变量</li>
+<li>一个函数可以接收另一个函数做参数</li>
+<li>能接收函数做参数的函数就是高阶函数</li>
+</ul>
+<p>下面是一个在jQuery中使用回调函数简单普遍的例子：👇</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//注意到click方法中是一个函数而不是一个变量</span><br><span class="hljs-comment">//它就是回调函数</span><br>$(<span class="hljs-string">&quot;#btn_1&quot;</span>).<span class="hljs-title function_">click</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title function_">alert</span>(<span class="hljs-string">&quot;Btn 1 Clicked&quot;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+<p>正如你在例子中看到的，我们将一个函数作为参数传递给了click方法。click方法会调用（或者执行）我们传递给它的函数。这是Javascript中回调函数的典型用法，它在jQuery中广泛被使用。</p>
+<p>关于回调函数的运作方式，详见<a target="_blank" rel="noopener" href="https://someoneiscoding.github.io/2017/12/06/%E5%BD%BB%E5%BA%95%E7%90%86%E8%A7%A3JavaScript%E5%90%8C%E6%AD%A5%7C%E5%BC%82%E6%AD%A5%7C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%28EventLoop%29/#%E5%BC%82%E6%AD%A5%E6%9C%BA%E5%88%B6">异步机制</a></p>
+<p>除了在参数位置定义匿名函数作为回调函数之外，另一种常见的模式是定义一个命名函数并将函数名作为变量传递给函数。比如下面的例子：👇</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//全局变量</span><br><span class="hljs-keyword">var</span> allUserData = [];<br><br><span class="hljs-comment">//普通的logStuff函数，将内容打印到控制台     </span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">logStuff</span> (userData)&#123;<br>    <span class="hljs-keyword">if</span> ( <span class="hljs-keyword">typeof</span> userData === <span class="hljs-string">&quot;string&quot;</span>)&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(userData);<br>    &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( <span class="hljs-keyword">typeof</span> userData === <span class="hljs-string">&quot;object&quot;</span>)&#123;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> item <span class="hljs-keyword">in</span> userData)&#123;<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(item + <span class="hljs-string">&quot;: &quot;</span> + userData[item]);<br>        &#125;<br>    &#125;<br>&#125; <br><br><span class="hljs-comment">//一个接收两个参数的函数，后面一个是回调函数     </span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getInput</span> (options, callback)&#123;<br>    allUserData.<span class="hljs-title function_">push</span>(options);<br>    <span class="hljs-comment">//确保callback是一个函数    </span><br>    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">typeof</span> callback === <span class="hljs-string">&quot;function&quot;</span>)&#123;<br>        <span class="hljs-title function_">callback</span>(options);<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">//当我们调用getInput函数时，我们将logStuff作为一个参数传递给它     </span><br><span class="hljs-comment">//因此logStuff将会在getInput函数内被回调（或者执行）     </span><br><span class="hljs-title function_">getInput</span>(&#123;<span class="hljs-attr">name</span>:<span class="hljs-string">&quot;Rich&quot;</span>,<span class="hljs-attr">speciality</span>:<span class="hljs-string">&quot;Javascript&quot;</span>&#125;, logStuff);<br><span class="hljs-comment">//name:Rich</span><br><span class="hljs-comment">//speciality:Javascript</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="使用this对象的方法作为回调函数时的问题"><a href="#使用this对象的方法作为回调函数时的问题" class="headerlink" title="使用this对象的方法作为回调函数时的问题"></a>使用<code>this</code>对象的方法作为回调函数时的问题</h4><p>当回调函数是一个<code>this</code>对象的方法时，我们必须改变执行回调函数的方法来保证this对象的上下文。否则如果回调函数被传递给一个全局函数，<code>this</code>对象要么指向全局<code>window</code>对象（在浏览器中）,要么指向包含方法的对象。 我们在下面的代码中说明：👇</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> clientData = &#123;<br>    <span class="hljs-attr">id</span>: <span class="hljs-number">094545</span>,<br>    <span class="hljs-attr">fullName</span>: <span class="hljs-string">&quot;Not Set&quot;</span>,<br>    <span class="hljs-comment">//setUsrName是一个在clientData对象中的方法</span><br>    <span class="hljs-attr">setUserName</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">firstName, lastName</span>)&#123;<br>        <span class="hljs-comment">//这指向了对象中的fullName属性</span><br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">fullName</span> = firstName + <span class="hljs-string">&quot; &quot;</span> + lastName;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getUserInput</span>(<span class="hljs-params">firstName, lastName, callback</span>)&#123;<br>    <span class="hljs-comment">//在这做些什么来确认firstName/lastName</span><br><br>    <span class="hljs-comment">//现在存储names</span><br>    <span class="hljs-title function_">callback</span>(firstName, lastName);<br>&#125;<br><br><span class="hljs-comment">//当clientData.setUsername被执行时，this.fullName并没有设置clientData对象中的fullName属性。</span><br><span class="hljs-comment">//相反，它将设置window对象中的fullName属性，因为getUserInput是一个全局函数。这是因为全局函数中的this对象指向window对象。</span><br><span class="hljs-title function_">getUserInput</span>(<span class="hljs-string">&quot;Barack&quot;</span>,<span class="hljs-string">&quot;Obama&quot;</span>,clientData.<span class="hljs-property">setUserName</span>);<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(clientData,fullName);  <span class="hljs-comment">//Not Set</span><br><span class="hljs-comment">//fullName属性将在window对象中被初始化     </span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-variable language_">window</span>.<span class="hljs-property">fullName</span>);  <span class="hljs-comment">//Barack Obama</span><br></code></pre></td></tr></table></figure>
+<h4 id="使用Call和Apply函数来保存this"><a href="#使用Call和Apply函数来保存this" class="headerlink" title="使用Call和Apply函数来保存this"></a>使用<code>Call</code>和<code>Apply</code>函数来保存<code>this</code></h4><p>我们知道每个Javascript中的函数都有两个方法:<code>Call</code>和<code>Apply</code>。这些方法被用来设置函数内部的<code>this</code>对象以及给此函数传递变量。</p>
+<p><code>call</code>接收的第一个参数为被用来在函数内部当做<code>this</code>的对象，传递给函数的参数被挨个传递（当然使用逗号分开）。<code>Apply</code>函数的第一个参数也是在函数内部作为<code>this</code>的对象，然而最后一个参数确是传递给函数的值的数组。</p>
+<p>听起来很复杂，那么我们来看看使用<code>Apply</code>和<code>Call</code>有多么的简单。为了修复前面例子的问题，我将在👇下面你的例子中使用<code>Apply</code>函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//注意到我们增加了新的参数作为回调对象，叫做“callbackObj”</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getUserInput</span>(<span class="hljs-params">firstName, lastName, callback, callbackObj</span>)&#123;<br>    <span class="hljs-comment">//在这里做些什么来确认名字</span><br>    <br>    <span class="hljs-comment">//apply</span><br>    callback.<span class="hljs-title function_">apply</span>(callbackObj, [firstName, lastName]);<br>    <span class="hljs-comment">//等价call</span><br>    <span class="hljs-comment">//callback.call(callbackObj, firstName, lastName);</span><br>&#125;<br><br><span class="hljs-comment">//我们将clientData.setUserName方法和clientData对象作为参数，clientData对象会被Apply方法使用来设置this对象     </span><br><span class="hljs-title function_">getUserInput</span>(<span class="hljs-string">&quot;Barack&quot;</span>, <span class="hljs-string">&quot;Obama&quot;</span>, clientData.<span class="hljs-property">setUserName</span>, clientData);<br><br><span class="hljs-comment">//clientData中的fullName属性被正确的设置</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(clientUser.<span class="hljs-property">fullName</span>); <span class="hljs-comment">//Barack Obama</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="回调地狱问题以及解决方案"><a href="#回调地狱问题以及解决方案" class="headerlink" title="回调地狱问题以及解决方案"></a>回调地狱问题以及解决方案</h4><p>在执行异步代码时，无论以什么顺序简单的执行代码，经常情况会变成许多层级的回调函数堆积以致代码变成下面的情形。这些杂乱无章的代码叫做回调地狱因为回调太多而使看懂代码变得非常困难。我从node-mongodb-native，一个适用于Node.js的MongoDB驱动中拿来了一个例子。这段位于下方的代码将会充分说明回调地狱：👇</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> p_client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Db</span>(<span class="hljs-string">&#x27;integration_tests_20&#x27;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Server</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>, <span class="hljs-number">27017</span>, &#123;&#125;), &#123;<span class="hljs-string">&#x27;pk&#x27;</span>:<span class="hljs-title class_">CustomPKFactory</span>&#125;);<br>    p_client.<span class="hljs-title function_">open</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">err, p_client</span>) &#123;<br>        p_client.<span class="hljs-title function_">dropDatabase</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">err, done</span>) &#123;<br>            p_client.<span class="hljs-title function_">createCollection</span>(<span class="hljs-string">&#x27;test_custom_key&#x27;</span>, <span class="hljs-keyword">function</span>(<span class="hljs-params">err, collection</span>) &#123;<br>                collection.<span class="hljs-title function_">insert</span>(&#123;<span class="hljs-string">&#x27;a&#x27;</span>:<span class="hljs-number">1</span>&#125;, <span class="hljs-keyword">function</span>(<span class="hljs-params">err, docs</span>) &#123;<br>                    collection.<span class="hljs-title function_">find</span>(&#123;<span class="hljs-string">&#x27;_id&#x27;</span>:<span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectID</span>(<span class="hljs-string">&quot;aaaaaaaaaaaa&quot;</span>)&#125;, <span class="hljs-keyword">function</span>(<span class="hljs-params">err, cursor</span>) &#123;<br>                        cursor.<span class="hljs-title function_">toArray</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">err, items</span>) &#123;<br>                            test.<span class="hljs-title function_">assertEquals</span>(<span class="hljs-number">1</span>, items.<span class="hljs-property">length</span>);<br><br>                            <span class="hljs-comment">// Let&#x27;s close the db</span><br>                            p_client.<span class="hljs-title function_">close</span>();<br>                        &#125;);<br>                    &#125;);<br>                &#125;);<br>            &#125;);<br>        &#125;);<br>    &#125;);<br></code></pre></td></tr></table></figure>
+<p>你应该不想在你的代码中遇到这样的问题，当你遇到了–你将会时不时的遇到这种情况–这里有关于这个问题的两种解决方案。</p>
+<ol>
+<li>给你的函数命名并传递它们的名字作为回调函数，而不是主函数的参数中定义匿名函数。</li>
+<li>模块化L将你的代码分隔到模块中，这样你就可以到处一块代码来完成特定的工作。然后你可以在你的巨型应用中导入模块。</li>
+</ol>
+<p>Javascript回调函数非常美妙且功能强大，它为web应用和代码提供了诸多好处。我们应该在有需求时使用它，或者为了代码的抽象性、可维护性以及可读性而使用回调函数来重构你的代码。</p>
+<p>本文译自<a target="_blank" rel="noopener" href="http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/">understand Javascript callback functions and use them</a>，有删改。</p>
+<hr>
+<p>节选自：前端乱炖-<a target="_blank" rel="noopener" href="http://www.html-js.com/article/1592">http://www.html-js.com/article/1592</a> 有删改
+　
+　</p>
+<p>　</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/07/why_does_the_peacock_spread_its_tail/" rel="prev" title="孔雀为什么开屏呢?">
+                  <i class="fa fa-chevron-left"></i> 孔雀为什么开屏呢?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/10/immediately-invoked_function_expression(IIFE)/" rel="next" title="立即执行函数表达式(IIFE)">
+                  立即执行函数表达式(IIFE) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="时至今日，，作为第三方平台开发的小程序已经上线有一段时间了，第一次经历整个开发流程。再回首，尝试着从宏观上梳理下『当我们谈微信第三方平台时我们在谈什么』。同样，，不涉及代码级的具体实现。 BTW，关于微信开放平台顺便聊聊微信开放平台先，，登陆微信开放平台后，进入『管理中心』Tab。我们可以看到页面中有5个二级Tab，分别是『移动应用、网站应用、公众账号、小程序、第三方平台』。OK，微信开放平台，顾">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信第三方平台">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/09/25/WeChat_third_platform/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="时至今日，，作为第三方平台开发的小程序已经上线有一段时间了，第一次经历整个开发流程。再回首，尝试着从宏观上梳理下『当我们谈微信第三方平台时我们在谈什么』。同样，，不涉及代码级的具体实现。 BTW，关于微信开放平台顺便聊聊微信开放平台先，，登陆微信开放平台后，进入『管理中心』Tab。我们可以看到页面中有5个二级Tab，分别是『移动应用、网站应用、公众账号、小程序、第三方平台』。OK，微信开放平台，顾">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133656-%E5%BE%AE%E4%BF%A1%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E5%85%A8%E7%BD%91%E5%8F%91%E5%B8%83%E6%A3%80%E6%B5%8B.jpg">
+<meta property="article:published_time" content="2018-09-25T08:01:57.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.753Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="微信">
+<meta property="article:tag" content="微信第三方平台">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133656-%E5%BE%AE%E4%BF%A1%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E5%85%A8%E7%BD%91%E5%8F%91%E5%B8%83%E6%A3%80%E6%B5%8B.jpg">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/09/25/WeChat_third_platform/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/09/25/WeChat_third_platform/","path":"2018/09/25/WeChat_third_platform/","title":"微信第三方平台"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>微信第三方平台 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#BTW%EF%BC%8C%E5%85%B3%E4%BA%8E%E5%BE%AE%E4%BF%A1%E5%BC%80%E6%94%BE%E5%B9%B3%E5%8F%B0"><span class="nav-number">1.</span> <span class="nav-text">BTW，关于微信开放平台</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-UnionID%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">获取用户基本信息(UnionID机制)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UnionID%E6%9C%BA%E5%88%B6%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">UnionID机制说明：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E4%BF%A1%E5%BC%80%E6%94%BE%E5%B9%B3%E5%8F%B0%E7%9A%84%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0"><span class="nav-number">2.</span> <span class="nav-text">微信开放平台的第三方平台</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E6%8E%88%E6%9D%83%E5%90%8E%E5%A6%82%E4%BD%95%E5%B8%AE%E5%8A%A9%E6%97%97%E4%B8%8B%E5%85%AC%E4%BC%97%E5%B9%B3%E5%8F%B0%E5%B8%90%E5%8F%B7%E5%AE%9E%E7%8E%B0%E4%B8%9A%E5%8A%A1"><span class="nav-number">2.1.</span> <span class="nav-text">四、第三方平台授权后如何帮助旗下公众平台帐号实现业务</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/09/25/WeChat_third_platform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="微信第三方平台 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          微信第三方平台
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-25 16:01:57" itemprop="dateCreated datePublished" datetime="2018-09-25T16:01:57+08:00">2018-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>时至今日，，作为第三方平台开发的小程序已经上线有一段时间了，第一次经历整个开发流程。再回首，尝试着从宏观上梳理下『当我们谈微信第三方平台时我们在谈什么』。同样，，不涉及代码级的具体实现。</p>
+<h4 id="BTW，关于微信开放平台"><a href="#BTW，关于微信开放平台" class="headerlink" title="BTW，关于微信开放平台"></a>BTW，关于微信开放平台</h4><p>顺便聊聊微信开放平台先，，登陆<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/">微信开放平台</a>后，进入『管理中心』Tab。我们可以看到页面中有5个二级Tab，分别是『移动应用、网站应用、公众账号、小程序、第三方平台』。OK，微信开放平台，顾名思义，，是将微信体系下的服务接入其他互联网应用的平台。这5个tab代表了目前可以接入的互联网应用类型(准确来说是4个，，第三方平台应该算业务实现类型，不算互联网应用类型。再严谨一点，应该是两种，，web应用和客户端应用，微信公众号和小程序本质上还是客户端应用。再无聊一点，，就只有一种client-server了，笑哭)。</p>
+<p><strong>要了解微信开放平台，我们必须深刻理解微信的UnionID机制</strong>：</p>
+<blockquote>
+<h5 id="获取用户基本信息-UnionID机制"><a href="#获取用户基本信息-UnionID机制" class="headerlink" title="获取用户基本信息(UnionID机制)"></a>获取用户基本信息(UnionID机制)</h5><p>在关注者与公众号产生消息交互后，公众号可获得关注者的OpenID（加密后的微信号，每个用户对每个公众号的OpenID是唯一的。对于不同公众号，同一用户的openid不同）。公众号可通过本接口来根据OpenID获取用户基本信息，包括昵称、头像、性别、所在城市、语言和关注时间。<br><strong>请注意，如果开发者有在多个公众号，或在公众号、移动应用之间统一用户帐号的需求，需要前往微信开放平台（open.weixin.qq.com）绑定公众号后，才可利用UnionID机制来满足上述需求。</strong></p>
+<h5 id="UnionID机制说明："><a href="#UnionID机制说明：" class="headerlink" title="UnionID机制说明："></a>UnionID机制说明：</h5><p>开发者可通过OpenID来获取用户基本信息。特别需要注意的是，如果开发者拥有多个移动应用、网站应用和公众帐号，可通过获取用户基本信息中的unionid来区分用户的唯一性，因为只要是同一个微信开放平台帐号下的移动应用、网站应用和公众帐号，用户的unionid是唯一的。换句话说，同一用户，<strong>对同一个微信开放平台下的不同应用，unionid是相同的</strong>。</p>
+</blockquote>
+<blockquote>
+<p>– 详见<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140839">获取用户基本信息(UnionID机制)
+</a></p>
+</blockquote>
+<p>我们现在代入场景想象下：</p>
+<ol>
+<li>每个微信用户对『移动应用、web应用、公众号、小程序』都有唯一OpenID；<br>假如我有个商城卖卖零食什么的，客户遍布各个平台，，这样，让客户在Android、IOS客户端 Web网站 公众号菜单中的商城 小程序分别注册一个账号无疑是反人类的。这时候微信说了，，那你在我的微信开放平台注册个账号，然后把移动客户端 web网站 公众号 小程序什么的统统绑定(开放平台中的创建)到开放平台的这个账号主体上。那么新用户就可以在上述所有应用通过微信授权登陆了，无需注册(当然，登陆功能是实现了，，其实只是从微信那获取了几个无关痛痒的几个基本字段信息,实际操作过成功，一般都会要求用户重新绑定手机号或者邮箱什么的，以及其他用户信息。)~当然，统一微信授权登陆功能只是其中一个场景，还有微信支付接口什么的，具体看文档啦。</li>
+<li>OK，，假设现在所有应用都可以通过微信授权登陆了。那么在获取用户额外信息之前，我们如何将所有应用的用户体系打通呢？换句话说，我们如何判断在移动客户端授权的OpenID A 与 在小程序端(或Web网站、公众号)的OpenID B是同一个现实世界中的同一个用户呢？<br>这个时候就需要 UnionID 了。当我们把所有端的应用全部绑定在微信开放平台的同一个账号主体上，这时候就可以获取 UnionID 了，因为对同一个微信开放平台下的不同应用，unionid是相同的。即我们可以通过在不同端获取到的 UnionID 进行比对，，如果相同，则为同一个账号主体下的用户。务必注意是同一主体。</li>
+</ol>
+<p>开放平台就是这样，说的有些啰嗦了都。。</p>
+<h4 id="微信开放平台的第三方平台"><a href="#微信开放平台的第三方平台" class="headerlink" title="微信开放平台的第三方平台"></a>微信开放平台的第三方平台</h4><p>之前一直称呼『第三方平台』，也总是困惑第三方平台和开放平台是什么关系。后来在开放平台的『管理中心』Tab找到了答案，，原来一直都没注意。。</p>
+<p>第三方平台是干嘛的呢？是为了实现什么？？？最开始了解『第三方平台』是公司要做小程序，同一个小程序要给很多客户用，类似套用模板一样，，但又怕微信有审核，怕相似度太高不给审核通过什么的(事实证明我想多了。。)，然后了解到了『第三方平台』。那个时候对第三平台并不了解，只是看文档，开发接口，实现业务。知其然不知其所以然，，直到有一天小程序开发基本完成，面临上传审核的问题。这个时候，诸多疑问赶到一块儿。其中，又以这两个问题最为棘手，，</p>
+<ul>
+<li>第三方平台的小程序模板怎么上传？需要审核么？？</li>
+<li>这个全网发布什么鬼？也要审核？？？</li>
+</ul>
+<p>小程序审核发布什么的我基本想得通，像在应用分发平台(各应用市场)上传App一样的道理，，但这个『全网发布』有点太抽象了，，领导问起来，我也有点心虚，只能硬着头皮一点点试。好在领导给力，说 大不了微信不给审核通过，我们再按着未通过理由改呗。其实也看了<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419318611&token=43d90291769311af7af9b34c6c7b93ef600525b7&lang=zh_CN">全网发布接入检测说明</a>，要检查一些文档中的接口是否可用。但是总有一层很模糊的东西没想明白，，Why？后来全网发布检测，一遍过，，<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133656-%E5%BE%AE%E4%BF%A1%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E5%85%A8%E7%BD%91%E5%8F%91%E5%B8%83%E6%A3%80%E6%B5%8B.jpg" alt="微信第三方平台全网发布检测">(因为最初是为了发布小程序，所以小程序的接口全部实现了，公众号的接口没怎么做，，因此有两项测试失败，但还是提示检测通过了。)</p>
+<p>然后检测通过后，就是等待微信审核(大概两个工作日)。这个时候还是不太确定全网发布是什么鬼，，直到审核通过。审核通过之后，，在上图中原『全网发布』按钮所在的那个 section(就是灰背景色那部分，，不知道怎么形容。。) 中灰字部分，会变成『全网发布的审核已通过，已允许公众号来进行授权托管。』。看到这行小字的时候好像突然明白了，，原来全网发布监测是为了保证基本服务可用(因为access_token获取方式变了，其他接口绝大部分需要通过传递access_token来实现业务)。检测通过之后，就可以面向所有客户(在测试阶段只测试白名单中应用可以使用第三方平台的接口实现业务)。</p>
+<p>其实，在<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419318292&token=43d90291769311af7af9b34c6c7b93ef600525b7&lang=zh_CN">第三方平台概述</a>中，已经提到了，，只不过最开始开发的时候，不明所以，就略过了，，</p>
+<blockquote>
+<h5 id="四、第三方平台授权后如何帮助旗下公众平台帐号实现业务"><a href="#四、第三方平台授权后如何帮助旗下公众平台帐号实现业务" class="headerlink" title="四、第三方平台授权后如何帮助旗下公众平台帐号实现业务"></a>四、第三方平台授权后如何帮助旗下公众平台帐号实现业务</h5><p>请根据本文档目录中的“代公众号实现业务”文件夹中的相关文档，来了解如何帮助旗下公众号调用接口，实现业务。也可根据本文档目录中的“代小程序实现业务”文件夹中的相关文档，来了解如何帮助旗下小程序帐号调用接口，实现业务。</p>
+</blockquote>
+<p>关键字 -&gt; 『<strong>代公众号实现业务</strong>』。这几个字就是第三方平台的作用。当然，不光是公众号，还有小程序，，因为公众号业务比小程序实现的要早，文档维护不及时。。<br>以公众号为例，，公众号的开发首先是面向大众的，有微信公众号后台页面，图形化页面中也可以个性化定制一些功能，比如自定义消息回复什么的。但如果深度定制的话，就需要开发者通过调用微信接口实现了，接口的令牌就是access_token，既可以通过它识别公众号身份，又可以控制请求次数 频率什么的。那第三方平台呢，为了免去为多个客户重复开发相同业务麻烦，一套接口，一个项目实现所有用户的业务(当然，需要参数来区分每个请求属于哪个公众号)。<br>同理，小程序。</p>
+<p>这就是第三方平台存在的价值。客户具体怎么授权第三方平台实现业务，可以<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1453779503&token=43d90291769311af7af9b34c6c7b93ef600525b7&lang=zh_CN">授权流程技术说明</a>，也可以参考我之前的博客<a target="_blank" rel="noopener" href="http://someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/">微信第三方平台小程序爬坑</a>。</p>
+<p>另外，公众号或小程序授权给第三方平台时，可以自定义要授权的权限。潜台词就是，将相关权限授权给第三方平台后，那么相应的权限就由第三方平台实现，未授权的权限还是由自己开发开发实现。有些权限是互斥的，有些则是可以同时授权给多个平台的，，比如<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1498704199_1bcax&token=43d90291769311af7af9b34c6c7b93ef600525b7&lang=zh_CN">微信开放平台账号管理权限</a>。其中就有提到，，</p>
+<blockquote>
+<p><strong>小程序只可将此权限集授权给一个第三方平台，即授权互斥</strong>。</p>
+</blockquote>
+<p>其余的互斥权限倒没怎么注意到。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/" rel="tag"># 微信</a>
+              <a href="/tags/%E5%BE%AE%E4%BF%A1%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0/" rel="tag"># 微信第三方平台</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/20/simple_implementation_of_email_early_warning/" rel="prev" title="邮件报警的简单实现">
+                  <i class="fa fa-chevron-left"></i> 邮件报警的简单实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/" rel="next" title="关于『该公众号提供的服务出现故障，请稍后再试』">
+                  关于『该公众号提供的服务出现故障，请稍后再试』 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

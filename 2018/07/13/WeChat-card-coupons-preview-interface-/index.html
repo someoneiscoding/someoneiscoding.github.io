@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近在做微信卡券接口相关的功能，，妈耶，相当于复制一个微信公众平台的卡券模块！光字段就能反4屏，简直就是惩罚性编程，搞的我很焦虑。。花了两周的时间，终于仿照微信原版在自己后台完成了创建卡券的功能，，当在微信公众平台看到新创建的折扣券，长舒一口气，终于看见了正反馈！！接下来，，得预览下吧？不能直接投放呀。OK，预览接口，，今天的主角儿。要知道，卡券预览接口做的很顺利的话，也就没这篇文章了。。  OK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于微信卡券预览接口">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/07/13/WeChat-card-coupons-preview-interface-/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="最近在做微信卡券接口相关的功能，，妈耶，相当于复制一个微信公众平台的卡券模块！光字段就能反4屏，简直就是惩罚性编程，搞的我很焦虑。。花了两周的时间，终于仿照微信原版在自己后台完成了创建卡券的功能，，当在微信公众平台看到新创建的折扣券，长舒一口气，终于看见了正反馈！！接下来，，得预览下吧？不能直接投放呀。OK，预览接口，，今天的主角儿。要知道，卡券预览接口做的很顺利的话，也就没这篇文章了。。  OK">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-07-13T06:39:25.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.752Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="微信">
+<meta property="article:tag" content="卡券">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/07/13/WeChat-card-coupons-preview-interface-/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/07/13/WeChat-card-coupons-preview-interface-/","path":"2018/07/13/WeChat-card-coupons-preview-interface-/","title":"关于微信卡券预览接口"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于微信卡券预览接口 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%A2%84%E8%A7%88%E6%8E%A5%E5%8F%A3%E3%80%90%E8%AE%A2%E9%98%85%E5%8F%B7%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%8F%B7%E8%AE%A4%E8%AF%81%E5%90%8E%E5%9D%87%E5%8F%AF%E7%94%A8%E3%80%91"><span class="nav-number">1.</span> <span class="nav-text">预览接口【订阅号与服务号认证后均可用】</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%84%E5%BD%954-%E5%8D%A1%E5%88%B8%E6%89%A9%E5%B1%95%E5%AD%97%E6%AE%B5%E5%8F%8A%E7%AD%BE%E5%90%8D%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">附录4-卡券扩展字段及签名生成算法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%8D%A1%E5%88%B8-api-ticket"><span class="nav-number">1.</span> <span class="nav-text">卡券 api_ticket</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%8D%A1%E5%88%B8%E6%89%A9%E5%B1%95%E5%AD%97%E6%AE%B5cardExt%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">卡券扩展字段cardExt说明</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text">签名说明</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/07/13/WeChat-card-coupons-preview-interface-/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于微信卡券预览接口 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于微信卡券预览接口
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-07-13 14:39:25" itemprop="dateCreated datePublished" datetime="2018-07-13T14:39:25+08:00">2018-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>最近在做微信卡券接口相关的功能，，妈耶，相当于复制一个微信公众平台的卡券模块！光字段就能反4屏，简直就是惩罚性编程，搞的我很焦虑。。花了两周的时间，终于仿照微信原版在自己后台完成了创建卡券的功能，，当在微信公众平台看到新创建的折扣券，长舒一口气，终于看见了正反馈！！接下来，，得预览下吧？不能直接投放呀。OK，预览接口，，今天的主角儿。要知道，卡券预览接口做的很顺利的话，也就没这篇文章了。。</p>
+<hr>
+<p>OK，进入正题儿。</p>
+<p>创建完卡券之后，我们按照逻辑，可以应该继续往下进行，在文档中可以找到<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1451025062">管理卡券</a>的模块。直接在这个页面搜索关键字『预览接口』，，即👇</p>
+<blockquote>
+<p>###4.6 预览接口<br>支持开发者调用该接口下发卡券。订阅号不可用，服务号认证后可用。详情见</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140549&token=&lang=zh_CN">预览接口</a></p>
+<p>按理儿说，这就成了呀，，照预览接口做就得了呗。但是！！！点开预览接口，我们看到的是啥？丫丫，空的，空页面，啥玩意儿没有？！🙃<br>(问候一下微信写文档的同学)</p>
+<p>冷静一下，，既然做了链接，这说明极有可能在别的模块中，否则就没必要做链接了对吧；另外，预览接口，那得把消息推送到手机上呀，事件推送，消息管理？~那找吧，，<br>loding..</p>
+<p>诶！还真在<strong>消息管理</strong>的<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21">群发接口和原创校验</a>模块中给找着了！</p>
+<blockquote>
+<h6 id="预览接口【订阅号与服务号认证后均可用】"><a href="#预览接口【订阅号与服务号认证后均可用】" class="headerlink" title="预览接口【订阅号与服务号认证后均可用】"></a>预览接口【订阅号与服务号认证后均可用】</h6></blockquote>
+<p>文档有了，nèng!</p>
+<blockquote>
+<p>卡券：</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;touser&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;OPENID&quot;</span><span class="hljs-punctuation">,</span> <br> <span class="hljs-attr">&quot;wxcard&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span>              <br>    <span class="hljs-attr">&quot;card_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;123dsdajkasd231jhksad&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;card_ext&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&#123;&quot;</span>code<span class="hljs-string">&quot;: &quot;</span><span class="hljs-string">&quot;,&quot;</span>openid<span class="hljs-string">&quot;: &quot;</span><span class="hljs-string">&quot;,&quot;</span>timestamp<span class="hljs-string">&quot;: &quot;</span><span class="hljs-number">1402057159</span><span class="hljs-string">&quot;,&quot;</span>signature<span class="hljs-string">&quot;: &quot;</span><span class="hljs-number">017</span>bb17407c8e0058a66d72dcc61632b70f511ad<span class="hljs-string">&quot;&#125;&quot;</span>               <br>           <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span> <br>  <span class="hljs-attr">&quot;msgtype&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;wxcard&quot;</span><br><span class="hljs-punctuation">&#125;</span><br><br><span class="hljs-comment">// 请注意，上述JSON数据中的touser字段都可以改为towxname，这样就可以针对微信号进行预览（而非openID），towxname和touser同时赋值时，以towxname优先。</span><br></code></pre></td></tr></table></figure>
+<p>参数说明就不放了，文档中有说明，，但是这个<code>card_ext</code>什么鬼？！！没听说过呀都，忒眼生。。另外，这个字段里，别的参数还好说。但，，<code>signature</code>是怎么计算出来的？这是关键呀。得，这真难倒我了，而且这页面中只有这一个地方出现了这一属性。搁哪儿找呀，，百度先行，关键字[微信 卡券 card_ext]</p>
+<p>顺藤摸瓜，找到了<strong>微信网页开发</strong>模块中的<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115">微信JS-SDK说明文档</a>看上去怎么那么不靠谱？消息推送跟网页开发有嘛关系？！！但在这个页面中还真就找到了<code>card_ext</code>字段，，👇</p>
+<blockquote>
+<h4 id="附录4-卡券扩展字段及签名生成算法"><a href="#附录4-卡券扩展字段及签名生成算法" class="headerlink" title="附录4-卡券扩展字段及签名生成算法"></a>附录4-卡券扩展字段及签名生成算法</h4><h6 id="卡券-api-ticket"><a href="#卡券-api-ticket" class="headerlink" title="卡券 api_ticket"></a>卡券 api_ticket</h6><h6 id="卡券扩展字段cardExt说明"><a href="#卡券扩展字段cardExt说明" class="headerlink" title="卡券扩展字段cardExt说明"></a>卡券扩展字段cardExt说明</h6><h6 id="签名说明"><a href="#签名说明" class="headerlink" title="签名说明"></a>签名说明</h6></blockquote>
+<p>剩下的一切按文档来就成了，，需要注意的是👇</p>
+<blockquote>
+<p>######签名说明<br>1.将 api_ticket、timestamp、card_id、code、openid、nonce_str的value值进行字符串的字典序排序。</p>
+</blockquote>
+<p>这个<strong>字典序排序</strong>，第一次看见还真有点懵，，但好在通过搜索引擎可以解决~我参考了这篇博客，，<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign">TreeMap按照value进行排序</a>实现代码如下👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java">Map&lt;String, String&gt; wxMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TreeMap</span>&lt;String, String&gt;();<br><span class="hljs-comment">//参数封装</span><br>wxMap.put(<span class="hljs-string">&quot;api_ticket&quot;</span>, wxJsApiTicket);<br>wxMap.put(<span class="hljs-string">&quot;timestamp&quot;</span>, wxTimestamp);<br>wxMap.put(<span class="hljs-string">&quot;card_id&quot;</span>, cardId);<br>wxMap.put(<span class="hljs-string">&quot;code&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<span class="hljs-comment">// 视实际情况</span><br>wxMap.put(<span class="hljs-string">&quot;openid&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<span class="hljs-comment">// 视实际情况</span><br>wxMap.put(<span class="hljs-string">&quot;noncestr&quot;</span>, wxNoncestr);<br><br><span class="hljs-comment">// 将 api_ticket、timestamp、card_id、code、openid、nonce_str的value值进行字符串的字典序排序。</span><br>List&lt;Entry&lt;String, String&gt;&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;Entry&lt;String, String&gt;&gt;(wxMap.entrySet());  <br>Collections.sort(list,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Comparator</span>&lt;Map.Entry&lt;String,String&gt;&gt;() &#123;  <br>    <span class="hljs-comment">//升序排序  </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compare</span><span class="hljs-params">(Entry&lt;String, String&gt; o1, Entry&lt;String, String&gt; o2)</span> &#123;  <br>        <span class="hljs-keyword">return</span> o1.getValue().compareTo(o2.getValue());  <br>    &#125;  <br>&#125;);<br><br><span class="hljs-comment">// 将排序后的值依次取出，并拼接为字符串。</span><br><span class="hljs-type">StringBuilder</span> <span class="hljs-variable">wxBaseString</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>();<br><span class="hljs-keyword">for</span> (Entry&lt;String, String&gt; param : list) &#123;<br>    wxBaseString.append(param.getValue());<br>&#125;<br>log.info(wxBaseString.toString());<br><br><span class="hljs-comment">// 加密获取signature</span><br><span class="hljs-type">String</span> <span class="hljs-variable">wxSignature</span> <span class="hljs-operator">=</span> HashKit.sha1(wxBaseString.toString());<br></code></pre></td></tr></table></figure>
+<p>这剩下的就是调用<a target="_blank" rel="noopener" href="https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=">微信卡券预览接口</a>了，自己来吧~</p>
+<hr>
+<p>PS: 这昨儿个看了姜文儿的『邪不压正』，，本篇分享的风格就这样了，多包涵。哭笑</p>
+<p>参考链接：</p>
+<ol>
+<li>群发接口 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1481187827_i0l21">https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1481187827_i0l21</a></li>
+<li>微信JS-SDK说明文档 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115">https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421141115</a></li>
+<li>字典序排序 <a target="_blank" rel="noopener" href="http://www.cnblogs.com/Berryxiong/p/6240514.html">http://www.cnblogs.com/Berryxiong/p/6240514.html</a></li>
+<li>debug <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign">https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=cardsign</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/" rel="tag"># 微信</a>
+              <a href="/tags/%E5%8D%A1%E5%88%B8/" rel="tag"># 卡券</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/07/12/Abstraction_Maslow's-hierarchy-of-needs/" rel="prev" title="对马斯洛需要层次理论的简单抽象">
+                  <i class="fa fa-chevron-left"></i> 对马斯洛需要层次理论的简单抽象
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/27/ideal_life/" rel="next" title="理想的生活">
+                  理想的生活 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

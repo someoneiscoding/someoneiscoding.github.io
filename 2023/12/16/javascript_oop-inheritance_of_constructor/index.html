@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Javascript面向对象编程（二）：构造函数的继承 转载自Javascript面向对象编程（二）：构造函数的继承 - by 阮一峰  这个系列的第一部分，主要介绍了如何“封装”数据和方法，以及如何从原型对象生成实例。今天要介绍的是，对象之间的“继承”的五种方法。比如，现在有一个“动物”👇对象的构造函数： 123function Animal()&amp;#123;    this.species &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript面向对象编程(二):构造函数的继承">
+<meta property="og:url" content="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_constructor/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="Javascript面向对象编程（二）：构造函数的继承 转载自Javascript面向对象编程（二）：构造函数的继承 - by 阮一峰  这个系列的第一部分，主要介绍了如何“封装”数据和方法，以及如何从原型对象生成实例。今天要介绍的是，对象之间的“继承”的五种方法。比如，现在有一个“动物”👇对象的构造函数： 123function Animal()&amp;#123;    this.species &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-16T02:43:36.759Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.759Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_constructor/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_constructor/","path":"2023/12/16/javascript_oop-inheritance_of_constructor/","title":"Javascript面向对象编程(二):构造函数的继承"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Javascript面向对象编程(二):构造函数的继承 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Javascript%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">1.</span> <span class="nav-text">Javascript面向对象编程（二）：构造函数的继承</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%BB%91%E5%AE%9A"><span class="nav-number">1.1.</span> <span class="nav-text">一、 构造函数绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-prototype%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">二、 prototype模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E7%9B%B4%E6%8E%A5%E7%BB%A7%E6%89%BFprototype"><span class="nav-number">1.3.</span> <span class="nav-text">三、 直接继承prototype</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-%E5%88%A9%E7%94%A8%E7%A9%BA%E5%AF%B9%E8%B1%A1%E4%BD%9C%E4%B8%BA%E4%B8%AD%E4%BB%8B"><span class="nav-number">1.4.</span> <span class="nav-text">四、 利用空对象作为中介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81-%E6%8B%B7%E8%B4%9D%E7%BB%A7%E6%89%BF"><span class="nav-number">1.5.</span> <span class="nav-text">五、 拷贝继承</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_constructor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Javascript面向对象编程(二):构造函数的继承 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript面向对象编程(二):构造函数的继承
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-12-16 10:43:36" itemprop="dateCreated datePublished" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Javascript面向对象编程（二）：构造函数的继承"><a href="#Javascript面向对象编程（二）：构造函数的继承" class="headerlink" title="Javascript面向对象编程（二）：构造函数的继承"></a>Javascript面向对象编程（二）：构造函数的继承</h3><blockquote>
+<p>转载自<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html">Javascript面向对象编程（二）：构造函数的继承</a> - by 阮一峰</p>
+</blockquote>
+<p>这个系列的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html">第一部分</a>，主要介绍了如何“封装”数据和方法，以及如何从原型对象生成实例。<br>今天要介绍的是，对象之间的“继承”的五种方法。<br>比如，现在有一个“动物”👇对象的构造函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Animal()&#123;<br>    this.species = &quot;动物&quot;;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>还有一个“猫”👇对象的构造函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    this.name = name;<br>    this.color = color;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>怎样才能使“猫”继承“动物”呢？</p>
+<h4 id="一、-构造函数绑定"><a href="#一、-构造函数绑定" class="headerlink" title="一、 构造函数绑定"></a>一、 构造函数绑定</h4><p>第一种方法也是最简单的方法，使用<code>call</code>或<code>apply</code>方法，将父对象的构造函数绑定在子对象上，即在子对象构造函数中加一行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    Animal.apply(this, arguments);<br>    this.name = name;<br>    this.color = color;<br>&#125;<br>var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>alert(cat1.species); // 动物<br></code></pre></td></tr></table></figure>
+
+<h4 id="二、-prototype模式"><a href="#二、-prototype模式" class="headerlink" title="二、 prototype模式"></a>二、 prototype模式</h4><p>第二种方法更常见，使用<code>prototype</code>属性。<br>如果“猫”的<code>prototype</code>对象，指向一个<code>Animal</code>的实例，那么所有”猫”的实例，就能继承<code>Animal</code>了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Cat.prototype = new Animal();<br>Cat.prototype.constructor = Cat;<br>var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>alert(cat1.species); // 动物<br></code></pre></td></tr></table></figure>
+<p>代码的第一行，我们将<code>Cat</code>的<code>prototype</code>对象指向一个<code>Animal</code>的实例。它相当于完全删除了<code>prototype</code>对象原先的值，然后赋予一个新值。但是，第二行又是什么意思呢？<br><span id="edit">原来，任何一个prototype对象都有一个constructor属性，指向它的构造函数。如果没有<code>Cat.prototype = new Animal();</code>这一行，<code>Cat.prototype.constructor</code>是指向<code>Cat</code>的；加了这一行以后，<code>Cat.prototype.constructor</code>指向<code>Animal</code>。每一个实例也有一个<code>constructor</code>属性，默认调用<code>prototype</code>对象的<code>constructor</code>属性。<br>因此，在运行<code>&quot;Cat.prototype = new Animal();&quot;</code>这一行之后，<code>cat1.constructor</code>也指向<code>Animal</code>(如果没有第二行代码)！这显然会导致继承链的紊乱（<code>cat1</code>明明是用构造函数<code>Cat</code>生成的），因此我们必须手动纠正，将<code>Cat.prototype</code>对象的c<code>onstructor</code>值改为<code>Cat</code>。这就是第二行的意思。<br>这是很重要的一点，编程时务必要遵守。下文都遵循这一点，即如果替换了prototype对象,那么，下一步必然是为新的prototype对象加上constructor属性，并将这个属性指回原来的构造函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">o.prototype = &#123;&#125;;<br>o.prototype.constructor = o;<br></code></pre></td></tr></table></figure>
+<h4 id="三、-直接继承prototype"><a href="#三、-直接继承prototype" class="headerlink" title="三、 直接继承prototype"></a>三、 直接继承prototype</h4><p>第三种方法是对第二种方法的改进。由于<code>Animal</code>对象中，不变的属性都可以直接写入<code>Animal.prototype</code>。所以，我们也可以让<code>Cat()</code>跳过 <code>Animal()</code>，直接继承<code>Animal.prototype</code>。<br>现在，我们先将<code>Animal</code>对象改写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Animal()&#123; &#125;<br>Animal.prototype.species = &quot;动物&quot;;<br></code></pre></td></tr></table></figure>
+<p>然后，将Cat的prototype对象，然后指向Animal的prototype对象，这样就完成了继承。👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Cat.prototype = Animal.prototype;<br>Cat.prototype.constructor = Cat;<br>var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>alert(cat1.species); // 动物<br></code></pre></td></tr></table></figure>
+<p>与前一种方法相比，这样做的优点是效率比较高（不用执行和建立<code>Animal</code>的实例了），比较省内存。缺点是 <code>Cat.prototype</code>和<code>Animal.prototype</code>现在指向了同一个对象，那么任何对<code>Cat.prototype</code>的修改，都会反映到<code>Animal.prototype</code>。<br>所以，上面这一段代码其实是有问题的，，请看第二行👆。这一句实际上把<code>Animal.prototype</code>对象的<code>constructor</code>属性也改掉了！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(Animal.prototype.constructor); // Cat<br></code></pre></td></tr></table></figure>
+<h4 id="四、-利用空对象作为中介"><a href="#四、-利用空对象作为中介" class="headerlink" title="四、 利用空对象作为中介"></a>四、 利用空对象作为中介</h4><p>由于”直接继承prototype”存在上述的缺点，所以就有第四种方法，利用一个空对象作为中介：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var F = function()&#123;&#125;;<br>F.prototype = Animal.prototype;<br>Cat.prototype = new F();<br>Cat.prototype.constructor = Cat;<br></code></pre></td></tr></table></figure>
+<p><code>F</code>是空对象，所以几乎不占内存。这时，修改<code>Cat</code>的<code>prototype</code>对象，就不会影响到<code>Animal</code>的<code>prototype</code>对象。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(Animal.prototype.constructor); // Animal<br></code></pre></td></tr></table></figure>
+<p>我们将上面的方法，封装成一个函数，便于使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function extend(Child, Parent) &#123;<br>    var F = function()&#123;&#125;;<br>    F.prototype = Parent.prototype;<br>    Child.prototype = new F();<br>    Child.prototype.constructor = Child;<br>    Child.uber = Parent.prototype;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>使用的时候，方法如下:👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">extend(Cat,Animal);<br>var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>alert(cat1.species); // 动物<br></code></pre></td></tr></table></figure>
+<p>这个<code>extend</code>函数，就是YUI库如何实现继承的方法。</p>
+<p>另外，说明一点，函数体最后一行<code>Child.uber = Parent.prototype;</code>意思是为子对象设一个uber属性，这个属性直接指向父对象的prototype属性。（uber是一个德语词，意思是”向上”、”上一层”。）这等于在子对象上打开一条通道，可以直接调用父对象的方法。这一行放在这里，只是为了实现继承的完备性，纯属备用性质。</p>
+<h4 id="五、-拷贝继承"><a href="#五、-拷贝继承" class="headerlink" title="五、 拷贝继承"></a>五、 拷贝继承</h4><p>上面是采用<code>prototype</code>对象，实现继承。我们也可以换一种思路，纯粹采用”拷贝”方法实现继承。简单说，如果把父对象的所有属性和方法，拷贝进子对象，不也能够实现继承吗？这样我们就有了第五种方法。</p>
+<p>首先，还是把Animal的所有不变属性，都放到它的prototype对象上。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Animal()&#123;&#125;<br>Animal.prototype.species = &quot;动物&quot;;<br></code></pre></td></tr></table></figure>
+<p>然后，再写一个函数，实现属性拷贝的目的：👇<span id="extend2"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function extend2(Child, Parent) &#123;<br>    var p = Parent.prototype;<br>    var c = Child.prototype;<br>    for (var i in p) &#123;<br>        c[i] = p[i];<br>    &#125;<br>    c.uber = p;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个函数的作用，就是将父对象的<code>prototype</code>对象中的属性，一一拷贝给<code>Child</code>对象的<code>prototype</code>对象。<br>使用的时候，这样写：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">extend2(Cat, Animal);<br>var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>alert(cat1.species); // 动物<br></code></pre></td></tr></table></figure>
+<p>本系列未完，请继续阅读第三部分<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html">《非构造函数的继承》</a>。<br>（完）</p>
+<hr>
+<ol>
+<li>在 <strong>二、 prototype模式</strong> <a href="#edit">第三段</a>中删除了示例代码，当初读的时候上下语义之间有些割裂，理解起来有点麻烦。。</li>
+<li>在 <strong>五、 拷贝继承</strong> <a href="#extend2">extend2</a>函数中，<code>for</code>循环中的代码<code>c[i] = p[i];</code>是采用了json格式的调用了对象的方法，与平时我们一般习惯中的instance.method效果一样。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/16/javascript_oop-inheritance_of_non-constructor/" rel="prev" title="Javascript面向对象编程(三):非构造函数的继承">
+                  <i class="fa fa-chevron-left"></i> Javascript面向对象编程(三):非构造函数的继承
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/16/knowledge&make-money/" rel="next" title="认知&赚钱">
+                  认知&赚钱 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

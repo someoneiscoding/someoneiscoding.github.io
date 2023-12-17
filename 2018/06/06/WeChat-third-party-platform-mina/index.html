@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="紧接上篇文章-关于获取微信第三方平台的 component_verify_ticket 和 component_access_token-之后，， 我以为…在上篇中，获取 component_access_token 之后，看看下边的步骤好像跟自己没什么太大关系了，直接跳过『授权流程技术说明』之后的步骤，，开始准备『代小程序实现业务』中的微信登陆，，没想到步子迈的有点大，终究还是扯着 * 了。。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信第三方平台小程序爬坑">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="紧接上篇文章-关于获取微信第三方平台的 component_verify_ticket 和 component_access_token-之后，， 我以为…在上篇中，获取 component_access_token 之后，看看下边的步骤好像跟自己没什么太大关系了，直接跳过『授权流程技术说明』之后的步骤，，开始准备『代小程序实现业务』中的微信登陆，，没想到步子迈的有点大，终究还是扯着 * 了。。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133435-thirdAuthorize.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133332-componentloginpage.jpeg">
+<meta property="article:published_time" content="2018-06-06T03:00:06.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.753Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="小程序">
+<meta property="article:tag" content="微信">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133435-thirdAuthorize.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/","path":"2018/06/06/WeChat-third-party-platform-mina/","title":"微信第三方平台小程序爬坑"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>微信第三方平台小程序爬坑 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%91%E4%BB%A5%E4%B8%BA%E2%80%A6"><span class="nav-number">1.</span> <span class="nav-text">我以为…</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B9%96%E4%B9%96%E7%9C%8B%E6%96%87%E6%A1%A3%E5%90%A7"><span class="nav-number">2.</span> <span class="nav-text">乖乖看文档吧</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E7%BB%91%E5%AE%9A%E5%BC%80%E5%8F%91%E5%B0%8F%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.1.</span> <span class="nav-text">第一步：绑定开发小程序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%A8%A1%E7%89%88%E7%9A%84%E5%BC%80%E5%8F%91%E5%92%8C%E4%B8%8A%E4%BC%A0"><span class="nav-number">2.2.</span> <span class="nav-text">第二步：小程序模版的开发和上传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%B7%BB%E5%8A%A0%E5%88%B0%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%A8%A1%E7%89%88%E5%BA%93%EF%BC%8C%E8%8E%B7%E5%BE%97%E6%A8%A1%E7%89%88ID"><span class="nav-number">2.3.</span> <span class="nav-text">第三步：添加到小程序模版库，获得模版ID</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E8%B0%83%E7%94%A8%E6%8E%A5%E5%8F%A3%EF%BC%8C%E4%B8%BA%E6%97%97%E4%B8%8B%E6%8E%88%E6%9D%83%E7%9A%84%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%83%A8%E7%BD%B2%E4%BB%A3%E7%A0%81"><span class="nav-number">2.4.</span> <span class="nav-text">第四步：调用接口，为旗下授权的小程序部署代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1%E3%80%81%E4%B8%BA%E6%8E%88%E6%9D%83%E7%9A%84%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%B8%90%E5%8F%B7%E4%B8%8A%E4%BC%A0%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="nav-number">2.5.</span> <span class="nav-text">1、为授权的小程序帐号上传小程序代码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%98%E5%BE%97%E6%8C%89%E6%B5%81%E7%A8%8B%E6%9D%A5"><span class="nav-number">3.</span> <span class="nav-text">还得按流程来</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A41%EF%BC%9A%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E6%96%B9%E8%8E%B7%E5%8F%96%E9%A2%84%E6%8E%88%E6%9D%83%E7%A0%81%EF%BC%88pre-auth-code%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">步骤1：第三方平台方获取预授权码（pre_auth_code）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A42%EF%BC%9A%E5%BC%95%E5%85%A5%E7%94%A8%E6%88%B7%E8%BF%9B%E5%85%A5%E6%8E%88%E6%9D%83%E9%A1%B5"><span class="nav-number">3.2.</span> <span class="nav-text">步骤2：引入用户进入授权页</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A43%EF%BC%9A%E7%94%A8%E6%88%B7%E7%A1%AE%E8%AE%A4%E5%B9%B6%E5%90%8C%E6%84%8F%E7%99%BB%E5%BD%95%E6%8E%88%E6%9D%83%E7%BB%99%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0%E6%96%B9"><span class="nav-number">3.3.</span> <span class="nav-text">步骤3：用户确认并同意登录授权给第三方平台方</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A44%EF%BC%9A%E6%8E%88%E6%9D%83%E5%90%8E%E5%9B%9E%E8%B0%83URI%EF%BC%8C%E5%BE%97%E5%88%B0%E6%8E%88%E6%9D%83%E7%A0%81%EF%BC%88authorization-code%EF%BC%89%E5%92%8C%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="nav-number">3.4.</span> <span class="nav-text">步骤4：授权后回调URI，得到授权码（authorization_code）和过期时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A45%EF%BC%9A%E5%88%A9%E7%94%A8%E6%8E%88%E6%9D%83%E7%A0%81%E8%B0%83%E7%94%A8%E5%85%AC%E4%BC%97%E5%8F%B7%E6%88%96%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E7%9B%B8%E5%85%B3API"><span class="nav-number">3.5.</span> <span class="nav-text">步骤5：利用授权码调用公众号或小程序的相关API</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%8E%88%E6%9D%83%E7%A0%81%E6%8D%A2%E5%8F%96%E5%85%AC%E4%BC%97%E5%8F%B7%E6%88%96%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%8E%A5%E5%8F%A3%E8%B0%83%E7%94%A8%E5%87%AD%E6%8D%AE%E5%92%8C%E6%8E%88%E6%9D%83%E4%BF%A1%E6%81%AF"><span class="nav-number">3.5.1.</span> <span class="nav-text">使用授权码换取公众号或小程序的接口调用凭据和授权信息</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="微信第三方平台小程序爬坑 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          微信第三方平台小程序爬坑
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-06-06 11:00:06" itemprop="dateCreated datePublished" datetime="2018-06-06T11:00:06+08:00">2018-06-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>紧接上篇文章-<a target="_blank" rel="noopener" href="http://someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/">关于获取微信第三方平台的 component_verify_ticket 和 component_access_token</a>-之后，，</p>
+<h4 id="我以为…"><a href="#我以为…" class="headerlink" title="我以为…"></a>我以为…</h4><p>在上篇中，获取 component_access_token 之后，看看下边的步骤好像跟自己没什么太大关系了，直接跳过『<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1453779503&token=&lang=zh_CN">授权流程技术说明</a>』之后的步骤，，开始准备『代小程序实现业务』中的<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1492585163_FtTNA&token=&lang=zh_CN">微信登陆</a>，，没想到步子迈的有点大，终究还是扯着 * 了。。</p>
+<p>顺着这个思路走，，在做 微信登陆 <span id="wxminalogin"></span>时，对于开发者来讲，也没有什么太大违和感呀，，👇 下边的参数也都有了呀，，</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="center">是否必须</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">appid</td>
+<td align="center">是</td>
+<td align="left">小程序的AppID</td>
+</tr>
+<tr>
+<td align="left">js_code</td>
+<td align="center">是</td>
+<td align="left">登录时获取的 code</td>
+</tr>
+<tr>
+<td align="left">grant_type</td>
+<td align="center">是</td>
+<td align="left">填authorization_code</td>
+</tr>
+<tr>
+<td align="left">component_appid</td>
+<td align="center">是</td>
+<td align="left">第三方平台appid</td>
+</tr>
+<tr>
+<td align="left">component_access_token</td>
+<td align="center">是</td>
+<td align="left">第三方平台的 component_access_token</td>
+</tr>
+</tbody></table>
+</blockquote>
+<p>然而，在请求接口的时候，报如下错误👇</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;errcode&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">40001</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;errmsg&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;invalid credential, access_token is invalid or not latest, hints: [ req_id: MNHl9a0063th42 ]&quot;</span><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>这时候首先是很费解，，为什么会报<em>不合法的调用凭证</em>错误？access_token 有问题，，</p>
+<ul>
+<li>component_access_token 有问题？不能啊，刚刚获取的，还热乎呢。。</li>
+<li>但是参数中只传了这一个包含 access_token 的参数呀。。</li>
+</ul>
+<p>为了验证 component_access_token 是否有效，紧接着去以步骤 3 的方法获取预授权码 pre_auth_code了，，事实证明，完全没问题。这就有点蹊跷了，，</p>
+<p>去小程序官方社区找相关帖子，比如<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/blogdetail?action=get_post_info&docid=0008c6c53280d00c0546c0ef352000&highline=40001%20">微信开放平台 用户微信登录失败 invalid credential</a>，，下边有官方回复是 👇</p>
+<blockquote>
+<p>应该是login换取的code失效或者已经被消费了，导致获取到了错误的access_token，请检查后端login的逻辑<br>的确有可能，，因为 <a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/api-login.html#wxloginobject">调用接口wx.login() 获取临时登录凭证（code）</a>是有时效限制的，目前有效期为5分钟，，而且测试之后发现，<strong>Code 是一次性的！！！</strong>就像发帖的哥们儿回复的那样，，<strong>Code 复用之后，的确会报 41063 的错误</strong>。</p>
+</blockquote>
+<p>至此，，哥们儿彻底在这儿趴窝了。。。带着”BUG”下班了，不好。</p>
+<h4 id="乖乖看文档吧"><a href="#乖乖看文档吧" class="headerlink" title="乖乖看文档吧"></a>乖乖看文档吧</h4><p>根据以往的经验，，</p>
+<ol>
+<li>网上找不到类似的问题，，乖乖看文档</li>
+<li>找到了类似的问题，根据别人提供的解决方案，还是解决不了，，乖乖看日志，检查上下文</li>
+<li>实在没辙了，，抄一遍文档，从头儿开始！</li>
+</ol>
+<p>我决定乖乖看文档，，从『代小程序实现业务』中的开发简介开始。</p>
+<h5 id="第一步：绑定开发小程序"><a href="#第一步：绑定开发小程序" class="headerlink" title="第一步：绑定开发小程序"></a>第一步：绑定开发小程序</h5><p>Done！</p>
+<h5 id="第二步：小程序模版的开发和上传"><a href="#第二步：小程序模版的开发和上传" class="headerlink" title="第二步：小程序模版的开发和上传"></a>第二步：小程序模版的开发和上传</h5><p>Done！</p>
+<h5 id="第三步：添加到小程序模版库，获得模版ID"><a href="#第三步：添加到小程序模版库，获得模版ID" class="headerlink" title="第三步：添加到小程序模版库，获得模版ID"></a>第三步：添加到小程序模版库，获得模版ID</h5><p>Done！</p>
+<h5 id="第四步：调用接口，为旗下授权的小程序部署代码"><a href="#第四步：调用接口，为旗下授权的小程序部署代码" class="headerlink" title="第四步：调用接口，为旗下授权的小程序部署代码"></a>第四步：调用接口，为旗下授权的小程序部署代码</h5><p><strong>？？？</strong></p>
+<p>可能我错过了些什么。。。赶紧去看『<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1489140610_Uavc4&token=&lang=zh_CN">代码管理</a>』</p>
+<h5 id="1、为授权的小程序帐号上传小程序代码"><a href="#1、为授权的小程序帐号上传小程序代码" class="headerlink" title="1、为授权的小程序帐号上传小程序代码"></a>1、为授权的小程序帐号上传小程序代码<span id="commitcode"></span></h5><p>调用接口所需参数中的 access_token，需要使用第三方平台获取到的该小程序授权的authorizer_access_token，，到这儿，明了了。还是需要按『<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1453779503&token=&lang=zh_CN">授权流程技术说明</a>』的流程来。。</p>
+<h4 id="还得按流程来"><a href="#还得按流程来" class="headerlink" title="还得按流程来"></a>还得按流程来</h4><h5 id="步骤1：第三方平台方获取预授权码（pre-auth-code）"><a href="#步骤1：第三方平台方获取预授权码（pre-auth-code）" class="headerlink" title="步骤1：第三方平台方获取预授权码（pre_auth_code）"></a>步骤1：第三方平台方获取预授权码（pre_auth_code）</h5><p>这个真没啥说的，测试一遍过，，这儿要出啥问题，极有可能是 component_access_token 的问题。</p>
+<h5 id="步骤2：引入用户进入授权页"><a href="#步骤2：引入用户进入授权页" class="headerlink" title="步骤2：引入用户进入授权页"></a>步骤2：引入用户进入授权页<span id="componentloginpage"></span></h5><p>这一步之前也看过，，当时想到的场景只有公众号的，觉得这个跟小程序没啥关系呀。总不能让用户在小程序中以这种方式进行所谓的授权的？！</p>
+<p>(PS:事实证明，的确不会让用户在小程序中以这种方式授权，<strong>naive</strong>!!在这儿，我对整个第三方平台的作用，以及授权流程还不清晰，，以为像 oauth 2.0 一样，<strong>naive</strong>!!! <strong>这里的授权其实是公众号或者小程序授权给第三方平台，就像第三方平台文档中菜单说的那样『代公众号实现业务』、『代小程序实现业务』</strong>。在这里，还没有面向终端用户，面向的是使用第三方平台的客户，客户的公众号或者小程序面向终端用户。)</p>
+<p>看这个接口的时候有一丢丢费解，，梳理之后大概是这样 👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">获取预授权码（pre_auth_code）<br>=&gt; 引导用户进入一静态页面，页面中有一链接或一按钮，用户点击<br>=&gt; 进入微信授权页<br>=&gt; 用户确认要授予第三方平台的权限，决定是否授权<br>=&gt; End<br></code></pre></td></tr></table></figure>
+<p>大概解释下，，我觉得，<em>获取预授权码（pre_auth_code）</em>和<em>引导用户进入授权页</em>这两个关系很紧密，某种程度上是一个步骤，，因为预授权码只能用在引导用户跳转向授权页面的链接中。所以，，我直接把这两步合并了：获取预授权码（pre_auth_code），返回引导授权页面。</p>
+<ol>
+<li><p><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133435-thirdAuthorize.png" alt="@引导页"></p>
+</li>
+<li><p><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901133332-componentloginpage.jpeg" alt="@微信授权页 =&gt; Tips:若未全网发布，则需要**提前将要授权的测试公众号及小程序的原始ID添加到第三方平台的测试公众号列表中！！！**|300*550"></p>
+</li>
+</ol>
+<h5 id="步骤3：用户确认并同意登录授权给第三方平台方"><a href="#步骤3：用户确认并同意登录授权给第三方平台方" class="headerlink" title="步骤3：用户确认并同意登录授权给第三方平台方"></a>步骤3：用户确认并同意登录授权给第三方平台方</h5><p>EASY~</p>
+<h5 id="步骤4：授权后回调URI，得到授权码（authorization-code）和过期时间"><a href="#步骤4：授权后回调URI，得到授权码（authorization-code）和过期时间" class="headerlink" title="步骤4：授权后回调URI，得到授权码（authorization_code）和过期时间"></a>步骤4：授权后回调URI，得到授权码（authorization_code）和过期时间</h5><p>授权流程完成后，授权页会自动跳转进入回调URI，并在URL参数中返回授权码和过期时间(redirect_url?auth_code&#x3D;xxx&amp;expires_in&#x3D;600)[^1]</p>
+<p>在<a href="#componentloginpage">第二步</a>中，有个参数<code>redirect_uri</code>，这个参数其实是以接口的形式指向了一个我们自身定义的回调函数，，在这个接口中我们可以通过	<code>request.getParameter()</code>获取到<code>auth_code</code>和<code>expires_in</code>两个参数。</p>
+<h5 id="步骤5：利用授权码调用公众号或小程序的相关API"><a href="#步骤5：利用授权码调用公众号或小程序的相关API" class="headerlink" title="步骤5：利用授权码调用公众号或小程序的相关API"></a>步骤5：利用授权码调用公众号或小程序的相关API</h5><p>剩下的就简单了，，</p>
+<h6 id="使用授权码换取公众号或小程序的接口调用凭据和授权信息"><a href="#使用授权码换取公众号或小程序的接口调用凭据和授权信息" class="headerlink" title="使用授权码换取公众号或小程序的接口调用凭据和授权信息"></a>使用授权码换取公众号或小程序的接口调用凭据和授权信息</h6><p>接口调用请求说明</p>
+<blockquote>
+<p>http请求方式: POST（请使用https协议）<br><code>https://api.weixin.qq.com/cgi-bin/component/api_query_auth?component_access_token=xxxx</code></p>
+</blockquote>
+<p>POST数据示例:</p>
+<blockquote>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json">&gt;<span class="hljs-punctuation">&#123;</span><br> <span class="hljs-attr">&quot;component_appid&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;appid_value&quot;</span><span class="hljs-punctuation">,</span><br> <span class="hljs-attr">&quot;authorization_code&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;auth_code_value&quot;</span><br>&gt;<span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"><br>在返回结果中，在 authorization_info 对象中可以获取到 `authorizer_appid`、`authorizer_access_token`、`authorizer_refresh_token`三个重要参数。但是，有一点还不算太确定，，`authorizer_access_token`和`authorizer_refresh_token`是否与`authorizer_appid`相关。换句话说，，`authorizer_appid`不同，其他两个值是不是也不一样？？根据官方对`authorizer_refresh_token`的解释👇<br><br>&gt;接口调用凭据刷新令牌（在授权的公众号具备API权限时，才有此返回值），刷新令牌主要**用于第三方平台获取和刷新已授权用户的 access_token，只会在授权时刻提供**，请妥善保存。 一旦丢失，只能让用户重新授权，才能再次拿到新的刷新令牌。<br><br>我觉得应该是不一样的。总不能有新用户授权给第三方之后，之前已经授权的用户的刷新令牌就失效了吧。。后期可以分析下日志确定下这个问题。<br><br>到这儿，，我们就可以回到最初[为授权的小程序帐号上传小程序代码](#commitcode)的步骤了，现在上传应该就不会有问题了~上传成功后，[『微信登陆』](#wxminalogin)也是一遍过~<br><br>**完美！！！**<br><br><br>---<br><br>[^1]: <br>这儿坑比较大，，(WeChat-ID:shangD)，，还有一点需要注意!!!👇<br>**公众号授权，只需要运营者权限即可；但小程序授权，必须得是管理员！！！**<br>另外，，如果在没有授权的情况下，去调用相应公众号或小程序的接口时会得到`&#123;&quot;errcode&quot;:48001,&quot;errmsg&quot;:&quot;api unauthorized&#125;`,或`&#123;&quot;errcode&quot;:61003,&quot;errmsg&quot;:&quot;component is not authorized by this account&#125;`。此时应该先检查是否授权，可以利用[公众号第三方平台的权限说明](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318459&amp;token=&amp;lang=zh_CN)接口。如果，已经公众号或者小程序授权给第三方，，此时应该检查授权时的权限；可以重新走一遍授权流程，在授权页检查权限集；如果是小程序的话，可以去小程序后台 =&gt; 设置 =&gt; 第三方服务查看。<br><br><br><br></code></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag"># 小程序</a>
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/" rel="tag"># 微信</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/" rel="prev" title="关于获取微信第三方平台的 component_verify_ticket 和 component_access_token">
+                  <i class="fa fa-chevron-left"></i> 关于获取微信第三方平台的 component_verify_ticket 和 component_access_token
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/06/25/branch_prediction/" rel="next" title="关于局部性原理">
+                  关于局部性原理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

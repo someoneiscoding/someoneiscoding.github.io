@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="事务隔离-高低水位最近在复习丁奇大大MySQL实战45讲 - 08 | 事务到底是隔离的还是不隔离的？中关于 RC 隔离级别的实现时，以前好像读懂的地方又读不懂了。尤其是对下👇图:数据版本可见性规则 中高低水位『当前事务』的理解。 疑问 在可重复读隔离级别下，事务在启动的时候就『拍了个快照』。   按照可重复读的定义，一个事务启动的时候，能够看到所有已经提交的事务结果。但是之后，这个事务执行期间">
+<meta property="og:type" content="article">
+<meta property="og:title" content="事务隔离-高低水位">
+<meta property="og:url" content="https://www.someoneiscoding.com/2021/06/11/transation-isolated/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="事务隔离-高低水位最近在复习丁奇大大MySQL实战45讲 - 08 | 事务到底是隔离的还是不隔离的？中关于 RC 隔离级别的实现时，以前好像读懂的地方又读不懂了。尤其是对下👇图:数据版本可见性规则 中高低水位『当前事务』的理解。 疑问 在可重复读隔离级别下，事务在启动的时候就『拍了个快照』。   按照可重复读的定义，一个事务启动的时候，能够看到所有已经提交的事务结果。但是之后，这个事务执行期间">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/88/5e/882114aaf55861832b4270d44507695e.png">
+<meta property="article:published_time" content="2021-06-10T16:40:00.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.763Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="事务">
+<meta property="article:tag" content="隔离">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/88/5e/882114aaf55861832b4270d44507695e.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2021/06/11/transation-isolated/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2021/06/11/transation-isolated/","path":"2021/06/11/transation-isolated/","title":"事务隔离-高低水位"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>事务隔离-高低水位 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB-%E9%AB%98%E4%BD%8E%E6%B0%B4%E4%BD%8D"><span class="nav-number">1.</span> <span class="nav-text">事务隔离-高低水位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%96%91%E9%97%AE"><span class="nav-number">1.1.</span> <span class="nav-text">疑问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B1%82%E7%B4%A2"><span class="nav-number">1.2.</span> <span class="nav-text">求索</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%83%91"><span class="nav-number">1.3.</span> <span class="nav-text">解惑</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2021/06/11/transation-isolated/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="事务隔离-高低水位 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          事务隔离-高低水位
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-11 00:40:00" itemprop="dateCreated datePublished" datetime="2021-06-11T00:40:00+08:00">2021-06-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="事务隔离-高低水位"><a href="#事务隔离-高低水位" class="headerlink" title="事务隔离-高低水位"></a>事务隔离-高低水位</h3><p>最近在复习丁奇大大<a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/70562">MySQL实战45讲 - 08 | 事务到底是隔离的还是不隔离的？</a>中关于 RC 隔离级别的实现时，以前好像读懂的地方又读不懂了。尤其是对下👇图:<strong>数据版本可见性规则</strong> 中高低水位『当前事务』的理解。</p>
+<h4 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h4><blockquote>
+<p>在可重复读隔离级别下，事务在启动的时候就『拍了个快照』。</p>
+</blockquote>
+<blockquote>
+<p>按照可重复读的定义，一个事务启动的时候，能够看到所有已经提交的事务结果。但是之后，这个事务执行期间，其他事务的更新对它不可见。</p>
+</blockquote>
+<p>按照定义来说，当该事务在启动的时候就『拍了个快照』。那么快照发生时，该事务应该是当前最新(latest)的事务，该快照中不应该包含该时候之后的事务了。即『当前事务』不应该在下图中『未提交事务集合』的最右侧么？为什么图片中体现的是『当前事务』右侧还有其他事务？</p>
+<p><img src="https://static001.geekbang.org/resource/image/88/5e/882114aaf55861832b4270d44507695e.png" alt="数据版本可见性规则"></p>
+<blockquote>
+<p>InnoDB 为每个事务构造了一个数组，用来保存这个事务启动瞬间，当前正在『活跃』的所有事务 ID。『活跃』指的就是，启动了但还没提交。数组里面事务 ID 的最小值记为低水位，当前系统里面已经创建过的事务 ID 的最大值加 1 记为高水位。这个视图数组和高水位，就组成了当前事务的一致性视图（read-view）</p>
+</blockquote>
+<blockquote>
+<p>对于当前事务的启动瞬间来说，一个数据版本的 row trx_id，有以下几种可能：</p>
+<ol>
+<li>如果落在绿色部分，表示这个版本是已提交的事务或者是当前事务自己生成的，这个数据是可见的；</li>
+<li>如果落在红色部分，表示这个版本是由将来启动的事务生成的，是肯定不可见的；</li>
+<li>如果落在黄色部分，那就包括两种情况：<ol>
+<li>若 row trx_id 在数组中，表示这个版本是由还没提交的事务生成的，不可见；</li>
+<li>若 row trx_id 不在数组中，表示这个版本是已经提交了的事务生成的，可见。</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p>还有上👆面分析中的 3.2 ，感觉前后矛盾。明明黄色部分是『未提交事务集合』，为什么又说『这个版本是已经提交了的事务生成的』？？</p>
+<h4 id="求索"><a href="#求索" class="headerlink" title="求索"></a>求索</h4><p>在 MySql 的官方文档中，发现有这么一段话：</p>
+<blockquote>
+<p><code>InnoDB</code> can avoid the overhead associated with setting up the <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_transaction_id">transaction ID</a> (<code>TRX_ID</code> field) for transactions that are known to be read-only. A transaction ID is only needed for a <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_transaction">transaction</a> that might perform write operations or <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_locking_read">locking reads</a> such as <code>SELECT ... FOR UPDATE</code>. Eliminating unnecessary transaction IDs reduces the size of internal data structures that are consulted each time a query or data change statement constructs a <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_read_view">read view</a>.[^1]</p>
+<p>InnoD B可以避免为已知为只读的事务设置 trx_id 带来的开销。只有可能执行写操作或 locking read 的事务才需要（分配）trx_id 。避免分配不必要的 trx_id 可以减少每次查询或数据更改语句构造读视图时所查询的内部数据结构的大小。</p>
+</blockquote>
+<p>我的理解是，，如果事务开始后，执行第一条 [写操作 | locking reads ] sql 时才会分配 trx_id。</p>
+<p>另外，丁奇大大原文中还提到的这样几句话：</p>
+<blockquote>
+<p>begin&#x2F;start transaction 命令并不是一个事务的起点，在执行到它们之后的第一个操作 InnoDB 表的语句，事务才真正启动。如果你想要马上启动一个事务，可以使用 start transaction with consistent snapshot 这个命令。</p>
+<ol>
+<li><p>第一种启动方式，一致性视图是在执行第一个快照读语句时创建的；</p>
+</li>
+<li><p>第二种启动方式，一致性视图是在执行 start transaction with consistent snapshot 时创建的。</p>
+</li>
+</ol>
+<p>关于『第一种启动方式，一致性视图是在执行第一个快照读语句时创建的』，MySql官方文档中是这样描述的：👇</p>
+<blockquote>
+<p>If the transaction isolation level is REPEATABLE READ (the default level), all consistent reads within the same transaction read the snapshot established by the first such read in that transaction…</p>
+<p>With READ COMMITTED isolation level, each consistent read within a transaction sets and reads its own fresh snapshot.[^2]</p>
+<p>RR 隔离级别下，同一事务中的所有一致读都将读取该事务中第一个此类读(一致性读)所建立的快照。</p>
+<p>RC 隔离界别下，事务中的每个一致读都会设置并读取自己的新快照。</p>
+</blockquote>
+</blockquote>
+<p>我们可以从中得出以下信息：</p>
+<ol>
+<li>事务启动时间 before 一致性视图创建时间；</li>
+<li>事务启动时间 before trx_id 分配时间；</li>
+<li>事务不一定会创建 read view，eg. 事务中只有一个 update 语句；</li>
+<li>对于复杂事务，先执行 写操作 语句，则先分配 trx_id ；先执行 Consistent Reads 则先创建 read view。</li>
+</ol>
+<h4 id="解惑"><a href="#解惑" class="headerlink" title="解惑"></a>解惑</h4><p>所以，对于之前提到的『图片中体现的是<em>当前事务</em>右侧还有其他事务？』，这里可以做出解答了：</p>
+<p>↓ 事务 A 启动；</p>
+<p>↓ 事务 B 启动，并执行[写操作 | locking reads ]  ，得到 trx_id:B;</p>
+<p>↓ 事务 A 执行 consistent read 操作，创建 read view;</p>
+<p>↓ 事务 A 执行[写操作 | locking reads ] ，得到 trx_id:A;</p>
+<p>trx_id:B &lt; trx_id:A</p>
+<blockquote>
+<p>InnoDB 里面每个事务有一个唯一的事务 ID，叫作 transaction id。它是在事务开始的时候向 InnoDB 的事务系统申请的，是按申请顺序严格递增的[^3]。</p>
+</blockquote>
+<p>对于第二个疑问，有如下场景：</p>
+<p>↓ 事务 A 启动，并执行[写操作 | locking reads ] ，得到 trx_id:A;</p>
+<p>↓ 事务 B 启动，并执行[写操作 | locking reads ] ，得到 trx_id:B;</p>
+<p>↓ 事务 B 提交;</p>
+<p>↓ 事务 C 启动，创建一致性视图，并执行[写操作 | locking reads ] ，此时事务 A 为活跃事务;</p>
+<p>则 trx_id:B 大于低水位，小于高水位，但不在数组内。</p>
+<hr>
+<p>[^1]: <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-performance-ro-txn.html">Optimizing InnoDB Read-Only Transactions</a><br>[^2]: <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-consistent-read.html">Consistent Nonlocking Reads</a><br>[^3]: 没摘自课程原文，没有在官方文档中找到原文，知晓的同学还请告知下。</p>
+<p><a target="_blank" rel="noopener" href="http://blog.itpub.net/29654823/viewspace-2774598/">贺子_DBA时代: mysql XID和trx_id小结</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag"># 事务</a>
+              <a href="/tags/%E9%9A%94%E7%A6%BB/" rel="tag"># 隔离</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/01/23/ProustQA_2020/" rel="prev" title="普鲁斯特问卷-2020">
+                  <i class="fa fa-chevron-left"></i> 普鲁斯特问卷-2020
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/04/about_newSingleThreadExecutor/" rel="next" title="about_newSingleThreadExecutor">
+                  about_newSingleThreadExecutor <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

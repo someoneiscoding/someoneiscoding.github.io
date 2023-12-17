@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="浅析MySQL中exists与in的使用 转载自 浅析MySQL中exists与in的使用 - by Franklin  existsexists对外表用loop逐条查询，每次查询都会查看exists的条件语句，当exists里的条件语句能够返回记录行时(无论记录行是的多少，只要能返回)，条件就为真，返回当前loop到的这条记录;反之如果exists里的条 件语句不能返回记录行，则当前loop到的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析MySQL中exists与in的使用">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="浅析MySQL中exists与in的使用 转载自 浅析MySQL中exists与in的使用 - by Franklin  existsexists对外表用loop逐条查询，每次查询都会查看exists的条件语句，当exists里的条件语句能够返回记录行时(无论记录行是的多少，只要能返回)，条件就为真，返回当前loop到的这条记录;反之如果exists里的条 件语句不能返回记录行，则当前loop到的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-19T15:25:00.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.758Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="exist">
+<meta property="article:tag" content="in">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/","path":"2017/12/19/exists-and-in_in_MySQL/","title":"浅析MySQL中exists与in的使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>浅析MySQL中exists与in的使用 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%85%E6%9E%90MySQL%E4%B8%ADexists%E4%B8%8Ein%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">浅析MySQL中exists与in的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#exists"><span class="nav-number">1.1.</span> <span class="nav-text">exists</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#in"><span class="nav-number">1.2.</span> <span class="nav-text">in</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#exists%E5%92%8Cin%E7%9A%84%E6%80%A7%E8%83%BD"><span class="nav-number">1.3.</span> <span class="nav-text">exists和in的性能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#in%E4%B8%8E-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.1.</span> <span class="nav-text">in与&#x3D;的区别</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="浅析MySQL中exists与in的使用 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅析MySQL中exists与in的使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-19 23:25:00" itemprop="dateCreated datePublished" datetime="2017-12-19T23:25:00+08:00">2017-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="浅析MySQL中exists与in的使用"><a href="#浅析MySQL中exists与in的使用" class="headerlink" title="浅析MySQL中exists与in的使用"></a>浅析MySQL中exists与in的使用</h3><blockquote>
+<p>转载自 <a target="_blank" rel="noopener" href="http://sunxiaqw.blog.163.com/blog/static/990654382013430105130443/">浅析MySQL中exists与in的使用</a> - by Franklin</p>
+</blockquote>
+<h4 id="exists"><a href="#exists" class="headerlink" title="exists"></a><code>exists</code></h4><p><code>exists</code>对外表用loop逐条查询，每次查询都会查看<code>exists</code>的条件语句，当<code>exists</code>里的条件语句能够返回记录行时(无论记录行是的多少，只要能返回)，条件就为真，返回当前loop到的这条记录;反之如果<code>exists</code>里的条 件语句不能返回记录行，则当前loop到的这条记录被丢弃，<code>exists</code>的条件就像一个bool条件，当能返回结果集则为true，不能返回结果集则为 false</p>
+<p>如下：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where exists (select 1);<br></code></pre></td></tr></table></figure>
+<p>对user表的记录逐条取出，由于子条件中的<code>select 1</code>永远能返回记录行，那么user表的所有记录都将被加入结果集，所以与 <code>select * from user;</code>是一样的。</p>
+<p>又如下👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where exists (select * from user where userId = 0);<br></code></pre></td></tr></table></figure>
+<p>可以知道对user表进行loop时，检查条件语句<code>(select * from user where userId = 0)</code>,由于userId永远不为0[^1]，所以条件语句永远返回空集，条件永远为false，那么user表的所有记录都将被丢弃。</p>
+<p><code>not exists</code>与<code>exists</code>相反，也就是当<code>exists</code>条件有结果集返回时，loop到的记录将被丢弃，否则将loop到的记录加入结果集。</p>
+<p>总的来说，如果A表有n条记录，那么exists查询就是将这n条记录逐条取出，然后判断n遍<code>exists</code>条件。</p>
+<h4 id="in"><a href="#in" class="headerlink" title="in"></a><code>in</code></h4><p><code>in</code>查询相当于多个or条件的叠加，这个比较好理解，比如下面的查询👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where userId in (1, 2, 3);<br><br>等效于👇<br>select * from user where userId = 1 or userId = 2 or userId = 3;<br></code></pre></td></tr></table></figure>
+<p><code>not in</code>与<code>in</code>相反，如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where userId not in (1, 2, 3);<br><br>等效于👇<br>select * from user where userId != 1 and userId != 2 and userId != 3;<br></code></pre></td></tr></table></figure>
+<p>总的来说，<code>in</code>查询就是先将子查询条件的记录全都查出来，假设结果集为B，共有m条记录，然后在将子查询条件的结果集分解成m个，再进行m次查询。</p>
+<p>值得一提的是，**<code>in</code>查询的子条件返回结果必须只有一个字段**，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where userId in (select id from B);<br></code></pre></td></tr></table></figure>
+<p>而不能是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from user where userId in (select id, age from B);<br></code></pre></td></tr></table></figure>
+<p>而exists就没有这个限制。</p>
+<h4 id="exists和in的性能"><a href="#exists和in的性能" class="headerlink" title="exists和in的性能"></a><code>exists</code>和<code>in</code>的性能</h4><p>考虑如下SQL语句:👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1: select * from A where exists (select * from B where B.id = A.id);<br><br>2: select * from A where A.id in (select id from B);<br></code></pre></td></tr></table></figure>
+<p>查询1.可以转化以下伪代码，便于理解👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">for ($i = 0; $i &lt; count(A); $i++) &#123;<br>　　$a = get_record(A, $i); #从A表逐条获取记录<br>　　if (B.id = $a[id])&#123; #如果子条件成立<br>　　　　$result[] = $a;<br>　　&#125;<br>&#125;<br>return $result;<br></code></pre></td></tr></table></figure>
+<p>大概就是这么个意思，其实可以看到,查询1主要是用到了B表的索引，A表如何对查询的效率影响应该不大。</p>
+<p>假设B表的所有id为1,2,3,查询2可以转换为👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from A where A.id = 1 or A.id = 2 or A.id = 3;<br></code></pre></td></tr></table></figure>
+<p>这个好理解了，这里主要是用到了A的索引，B表如何对查询影响不大。</p>
+<p>下面再看<code>not exists</code> 和 <code>not in</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1. select * from A where not exists (select * from B where B.id = A.id);<br><br>2. select * from A where A.id not in (select id from B);<br></code></pre></td></tr></table></figure>
+<p>看查询1，还是和上面一样，用了B的索引。而对于查询2，可以转化成如下语句👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select * from A where A.id != 1 and A.id != 2 and A.id != 3;<br></code></pre></td></tr></table></figure>
+<p>可以知道<code>not in</code>是个范围查询，这种!&#x3D;的范围查询无法使用任何索引,等于说A表的每条记录，都要在B表里遍历一次，查看B表里是否存在这条记录,<br>故<code>not exists</code>比<code>not in</code>效率高。</p>
+<p>mysql中的in语句是把外表和内表作<code>hash</code>连接，而<code>exists</code>语句是对外表作loop循环，每次loop循环再对内表进行查询。一直大家都认为<code>exists</code>比<code>in</code>语句的效率要高，这种说法其实是不准确的。这个是要区分环境的。</p>
+<p>如果查询的两个表大小相当，那么用in和exists差别不大; 如果两个表中一个较小，一个是大表，则<strong>子查询表大的用exists，子查询表小的用in</strong>:<br>例如：表A（小表），表B（大表）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 效率低，用到了A表上cc列的索引；<br>select * from A where cc in (select cc from B);<br><br># 效率高，用到了B表上cc列的索引;<br>select * from A where exists(select cc from B where cc=A.cc);<br><br># 效率高，用到了B表上cc列的索引； <br>select * from B where cc in (select cc from A);<br><br># 效率低，用到了A表上cc列的索引。<br>select * from B where exists(select cc from A where cc=B.cc);<br></code></pre></td></tr></table></figure>
+
+<p><code>not in</code>和<code>not exists</code>如果查询语句使用了<code>not in</code>那么内外表都进行全表扫描，没有用到索引；而<code>not extsts</code>的子查询依然能用到表上的索引。所以<strong>无论哪个表大，用<code>not exists</code>都比<code>not in</code>要快</strong>。 </p>
+<h5 id="in与-的区别"><a href="#in与-的区别" class="headerlink" title="in与=的区别"></a><code>in</code>与<code>=</code>的区别</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select name from student where name in (&#x27;zhang&#x27;,&#x27;wang&#x27;,&#x27;li&#x27;,&#x27;zhao&#x27;);<br><br>等效于👇<br>select name from student where name=&#x27;zhang&#x27; or name=&#x27;li&#x27; or name=&#x27;wang&#x27; or name=&#x27;zhao&#x27;;<br></code></pre></td></tr></table></figure>
+
+<p>[^1]: 其实user_id是可以为0的。在 Mysql <code>sql_mode</code> 中 添加 <code>NO_AUTO_VALUE_ON_ZERO</code>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+              <a href="/tags/exist/" rel="tag"># exist</a>
+              <a href="/tags/in/" rel="tag"># in</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/19/execution_sequence_of_sql/" rel="prev" title="SQL逻辑查询语句执行顺序">
+                  <i class="fa fa-chevron-left"></i> SQL逻辑查询语句执行顺序
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/01/02/ProustQA_2017/" rel="next" title="普鲁斯特问卷-2017">
+                  普鲁斯特问卷-2017 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="立即执行函数表达式(IIFE) 原文：Immediately-Invoked Function Expression (IIFE) by Ben Alman  以防你没有注意到，(事先声明)我是一个对于专业术语有些坚持的人。所以，当我多次听到流行却易产生误解的术语「自执行匿名函数」，最终决定将的想法总结到这篇文章中。 除此之外，为了提供一些更深入更彻底的关于这种模式是如何工作的，事实上我还建议了我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="立即执行函数表达式(IIFE)">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/10/immediately-invoked_function_expression(IIFE)/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="立即执行函数表达式(IIFE) 原文：Immediately-Invoked Function Expression (IIFE) by Ben Alman  以防你没有注意到，(事先声明)我是一个对于专业术语有些坚持的人。所以，当我多次听到流行却易产生误解的术语「自执行匿名函数」，最终决定将的想法总结到这篇文章中。 除此之外，为了提供一些更深入更彻底的关于这种模式是如何工作的，事实上我还建议了我">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-10T11:45:32.000Z">
+<meta property="article:modified_time" content="2018-01-27T05:11:08.000Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/10/immediately-invoked_function_expression(IIFE)/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/10/immediately-invoked_function_expression(IIFE)/","path":"2017/12/10/immediately-invoked_function_expression(IIFE)/","title":"立即执行函数表达式(IIFE)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>立即执行函数表达式(IIFE) | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F-IIFE"><span class="nav-number">1.</span> <span class="nav-text">立即执行函数表达式(IIFE)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%80%E4%BB%A5%EF%BC%8C%E5%AE%83%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">所以，它到底是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">核心问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%98%E5%A4%96%E8%AF%9D%EF%BC%9A%E5%87%BD%E6%95%B0%E3%80%81%E5%9C%86%E6%8B%AC%E5%8F%B7%E5%92%8C%E9%94%99%E8%AF%AF"><span class="nav-number">1.3.</span> <span class="nav-text">题外话：函数、圆括号和错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F-IIFE-1"><span class="nav-number">1.4.</span> <span class="nav-text">立即执行函数表达式(IIFE)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%8B%AC%E5%8F%B7%E7%9A%84%E9%87%8D%E8%A6%81%E9%A1%BB%E7%9F%A5"><span class="nav-number">1.5.</span> <span class="nav-text">关于括号的重要须知</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E9%97%AD%E5%8C%85%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-number">1.6.</span> <span class="nav-text">保存闭包的状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E3%80%8C%E8%87%AA%E6%89%A7%E8%A1%8C%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0-Self-executing-anonymous-function-%E3%80%8D%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%E5%91%A2%EF%BC%9F"><span class="nav-number">1.7.</span> <span class="nav-text">「自执行匿名函数(Self-executing anonymous function)」有什么问题呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E5%90%8E-%E6%A8%A1%E5%9D%97%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.8.</span> <span class="nav-text">最后:模块模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8%E9%98%85%E8%AF%BB"><span class="nav-number">1.9.</span> <span class="nav-text">延伸阅读</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/10/immediately-invoked_function_expression(IIFE)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="立即执行函数表达式(IIFE) | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          立即执行函数表达式(IIFE)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-10 19:45:32" itemprop="dateCreated datePublished" datetime="2017-12-10T19:45:32+08:00">2017-12-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2018-01-27 13:11:08" itemprop="dateModified" datetime="2018-01-27T13:11:08+08:00">2018-01-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="立即执行函数表达式-IIFE"><a href="#立即执行函数表达式-IIFE" class="headerlink" title="立即执行函数表达式(IIFE)"></a>立即执行函数表达式(IIFE)</h3><blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">Immediately-Invoked Function Expression (IIFE)</a> by Ben Alman</p>
+</blockquote>
+<p>以防你没有注意到，(事先声明)我是一个对于专业术语有些坚持的人。所以，当我多次听到流行却易产生误解的术语「自执行匿名函数」，最终决定将的想法总结到这篇文章中。</p>
+<p>除此之外，为了提供一些更深入更彻底的关于这种模式是如何工作的，事实上我还建议了我们应该怎样称呼这种模式。另外，如果你想跳过这里，你可以直接阅读<a target="_blank" rel="noopener" href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/#iife">立即调用函数表达式</a>，但是我建议你读完整篇文章。</p>
+<p>你需要知道的是，这篇文章不是想说「我是对了，你是错的」之类的。我发自真心地想帮助人们理解这有点儿复杂的概念，并且我认为使用前后一致的精确术语是有助于人们理解的最简单的方式之一。</p>
+<h4 id="所以，它到底是什么"><a href="#所以，它到底是什么" class="headerlink" title="所以，它到底是什么"></a>所以，它到底是什么</h4><p>在JavaScript里，每个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">函数</a>，当被调用时，都会创建一个新的执行环境。因为在函数里定义的变量和函数只能在函数内部被访问，外部无法获取；这种情况下，调用函数提供了一个非常简单的方法创建私有变量。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 因为这个函数的返回值是另一个能通过i访问私有变量的函数，(privileged)？</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">makeCounter</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">//i只能从`makeConuter`内部访问</span><br>    <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(++i);<br>    &#125;;   <br>&#125;<br><span class="hljs-comment">// `counter`和`counter2`都有自己作用域中的变量 `i`</span><br><span class="hljs-keyword">var</span> counter = <span class="hljs-title function_">makeCounter</span>();<br><span class="hljs-title function_">counter</span>(); <span class="hljs-comment">//1</span><br><span class="hljs-title function_">counter</span>(); <span class="hljs-comment">//2</span><br><br><span class="hljs-keyword">var</span> counter2 = <span class="hljs-title function_">makeCounter</span>();<br><span class="hljs-title function_">counter2</span>(); <span class="hljs-comment">//1</span><br><span class="hljs-title function_">counter2</span>(); <span class="hljs-comment">//2</span><br><br><span class="hljs-comment">// ReferenceError: i is not defined(它只存在于makeCounter里)</span><br></code></pre></td></tr></table></figure>
+<p>在许多情况下，你可能并不需要由<code>makeWhatever</code>返回的多个实例，使用单例模式就可以实现。或者在其他情况中，你甚至不需要返回值。</p>
+<h4 id="核心问题"><a href="#核心问题" class="headerlink" title="核心问题"></a>核心问题</h4><p>现在，无论你以<code>function foo()&#123;&#125;</code>的方式，还是<code>var foo = function()&#123;&#125;</code>的方式声明函数，你都可以在后边加上括号(圆括号,())来调用它们，，比如<code>foo();</code>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 像下面这样定义的函数可以通过在函数名后加一对括号进行调用，像这样`foo()`，因为foo只是函数表达式`function()&#123;/* code */&#125;`的一个引用变量；</span><br><span class="hljs-keyword">var</span> foo = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;<br><br><span class="hljs-comment">//那这说明函数表达式可以通过在它自己后面加上一对括号就可以自己调用自己了吗？</span><br><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-comment">/* code */</span>&#125;();<span class="hljs-comment">//SyntaxError: Unexpected token (</span><br></code></pre></td></tr></table></figure>
+<p>正如你所看到的，这里捕获了一个异常。当圆括号在全局环境或函数内部遇到<code>function</code>关键字，它会被默认当作一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/function">函数声明</a>，而不是<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/function">函数表达式</a>，如果你不明确的告诉圆括号它是一个表达式，它会将其当作没有名字的函数声明并且抛出一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">语法错误</a>，因为函数声明需要一个名字。</p>
+<h4 id="题外话：函数、圆括号和错误"><a href="#题外话：函数、圆括号和错误" class="headerlink" title="题外话：函数、圆括号和错误"></a>题外话：函数、圆括号和错误</h4><p>有趣的是，如果你为一个函数指定一个名字并在它后面放一对圆括号，同样的也会抛出错误，但这次是因为另外一个原因。当圆括号放在一个函数表达式后面指明了这是一个被调用的函数，而圆括号放在一个声明后面便意味着完全的和前面的函数声明分开了，此时圆括号只是一个简单的代表一个(组?)运算符(用来控制运算优先级)。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 然而函数声明语法上是无效的，它仍然是一个声明，紧跟着的圆括号是无效的，因为圆括号里需要包含表达式</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-comment">/* code */</span> &#125;();<br><span class="hljs-comment">//👆SyntaxError: Unexpected token</span><br><br><span class="hljs-comment">// 现在，你把一个表达式放在圆括号里，没有抛出错误...但是函数也并没有执行，因为：</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;(<span class="hljs-number">1</span>)<br><br><span class="hljs-comment">// 它等同于如下，一个函数声明跟着一个完全没有关系的表达式:</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;<br>(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>关于这个细节，你可以阅读Dmitry A. Soshnikov的文章：<a target="_blank" rel="noopener" href="http://dmitrysoshnikov.com/ecmascript/chapter-5-functions/#question-about-surrounding-parentheses">ECMA-262-3 in detail. Chapter 5. Functions</a></p>
+</blockquote>
+<h4 id="立即执行函数表达式-IIFE-1"><a href="#立即执行函数表达式-IIFE-1" class="headerlink" title="立即执行函数表达式(IIFE)"></a>立即执行函数表达式(IIFE)</h4><p>幸运的是，修正语法错误很简单。最流行的也最被接受的方法是将函数声明包裹在圆括号里来告诉语法分析器去表达一个函数表达式，因为在JavaScript里，圆括号不能包含声明。因为这点，当圆括号为了包裹函数碰上了 <code>function</code>关键词，它便知道将它作为一个函数表达式去解析而不是函数声明。注意理解这里的圆括号和上面的圆括号遇到函数时的表现是不一样的，也就是说。</p>
+<ul>
+<li>当圆括号出现在匿名函数的末尾想要调用函数时，它会默认将函数当成是函数声明。</li>
+<li>当圆括号包裹函数时，它会默认将函数作为表达式去解析，而不是函数声明。<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 这两种模式都可以被用来立即调用一个函数表达式，利用函数的执行来创造私有变量</span><br>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;());<br><span class="hljs-comment">//👆Crockford recommends this one</span><br><br>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;)();<br><span class="hljs-comment">//👆But this one works just as well</span><br><br><span class="hljs-comment">// 因为括号的作用就是为了消除函数表达式和函数声明之间的差异</span><br><span class="hljs-comment">// 如果解释器能预料到这是一个表达式，括号可以被省略</span><br><span class="hljs-comment">// 不过请参见下面的「重要笔记」</span><br><span class="hljs-keyword">var</span> i = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-keyword">return</span> <span class="hljs-number">10</span>;&#125;();<br><span class="hljs-literal">true</span> &amp;&amp; <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/*code*/</span>&#125;();<br><span class="hljs-number">0</span>,<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;&#125;();<br><br><span class="hljs-comment">//如果你并不关心返回值，或者让你的代码尽可能的易读，你可以通过在你的函数前面带上一个一元操作符来存储字节</span><br>!<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;();<br>~<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;();<br>-<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;();<br>+<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;();<br><br><span class="hljs-comment">// 这里是另外一种方法</span><br><span class="hljs-comment">// 我（原文作者）不清楚new方法是否会影响性能</span><br><span class="hljs-comment">// 但它却是奏效，参见http://twitter.com/kuvos/status/18209252090847232</span><br><br><span class="hljs-keyword">new</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-comment">/* code */</span> &#125;<br><span class="hljs-keyword">new</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-comment">/* code */</span> &#125;() <br><span class="hljs-comment">// 👆只有当传入参数时才需要加括号</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="关于括号的重要须知"><a href="#关于括号的重要须知" class="headerlink" title="关于括号的重要须知"></a>关于括号的重要须知</h4><p>在一些情况下，当围绕在函数表达式周围的额外用来消除歧义的括号是没必要的（因为这时候的括号已经将其作为一个表达式去表达了），但它被当做约定俗成习惯时，仍然是一个好主意。</p>
+<p>这样的括号指明函数表达式将会被立即调用，并且变量将会储存函数的结果，而不是函数本身。当这是一个非常长的函数表达式时，这可以节约其他人阅读你代码的时间，不用滚到页面底部去看这个函数是否被调用。</p>
+<p>作为规则，当你书写没有歧义的代码时候，有必要阻止JavaScript解释器抛出错误；这同样很公平，可以避免让其他开发者写出抛出异常<code>WTFError</code>的代码影响到你!</p>
+<h4 id="保存闭包的状态"><a href="#保存闭包的状态" class="headerlink" title="保存闭包的状态"></a><span id='iife'>保存闭包的状态</h4><p>就像当函数通过他们的名字被调用时，参数会被传递，而当函数表达式被立即调用时，参数也会被传递。一个立即调用的函数表达式可以用来锁定值并且有效的保存此时的状态，因为<strong>任何定义在一个函数内的函数都可以使用外面函数传递进来的参数和变量（这种关系被叫做闭包）</strong>。</p>
+<blockquote>
+<p>关于闭包的更多信息，参见 <a target="_blank" rel="noopener" href="http://skilldrick.co.uk/2011/04/closures-explained-with-javascript/">Closures explained with JavaScript</a></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/ /它的运行原理可能并不像你想的那样，因为`i`的值从来没有被锁定。相反的，每个链接，当被点击时(for循经执行完毕之后)，因此会弹出所有元素的总数(elems.length)，因为这是`i`此时的真实值。<br>var elems = document.getElementsByTagName(&#x27;a&#x27;);<br>for(var i = 0;i &lt; elems.length; i++ ) &#123;<br>    elems[i].addEventListener(&#x27;click&#x27;,function(e)&#123;<br>        e.preventDefault();<br>        alert(&#x27;I am link #&#x27; + i)<br>    &#125;,false);<br>&#125;<br>// 2018-01-27 更，编者按，，简单点说，因为在ES5中，只有(用var声明的变量)在函数中才有作用域。所以在for循环中用变量i属于for循环外，而不是for循环的&#123;&#125;中。同时，for循环又是一个同步事件，循环体中的监听事件是异步事件，异步事件处于 event loop 中，要等到所有同步事件执行完成之后，才会执行event loop 中的事件，，而那个时候，i 已然等于elems.length了。<br><br>// 而像下面这样改写就可以了，，因为在IIFE里，`i`值被锁定在了`lockedInIndex`里。在循环执行结束后，尽管`i`值的数值是所有元素的总和(elems.length)，但每一次函数表达式被调用时，IIFE里的`lockedInIndex`值都是`i`传给它的值,所以当链接被点击时，正确的值被弹出。<br>var elems = document.getElementsByTagName(&#x27;a&#x27;);<br>for(var i = 0;i &lt; elems.length;i++) &#123;<br>    (function(lockedInIndex)&#123;<br>        elems[i].addEventListener(&#x27;click&#x27;,function(e)&#123;<br>            e.preventDefault();<br>            alert(&#x27;I am link #&#x27; + lockedInIndex);<br>        &#125;,false)<br>    &#125;)(i);<br>    // 2018-01-27 更，编者按，，在上边我们说了，在javascript中只有函数才有作用域，所以，，要想把 i 的作用于独立出来，需要用函数的方式，所以，用闭包。<br>&#125;<br><br>//你同样可以像下面这样使用IIFE，仅仅只用括号包裹点击处理函数，并不包含整个`addEventListener`。无论用哪种方式，这两个例子都可以用IIFE将值锁定，不过我发现前面一个例子可读性更好些<br>var elems = document.getElementsByTagName( &#x27;a&#x27; );<br>for ( var i = 0; i &lt; elems.length; i++ ) &#123;<br>    elems[ i ].addEventListener( &#x27;click&#x27;, (function( lockedInIndex )&#123;<br>        return function(e)&#123;<br>            e.preventDefault();<br>            alert( &#x27;I am link #&#x27; + lockedInIndex );<br>        &#125;;<br>    &#125;)( i ),false);<br>&#125;<br><br>// 2018-01-27 更，编者按，，另外，在ES5 中只有一种声明变量的方式，就是使用 var 关键字，然而用它声明的字面量只有在函数中才有作用域概念。然而在 ES6 中，有了 let 关键字，，let 关键字声明的变量没有变量提升，不能在同一个作用域中用let关键字声明同意个变量两次，而且有了明确的作用域概念！！！所以，在上边的例子中，我们可以把 for 循环中的 var 关键字直接改为 let，闭包什么的不需要！完美解决。<br></code></pre></td></tr></table></figure>
+
+<p>记住，在这最后两个例子里，<code>lockedInIndex</code>可以没有任何问题的访问i,但是作为函数的参数使用一个不同的命名标识符可以使概念更加容易的被解释。</p>
+<p>立即执行函数一个最显著的优势是就算它没有命名或者说是匿名，函数表达式也可以在没有使用标识符的情况下被立即调用，一个闭包也可以在没有当前变量污染的情况下被使用。</p>
+<h4 id="「自执行匿名函数-Self-executing-anonymous-function-」有什么问题呢？"><a href="#「自执行匿名函数-Self-executing-anonymous-function-」有什么问题呢？" class="headerlink" title="「自执行匿名函数(Self-executing anonymous function)」有什么问题呢？"></a>「自执行匿名函数(Self-executing anonymous function)」有什么问题呢？</h4><p>你看到它已经被提到好几次了，但它仍未被清楚地解释，我提议将术语改成”<strong>Immediately-Invoked Function Expression</strong>“，或者，<strong>IIFE</strong>，如果你喜欢缩写的话（发音类似“iffy”）。The pronunciation “<a target="_blank" rel="noopener" href="https://forvo.com/word/iffy/">iffy</a>“ was suggested to me, and I like it, so let’s go with that.</p>
+<p>什么是<strong>Immediately-Invoked Function Expression</strong>呢？顾名思义，它就是一个被立即调用的函数表达式。Just like the name would lead you to believe.</p>
+<p>我想JavaScript社区的成员应该可以在他们的文章里或者陈述里接受术语<strong>Immediately-Invoked Function Expression</strong>和<strong>IIFE</strong>，因为我感觉这样更容易让这个概念被理解，并且<strong>self-executing anonymous function</strong>真的也的确不够准确。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 下面是个自执行函数，递归调用自己本身</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-title function_">foo</span>();&#125;;<br><br><span class="hljs-comment">// 这是一个自执行匿名函数。因为它没有标识符，它必须是使用`arguments.callee`(which specifies the currently executing function 特指刚刚执行过的函数)属性来调用它自己</span><br><span class="hljs-keyword">var</span> foo = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-variable language_">arguments</span>.<span class="hljs-title function_">callee</span>();&#125;;<br><br><span class="hljs-comment">// 这也许算是一个自执行匿名函数，但是仅仅当`foo`标识符作为它的引用时，如果你将foo换成用其他的什么名字(something else),你会获得一个 &quot;used-to-self-execute&quot; 匿名函数.</span><br><span class="hljs-keyword">var</span> foo = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-title function_">foo</span>();&#125;;<br><br><span class="hljs-comment">// 有些人像这样叫&#x27;self-executing anonymous function&#x27;下面的函数,即使它不是自执行的，因为它并没有调用它自己。然后，它只是被立即调用了而已。</span><br>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-comment">/*code*/</span> &#125;());<br><br><span class="hljs-comment">// 为函数表达式增加标识符(也就是说创造一个命名函数)对我们的调试会有很大帮助。一旦命名，函数将不再匿名。</span><br>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-comment">/* code */</span>&#125;());<br><br><span class="hljs-comment">// IIFEs同样也可以自执行，尽管，也许他不是最有用的模式</span><br>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-variable language_">arguments</span>.<span class="hljs-title function_">callee</span>();&#125;())<br>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;<span class="hljs-title function_">foo</span>();&#125;())<br><br><span class="hljs-comment">// 另外，下面这个表达式竟会在黑莓5上抛出错误，在一个被命名的函数中，该函数名是undefined。Awesome, huh?</span><br>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123; <span class="hljs-title function_">foo</span>(); &#125;());<br></code></pre></td></tr></table></figure>
+<p>希望上面的例子可以让你更加清楚的知道’self-executing’这个说法是有些误导性的，因为它并不是执行自己的函数，即使函数已经被执行。同样的，匿名属性也没用必要特别指出，因为，<strong>Immediately Invoked Function<br>Expression</strong>，既可以是命名函数也可以匿名函数。</p>
+<blockquote>
+<p>有趣的是：因为arguments.callee在ECMAScript 5 strict mode中被deprecated了，所以在ES5的<code>strict mode</code>中实际上不可能创建一个<code>self-executing anonymous function</code></p>
+</blockquote>
+<h4 id="最后-模块模式"><a href="#最后-模块模式" class="headerlink" title="最后:模块模式"></a>最后:模块模式</h4><p>当我调用函数表达式时，如果我不至少提醒自己一次关于模块模式，我很可能会忽略它。如果你并不熟悉JavaScript里的构建模式，它和我第一个例子很像，但是返回值用对象代替了函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// Create an anonymous function expression that gets invoked immediately,and assign its *return value* to a variable. This approach &quot;cuts out the middleman&quot; of the named `makeWhatever` function reference.</span><br><br><span class="hljs-comment">// As explained in the above &quot;important note,&quot; even though parens are not required around this function expression, they should still be used as a matter of convention to help clarify that the variable is being set to the function&#x27;s *result* and not the function itself.</span><br><span class="hljs-comment">//正如上面的『重要须知』解释的一样，，，即使包围函数表达式的括号不是必须时，它们也应该被很当回事的当做约定俗成的习惯保留着，用来清晰的表明变量是函数的结果，而不是变量本身。</span><br><br><span class="hljs-keyword">var</span> counter = (<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-attr">get</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>            <span class="hljs-keyword">return</span> i;<br>        &#125;,<br>        <span class="hljs-attr">set</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">val</span>)&#123;<br>            i = val;<br>        &#125;,<br>        <span class="hljs-attr">increment</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>            <span class="hljs-keyword">return</span> ++i;<br>        &#125;<br>    &#125;<br>    &#125;());<br>    counter.<span class="hljs-title function_">get</span>();<span class="hljs-comment">//0</span><br>    counter.<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>);<br>    counter.<span class="hljs-title function_">increment</span>();<span class="hljs-comment">//4</span><br>    counter.<span class="hljs-title function_">increment</span>();<span class="hljs-comment">//5</span><br><br>    conuter.<span class="hljs-property">i</span>;<span class="hljs-comment">//undefined (`i` is not a property of the returned object)</span><br>    i;<span class="hljs-comment">//ReferenceError: i is not defined (it only exists inside the closure)</span><br></code></pre></td></tr></table></figure>
+<p>模块模式方法不仅相当的厉害而且简单。非常少的代码，你可以有效的利用与方法和属性相关的命名，在一个对象里，组织全部的模块代码即最小化了全局变量的污染也创造了私人变量。</p>
+<h4 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h4><p>希望这篇文章能够为你提供些有用的信息，并且解答了一些问题。当然，如果你现在比之前的问题更多了，你可以通过阅读以下文章来更深入的了解函数和构建模式。</p>
+<hr>
+<p>2018-01-27 更，编者按，，最后希望大家了解下ES6，还是阮一峰老师 &#x3D;&gt; <a target="_blank" rel="noopener" href="http://es6.ruanyifeng.com/#docs/intro">ECMAScript 6 简介</a></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://dmitrysoshnikov.com/ecmascript/chapter-5-functions/#question-about-surrounding-parentheses">ECMA-262-3 in detail. Chapter 5. Functions</a>. - Dmitry A. Soshnikov</li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en/JavaScript/Reference/Functions_and_function_scope">Functions and function scope</a> - Mozilla Developer Network</li>
+<li><a target="_blank" rel="noopener" href="http://kangax.github.io/nfe/">Named function expressions</a> - Juriy “kangax” Zaytsev</li>
+<li><a target="_blank" rel="noopener" href="http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html">JavaScript Module Pattern</a>: In-Depth - Ben Cherry</li>
+<li><a target="_blank" rel="noopener" href="http://skilldrick.co.uk/2011/04/closures-explained-with-javascript/">Closures explained with JavaScript</a> - Nick Morgan</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/07/callback_function_in_javascript/" rel="prev" title="理解与使用Javascript中的回调函数">
+                  <i class="fa fa-chevron-left"></i> 理解与使用Javascript中的回调函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/10/2017_12_week_1st/" rel="next" title="2017_12—第一周">
+                  2017_12—第一周 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

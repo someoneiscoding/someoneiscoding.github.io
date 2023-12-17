@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="因为之前一直在关注『码农翻身』公众号，作者以很基础的文字构建关于计算机关于编程的小故事，由浅入深，，其中的知识点可以自己延伸阅读，还是非常不错的，很适合入门~后来，作者出书了，支持了一波，，毕竟纸质书翻起来比较方便。OK，进入正题，，在『CPU阿甘』中有提到『局部性原理』，，有必要延伸阅读下。网上找到了Stack Overflow中一篇文章-Why is it faster to process">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于局部性原理">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/06/25/branch_prediction/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="因为之前一直在关注『码农翻身』公众号，作者以很基础的文字构建关于计算机关于编程的小故事，由浅入深，，其中的知识点可以自己延伸阅读，还是非常不错的，很适合入门~后来，作者出书了，支持了一波，，毕竟纸质书翻起来比较方便。OK，进入正题，，在『CPU阿甘』中有提到『局部性原理』，，有必要延伸阅读下。网上找到了Stack Overflow中一篇文章-Why is it faster to process">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Entroncamento_do_Transpraia.JPG/1600px-Entroncamento_do_Transpraia.JPG">
+<meta property="og:image" content="https://i.stack.imgur.com/pyfwC.png">
+<meta property="article:published_time" content="2018-06-25T08:51:32.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.756Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="计算机系统">
+<meta property="article:tag" content="branch prediction">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Entroncamento_do_Transpraia.JPG/1600px-Entroncamento_do_Transpraia.JPG">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/06/25/branch_prediction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/06/25/branch_prediction/","path":"2018/06/25/branch_prediction/","title":"关于局部性原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于局部性原理 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8E%92%E5%BA%8F%E5%90%8E%E7%9A%84%E6%95%B0%E7%BB%84%E6%AF%94%E4%B9%B1%E5%BA%8F%E7%9A%84%E6%95%B0%E7%BB%84%E6%89%A7%E8%A1%8C%E8%B5%B7%E6%9D%A5%E8%A6%81%E5%BF%AB%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么排序后的数组比乱序的数组执行起来要快？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%AB%98%E7%A5%A8%E5%9B%9E%E7%AD%94"><span class="nav-number">2.</span> <span class="nav-text">高票回答</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/06/25/branch_prediction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于局部性原理 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于局部性原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-06-25 16:51:32" itemprop="dateCreated datePublished" datetime="2018-06-25T16:51:32+08:00">2018-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>因为之前一直在关注『<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzAxOTc0NzExNg==&mid=2665513504&idx=1&sn=25dd6420e3056101dd3f6fdaedacaa2a&chksm=80d67a63b7a1f37572a5159ff6f53810467c15c8beec94770e8360c45f45036360d77755ee78&scene=21#wechat_redirect">码农翻身</a>』公众号，作者以很基础的文字构建关于计算机关于编程的小故事，由浅入深，，其中的知识点可以自己延伸阅读，还是非常不错的，很适合入门~后来，作者出书了，支持了一波，，毕竟纸质书翻起来比较方便。<br>OK，进入正题，，在『<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzAxOTc0NzExNg==&mid=2665513017&idx=1&sn=5550ee714abd36d0b580713f673e670b&scene=21#wechat_redirect">CPU阿甘</a>』中有提到『局部性原理』，，有必要延伸阅读下。网上找到了Stack Overflow中一篇文章-<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/11227809/why-is-it-faster-to-process-a-sorted-array-than-an-unsorted-array">Why is it faster to process a sorted array than an unsorted array?</a>-本文是对这篇文章的简单翻译，四级水平，还请多包涵 哈哈。</p>
+<hr>
+<h4 id="为什么排序后的数组比乱序的数组执行起来要快？"><a href="#为什么排序后的数组比乱序的数组执行起来要快？" class="headerlink" title="为什么排序后的数组比乱序的数组执行起来要快？"></a>为什么排序后的数组比乱序的数组执行起来要快？</h4><p>这是一段看起来非常奇怪的C++代码，因为某些原因，将数组排序之后奇迹般的将运行速度提高了将近六倍。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#include &lt;algorithm&gt;<br>#include &lt;ctime&gt;<br>#include &lt;iostream&gt;<br><br>int main()&#123;<br>    // 生成数据(数组)<br>    const unsigned arraySize = 32768;<br>    int data[arraySize];<br><br>    for (unsigned c = 0; c &lt; arraySize; ++c)<br>        data[c] = std::rand() % 256;<br><br>    // !!! 因为这一行代码，下边的循环运行的更快了<br>    std::sort(data, data + arraySize);<br><br>    // 测试<br>    clock_t start = clock();<br>    long long sum = 0;<br><br>    for (unsigned i = 0; i &lt; 100000; ++i)&#123;<br>        // Primary loop<br>        for (unsigned c = 0; c &lt; arraySize; ++c)&#123;<br>            if (data[c] &gt;= 128)<br>                sum += data[c];<br>        &#125;<br>    &#125;<br><br>    double elapsedTime = static_cast&lt;double&gt;(clock() - start) / CLOCKS_PER_SEC;<br><br>    std::cout &lt;&lt; elapsedTime &lt;&lt; std::endl;<br>    std::cout &lt;&lt; &quot;sum = &quot; &lt;&lt; sum &lt;&lt; std::endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>如果没有<code>std::sort(data, data + arraySize);</code>(即数组数据大小乱序), 代码运行11.54秒。</li>
+<li>数组元素排序之后，运行只用了1.93秒。</li>
+</ul>
+<p>起初，我以为这种现象与编程语言或者编译器什么的有关系，，所以，我把代码移植到Java中试了一下👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">import java.util.Arrays;<br>import java.util.Random;<br><br>public class Main&#123;<br>    public static void main(String[] args)&#123;<br>        // Generate data<br>        int arraySize = 32768;<br>        int data[] = new int[arraySize];<br><br>        Random rnd = new Random(0);<br>        for (int c = 0; c &lt; arraySize; ++c)<br>            data[c] = rnd.nextInt() % 256;<br><br>        // !!! With this, the next loop runs faster<br>        Arrays.sort(data);<br><br>        // Test<br>        long start = System.nanoTime();<br>        long sum = 0;<br><br>        for (int i = 0; i &lt; 100000; ++i)&#123;<br>            // Primary loop<br>            for (int c = 0; c &lt; arraySize; ++c)&#123;<br>                if (data[c] &gt;= 128)<br>                    sum += data[c];<br>            &#125;<br>        &#125;<br><br>        System.out.println((System.nanoTime() - start) / 1000000000.0);<br>        System.out.println(&quot;sum = &quot; + sum);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行结果有点类似，但没有像在C++中差很多。</p>
+<p>我刚开始想到的是把数组排序之后，将数组载入到内存中了，，转念一想，这忒蠢了，数组明明是刚生成的(一直在内存中)。</p>
+<ul>
+<li>到底发生了神马？</li>
+<li>为什么排序后的数组比乱序时处理速度快很多？</li>
+<li>代码中求和项是相对独立的，应该跟数组数据没什么关系。。(存疑)</li>
+</ul>
+<hr>
+<h4 id="高票回答"><a href="#高票回答" class="headerlink" title="高票回答"></a>高票回答</h4><p><em>你可能是分支预测失败的受害者</em>。。</p>
+<p>那么什么是分支预测呢？？</p>
+<p>想象铁路的岔口，，👇<br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Entroncamento_do_Transpraia.JPG/1600px-Entroncamento_do_Transpraia.JPG" alt="railroad junction"><br>@(Image by Mecanismo, via Wikimedia Commons. Used under the CC-By-SA 3.0 license.)</p>
+<p>现在为了方便讨论，假想我们回到了19世纪，那时候还无法进行远距离无线通讯。</p>
+<p>你作为这个岔路口的操作员，听到一辆货车正在驶来，但又完全不知道它想去哪条分支路线。这时，你示意货车停下来，问他你想去哪个方向，然后将开关设置为正确的位置。</p>
+<p><em>火车很笨重，因为惯性的原因，它们在启动和停下来的时候通常要花很长时间。</em></p>
+<p>有没有更好的办法嗫？(办法是)猜测它会去往哪个方向！</p>
+<ul>
+<li>如果你猜对了，它继续行驶~</li>
+<li>如果你猜错了，火车司机会向你大喊大叫，让你重置开关，，然后TA重新启动，驶向另一方向。</li>
+</ul>
+<p><strong>如果你每次都猜对</strong>，火车就永远不需要停下来~<br><strong>如果你总是都猜错</strong>，火车会花费很长时间停下来，后退，重新启动。。</p>
+<p><strong>把它看做一个 if 代码块</strong>：在芯片级别，这是一个分支指令👇<br><img src="https://i.stack.imgur.com/pyfwC.png" alt="if-statement"><br>作为一个处理器，你看到一个分支结构，，完全不知道它将要怎么运行？你怎么做？等判断条件先运行结束，然后根据正确的结果选择合适的分支运行。</p>
+<p><em>现代处理器(通常)很复杂，有很长的流水线级数。所以，会像火车一样话很长的时间『启动』和『刹车』。</em></p>
+<p>有没有更好的办法嗫？(答案是)猜测程序会运行哪个分支的代码。</p>
+<ul>
+<li>如果猜对了，程序继续执行~</li>
+<li>如果猜错了，需要清空流水线(的所有任务)，回滚到分支结构开始的位置。然后重新启动执行另一个分支。</li>
+</ul>
+<p><strong>如果每次都猜对</strong>，你永远不需要被迫停下~<br><strong>如果总是猜错</strong>，你会花费很长时间减速，回滚，重启。。</p>
+<p>这就是<strong>分支预测</strong>，，我承认这不是最好的比喻，因为火车可以用旗子作为指示方向的信号。但是在计算机中，处理器直到最后一刻才知道最终会运行哪个分支(的代码)。</p>
+<p>那么，你如何策略性地猜测，以尽量减少火车必须后退才能才能驶向正确的方向的次数？观察过去的执行历史！如果99%的情况，火车都向驶向左侧，那么你(肯定)猜测(下一次)火车(同样)驶向左侧。如果它(驶向左侧或者右侧的情况)交替出现，那么你(根据情况)交替改变你的猜测。如果每三次就会驶向某一特定的方向，那么你也会据此作出合理的猜测..</p>
+<p>换句话说，你试图抽象出一个模型并据此作出猜测。这或多或少是分支预测器的工作原理。</p>
+<p>大多数应用程序具有良好表现(well-behaved 具体指什么??)的分支。所以现代分支预测器通常会达到大于90％的命中率。但是当面对不可识别的模型时，我们无法预测将要执行的分支，这时分支预测器实际上是毫无用处的。</p>
+<p><strong>正如上边我们猜测的那样，罪魁祸首是这个if代码块</strong>👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if (data[c] &gt;= 128)<br>    sum += data[c];<br></code></pre></td></tr></table></figure>
+
+<p>我们可以注意到，数据均匀分布在0和255之间。数组中的所有元素排序之后，大致前半部分元素迭代时不会进入if语句。剩下后半部分的元素，它们将全部进入if语句。</p>
+<p>分支连续多次走向相同的方向时，这对于分支预测器非常友好。即使是简单的饱和计数器也能正确预测分支，除了饱和后改变方向后的少数迭代。</p>
+<p><strong>快速预览</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">T = branch taken<br>N = branch not taken<br><br>data[] = 0, 1, 2, 3, 4, ... 126, 127, 128, 129, 130, ... 250, 251, 252, ...<br>branch = N  N  N  N  N  ...   N    N    T    T    T  ...   T    T    T  ...<br><br>       = NNNNNNNNNNNN ... NNNNNNNTTTTTTTTT ... TTTTTTTTTT  (easy to predict)<br></code></pre></td></tr></table></figure>
+
+<p>但是，当数据是完全随机的时，分支预测器将无法发挥作用，因为它无法预测随机数据。因此，可能会有大约50％的预测失误。(比随机乱猜好不到哪而去..)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">data[] = 226, 185, 125, 158, 198, 144, 217, 79, 202, 118,  14, 150, 177, 182, 133, ...<br>branch =   T,   T,   N,   T,   T,   T,   T,  N,   T,   N,   N,   T,   T,   T,   N  ...<br><br>       = TTNTTTTNTNNTTTN ...   (completely random - hard to predict)<br></code></pre></td></tr></table></figure>
+
+<p><strong>那么，我们能做些什么呢？</strong></p>
+<p>如果编译器无法将分支优化为条件转移(conditional move???)，那么如果您愿意为了提高性能而牺牲可读性，则可以尝试一些风骚的操作。<br>👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if (data[c] &gt;= 128)<br>    sum += data[c];<br>    <br>// 将上面👆的代码修改为下面👇的，，<br><br>int t = (data[c] - 128) &gt;&gt; 31;<br>sum += ~t &amp; data[c];<br></code></pre></td></tr></table></figure>
+
+<p>这样，用一些位操作代替分支(判断)。<br>(PS:需要注意的是，这种风骚的操作并不完全等同于原始的if语句。但在这个例子中，它对数据的所有输入值都有效[])。</p>
+<p><strong>基于: Core i7 920 @ 3.5 GHz</strong></p>
+<p>C++ - Visual Studio 2010 - x64 Release 👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">//  Branch - Random<br>seconds = 11.777<br><br>//  Branch - Sorted<br>seconds = 2.352<br><br>//  Branchless - Random<br>seconds = 2.564<br><br>//  Branchless - Sorted<br>seconds = 2.587<br></code></pre></td></tr></table></figure>
+
+<p>Java - Netbeans 7.1.1 JDK 7 - x64</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">//  Branch - Random<br>seconds = 10.93293813<br><br>//  Branch - Sorted<br>seconds = 5.643797077<br><br>//  Branchless - Random<br>seconds = 3.113581453<br><br>//  Branchless - Sorted<br>seconds = 3.186068823<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>分支：排序后的数组与乱序的数组之间(执行速度)有巨大的差异。</li>
+<li>风骚の操作：排序后的数组与乱序的数组之间(执行速度)无明显差异。</li>
+<li>在C++中，排序后的数组用风骚的位操作甚至比分支预测有些慢。。</li>
+</ul>
+<p>一般情况下应该避免 data-dependent branching in critical loops. (such as in this example)</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/" rel="tag"># 计算机系统</a>
+              <a href="/tags/branch-prediction/" rel="tag"># branch prediction</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/06/06/WeChat-third-party-platform-mina/" rel="prev" title="微信第三方平台小程序爬坑">
+                  <i class="fa fa-chevron-left"></i> 微信第三方平台小程序爬坑
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/08/truly_random/" rel="next" title="真随机">
+                  真随机 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

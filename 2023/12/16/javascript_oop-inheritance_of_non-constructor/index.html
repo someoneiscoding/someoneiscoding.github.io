@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Javascript面向对象编程（三）：非构造函数的继承这个系列的第一部分介绍了”封装”，第二部分介绍了使用构造函数实现”继承”。今天是最后一个部分，介绍不使用构造函数实现”继承”。 一、什么是”非构造函数”的继承？比如，现在有一个对象，叫做”中国人”： 123var Chinese &#x3D; &amp;#123;    nation:&amp;#x27;中国&amp;#x27;&amp;#125;;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript面向对象编程(三):非构造函数的继承">
+<meta property="og:url" content="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_non-constructor/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="Javascript面向对象编程（三）：非构造函数的继承这个系列的第一部分介绍了”封装”，第二部分介绍了使用构造函数实现”继承”。今天是最后一个部分，介绍不使用构造函数实现”继承”。 一、什么是”非构造函数”的继承？比如，现在有一个对象，叫做”中国人”： 123var Chinese &#x3D; &amp;#123;    nation:&amp;#x27;中国&amp;#x27;&amp;#125;;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-16T02:43:36.759Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.760Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_non-constructor/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_non-constructor/","path":"2023/12/16/javascript_oop-inheritance_of_non-constructor/","title":"Javascript面向对象编程(三):非构造函数的继承"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Javascript面向对象编程(三):非构造函数的继承 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Javascript%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E9%9D%9E%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">1.</span> <span class="nav-text">Javascript面向对象编程（三）：非构造函数的继承</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E2%80%9D%E9%9D%9E%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E2%80%9D%E7%9A%84%E7%BB%A7%E6%89%BF%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">一、什么是”非构造函数”的继承？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81object-%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">二、object()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.3.</span> <span class="nav-text">三、浅拷贝</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%B7%B1%E6%8B%B7%E8%B4%9D"><span class="nav-number">1.4.</span> <span class="nav-text">四、深拷贝</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_non-constructor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Javascript面向对象编程(三):非构造函数的继承 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript面向对象编程(三):非构造函数的继承
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-12-16 10:43:36" itemprop="dateCreated datePublished" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Javascript面向对象编程（三）：非构造函数的继承"><a href="#Javascript面向对象编程（三）：非构造函数的继承" class="headerlink" title="Javascript面向对象编程（三）：非构造函数的继承"></a>Javascript面向对象编程（三）：非构造函数的继承</h3><p>这个系列的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html">第一部分</a>介绍了”封装”，<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html">第二部分</a>介绍了使用构造函数实现”继承”。<br>今天是最后一个部分，介绍不使用构造函数实现”继承”。</p>
+<h4 id="一、什么是”非构造函数”的继承？"><a href="#一、什么是”非构造函数”的继承？" class="headerlink" title="一、什么是”非构造函数”的继承？"></a>一、什么是”非构造函数”的继承？</h4><p>比如，现在有一个对象，叫做”中国人”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Chinese = &#123;<br>    nation:&#x27;中国&#x27;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>还有一个对象，叫做”医生”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Doctor =&#123;<br>    career:&#x27;医生&#x27;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>请问怎样才能让”医生”去继承”中国人”，也就是说，我怎样才能生成一个”中国医生”的对象？<br>这里要注意，这两个对象都是普通对象，不是构造函数，无法使用构造函数方法实现”继承”。</p>
+<h4 id="二、object-方法"><a href="#二、object-方法" class="headerlink" title="二、object()方法"></a>二、object()方法</h4><p>json格式的发明人Douglas Crockford，提出了一个object()函数，可以做到这一点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function object(o) &#123;<br>    function F() &#123;&#125;<br>    F.prototype = o;<br>    return new F();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个<code>object()</code>函数，其实只做一件事，就是把子对象的<code>prototype</code>属性，指向父对象，从而使得子对象与父对象连在一起。<br>使用的时候，第一步先在父对象的基础上，生成子对象，然后，再加上子对象本身的属性，这时，子对象已经继承了父对象的属性了：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Doctor = object(Chinese);<br>Doctor.career = &#x27;医生&#x27;;<br>alert(Doctor.nation); //中国<br></code></pre></td></tr></table></figure>
+
+<h4 id="三、浅拷贝"><a href="#三、浅拷贝" class="headerlink" title="三、浅拷贝"></a>三、浅拷贝</h4><p>除了使用”prototype链”以外，还有另一种思路：把父对象的属性，全部拷贝给子对象，也能实现继承。<br>下面这个函数，就是在做拷贝：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function extendCopy(p) &#123;<br>    var c = &#123;&#125;;<br>    for (var i in p) &#123; <br>        c[i] = p[i];<br>    &#125;<br>    c.uber = p;<br>    return c;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>使用的时候，这样写：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Doctor = extendCopy(Chinese);<br>Doctor.career = &#x27;医生&#x27;;<br>alert(Doctor.nation); // 中国<br></code></pre></td></tr></table></figure>
+<p>但是，这样的拷贝有一个问题。那就是，如果父对象的属性等于数组或另一个对象，那么实际上，子对象获得的只是一个内存地址，而不是真正拷贝，因此存在父对象被篡改的可能。<br>请看，现在给Chinese添加一个”出生地”属性，它的值是一个数组，通过extendCopy()函数，Doctor继承了Chinese。然后，我们为Doctor的”出生地”添加一个城市，然后，我们为Doctor的”出生地”添加一个城市：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Chinese.birthPlaces = [&#x27;北京&#x27;,&#x27;上海&#x27;,&#x27;香港&#x27;];<br>var Doctor = extendCopy(Chinese);<br>Doctor.birthPlaces.push(&#x27;厦门&#x27;);<br><br>alert(Doctor.birthPlaces); //北京, 上海, 香港, 厦门<br>alert(Chinese.birthPlaces); //北京, 上海, 香港, 厦门<br></code></pre></td></tr></table></figure>
+<p>👆发生了什么事？Chinese的”出生地”也被改掉了！</p>
+<p>所以，extendCopy()只是拷贝基本类型的数据，我们把这种拷贝叫做”浅拷贝”。这是早期jQuery实现继承的方式。</p>
+<h4 id="四、深拷贝"><a href="#四、深拷贝" class="headerlink" title="四、深拷贝"></a>四、深拷贝</h4><p>所谓”深拷贝”，就是能够实现真正意义上的数组和对象的拷贝。它的实现并不难，只要递归调用”浅拷贝”就行了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function deepCopy(p, c) &#123;<br>    var c = c || &#123;&#125;;<br>    for (var i in p) &#123;<br>    if (typeof p[i] === &#x27;object&#x27;) &#123;<br>        c[i] = (p[i].constructor === Array) ? [] : &#123;&#125;;<br>            deepCopy(p[i], c[i]);<br>        &#125; else &#123;<br>                c[i] = p[i];<br>        &#125;<br>    &#125;<br>    return c;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>使用的时候这样写，给父对象加一个属性，值为数组。然后，在子对象上修改这个属性，这时，父对象就不会受到影响了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Doctor = deepCopy(Chinese);<br>Chinese.birthPlaces = [&#x27;北京&#x27;,&#x27;上海&#x27;,&#x27;香港&#x27;];<br>Doctor.birthPlaces.push(&#x27;厦门&#x27;);<br>alert(Doctor.birthPlaces); //北京, 上海, 香港, 厦门<br>alert(Chinese.birthPlaces); //北京, 上海, 香港<br></code></pre></td></tr></table></figure>
+<p>目前，jQuery库使用的就是这种继承方法。<br>（完）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/12/16/About_WeChat_Open_account_manage_auth/" rel="prev" title="关于微信开放平台账号管理权限">
+                  <i class="fa fa-chevron-left"></i> 关于微信开放平台账号管理权限
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/12/16/javascript_oop-inheritance_of_constructor/" rel="next" title="Javascript面向对象编程(二):构造函数的继承">
+                  Javascript面向对象编程(二):构造函数的继承 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

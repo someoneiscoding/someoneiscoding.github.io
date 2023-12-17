@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2017_12-第三周const关键字const:此声明创建一个常量，其作用域可以是全局或本地声明的块。 与var变量不同，全局常量不会变为窗口对象(widows)的属性。需要一个常数的初始化器；也就是说，您必须在声明的同一语句中指定它的值（这是有道理的，因为以后不能更改）。 const声明创建一个值的只读引用。但这并不意味着它所持有的值是不可变的，只是变量标识符不能重新分配。例如，在引用内容是对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2017_12-第三周">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/19/2017_12_week_3rd/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="2017_12-第三周const关键字const:此声明创建一个常量，其作用域可以是全局或本地声明的块。 与var变量不同，全局常量不会变为窗口对象(widows)的属性。需要一个常数的初始化器；也就是说，您必须在声明的同一语句中指定它的值（这是有道理的，因为以后不能更改）。 const声明创建一个值的只读引用。但这并不意味着它所持有的值是不可变的，只是变量标识符不能重新分配。例如，在引用内容是对">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.746Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="var">
+<meta property="article:tag" content="let">
+<meta property="article:tag" content="const">
+<meta property="article:tag" content="字面量">
+<meta property="article:tag" content="literals">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/19/2017_12_week_3rd/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/19/2017_12_week_3rd/","path":"2017/12/19/2017_12_week_3rd/","title":"2017_12-第三周"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2017_12-第三周 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2017-12-%E7%AC%AC%E4%B8%89%E5%91%A8"><span class="nav-number">1.</span> <span class="nav-text">2017_12-第三周</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#const%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">1.1.</span> <span class="nav-text">const关键字</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#let%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">1.2.</span> <span class="nav-text">let关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A7%84%E5%88%99"><span class="nav-number">1.2.1.</span> <span class="nav-text">作用域规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%80%E5%8C%96%E5%86%85%E9%83%A8%E5%87%BD%E6%95%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">简化内部函数代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#let%E6%9A%82%E5%AD%98%E6%AD%BB%E5%8C%BA%E7%9A%84%E9%94%99%E8%AF%AF"><span class="nav-number">1.2.3.</span> <span class="nav-text">let暂存死区的错误</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E9%9D%A2%E9%87%8F-Literals"><span class="nav-number">1.3.</span> <span class="nav-text">字面量 (Literals)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2017-12-20"><span class="nav-number">1.4.</span> <span class="nav-text">2017-12-20</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/19/2017_12_week_3rd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2017_12-第三周 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2017_12-第三周
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-19 00:00:00" itemprop="dateCreated datePublished" datetime="2017-12-19T00:00:00+08:00">2017-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%91%A8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">周记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="2017-12-第三周"><a href="#2017-12-第三周" class="headerlink" title="2017_12-第三周"></a>2017_12-第三周</h3><h4 id="const关键字"><a href="#const关键字" class="headerlink" title="const关键字"></a><code>const</code>关键字</h4><p><strong><code>const</code></strong>:此声明创建一个常量，其作用域可以是全局或本地声明的块。 与<code>var</code>变量不同，全局常量不会变为窗口对象(widows)的属性。需要一个常数的初始化器；也就是说，您<strong>必须在声明的同一语句中指定它的值</strong>（这是有道理的，因为以后不能更改）。</p>
+<p><strong>const声明创建一个值的只读引用。但这并不意味着它所持有的值是不可变的，只是变量标识符不能重新分配。</strong>例如，在引用内容是对象的情况下，这意味着可以改变对象的内容（例如，其参数）。<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/const">^1</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">// 注意: 常量在声明的时候可以使用大小写，但通常情况下全部用大写字母。 <br><br>// 定义常量MY_FAV并赋值7<br>const MY_FAV = 7;<br><br>// 报错<br>MY_FAV = 20;<br><br>// 输出 7<br>console.log(&quot;my favorite number is: &quot; + MY_FAV);<br><br>// 尝试重新声明会报错 <br>const MY_FAV = 20;<br><br>//  MY_FAV 保留给上面的常量，这个操作会失败<br>var MY_FAV = 20; <br><br>// 也会报错<br>let MY_FAV = 20;<br><br>// 注意块范围的性质很重要<br>if (MY_FAV === 7) &#123; <br>    // 没问题，并且创建了一个块作用域变量 MY_FAV<br>    // (works equally well with let to declare a block scoped non const variable)<br>    let MY_FAV = 20;<br><br>    // MY_FAV 现在为 20<br>    console.log(&#x27;my favorite number is &#x27; + MY_FAV);<br><br>    // 这被提升到全局上下文并引发错误<br>    var MY_FAV = 20;<br>&#125;<br><br>// MY_FAV 依旧为7<br>console.log(&quot;my favorite number is &quot; + MY_FAV);<br><br>// 常量要求一个初始值<br>const FOO; // SyntaxError: missing = in const declaration<br><br>// 常量可以定义成对象<br>const MY_OBJECT = &#123;&quot;key&quot;: &quot;value&quot;&#125;;<br><br>// 重写对象和上面一样会失败<br>MY_OBJECT = &#123;&quot;OTHER_KEY&quot;: &quot;value&quot;&#125;;<br><br>// 对象属性并不在保护的范围内，下面这个声明会成功执行<br>MY_OBJECT.key = &quot;otherValue&quot;;<br><br>// 也可以用来定义数组<br>const MY_ARRAY = [];<br>// It&#x27;s possible to push items into the array<br>// 可以向数组填充数据<br>MY_ARRAY.push(&#x27;A&#x27;); // [&quot;A&quot;]<br>// 但是，将一个新数组赋给变量会引发错误<br>MY_ARRAY = [&#x27;B&#x27;]<br></code></pre></td></tr></table></figure>
+<hr>
+<h4 id="let关键字"><a href="#let关键字" class="headerlink" title="let关键字"></a><code>let</code>关键字</h4><p><code>let</code>语句声明一个块级作用域的本地变量，并且可选的将其初始化为一个值。<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/let">^2</a></p>
+<h5 id="作用域规则"><a href="#作用域规则" class="headerlink" title="作用域规则"></a>作用域规则</h5><p><code>let</code>声明的变量只在其声明的块或子块中可用，这一点，与<code>var</code>相似。二者之间最主要的区别在于<code>var</code>声明的变量的作用域是整个封闭函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function varTest() &#123;<br>    var x = 1;<br>    if (true) &#123;<br>      var x = 2;  // 同样的变量!<br>      console.log(x);  // 2<br>    &#125;<br>    console.log(x);  // 2<br>&#125;<br><br>function letTest() &#123;<br>    let x = 1;<br>    if (true) &#123;<br>        let x = 2;  // 不同的变量<br>        console.log(x);  // 2<br>    &#125;<br>    console.log(x);  // 1<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="简化内部函数代码"><a href="#简化内部函数代码" class="headerlink" title="简化内部函数代码"></a>简化内部函数代码</h5><p>当用到内部函数的时候，let会让你的代码更加简洁，，对比之前[立即执行函数表达式(IIFE)]。(<a target="_blank" rel="noopener" href="https://someoneiscoding.github.io/2017/12/10/%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%28IIFE%29/#iife">https://someoneiscoding.github.io/2017/12/10/%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%28IIFE%29/#iife</a>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var list = document.getElementById(&#x27;list&#x27;);<br><br>for (let i = 1; i &lt;= 5; i++) &#123;<br>    let item = document.createElement(&#x27;li&#x27;);<br>    item.appendChild(document.createTextNode(&#x27;Item &#x27; + i));<br><br>    item.onclick = function(ev) &#123;<br>        console.log(&#x27;Item &#x27; + i + &#x27; is clicked.&#x27;);<br>     &#125;;<br>     list.appendChild(item);<br>&#125;<br><br>// to achieve the same effect with &#x27;var&#x27;<br>// you have to create a different context<br>// using a closure to preserve the value<br>// 要用var关键字实现同样的功能，你不得不使用闭包来维护不同的上下文环境以保护值(不被改变)。<br>for (var i = 1; i &lt;= 5; i++) &#123;<br>    var item = document.createElement(&#x27;li&#x27;);<br>    item.appendChild(document.createTextNode(&#x27;Item &#x27; + i));<br><br>    (function(i)&#123;<br>        item.onclick = function(ev) &#123;<br>            console.log(&#x27;Item &#x27; + i + &#x27; is clicked.&#x27;);<br>        &#125;;<br>    &#125;)(i);<br>    list.appendChild(item);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p> ↑ 以上示例的工作原理是因为（匿名）内部函数的五个实例引用了变量i的五个不同实例。注意，如果你将<code>let</code>替换为<code>var</code>，则它将无法正常工作，因为所有内部函数都将返回相同的<code>i=6</code>的最终值。此外，我们可以通过将创建新元素的代码移动到每个循环的作用域来保持循环更清晰。</p>
+<p>在程序或者函数的顶层，<code>let</code>并不会像<code>var</code>一样在全局对象上创造一个属性，比如：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var x = &#x27;global&#x27;;<br>let y = &#x27;global&#x27;;<br>console.log(this.x); // &quot;global&quot;<br>console.log(this.y); // undefined<br></code></pre></td></tr></table></figure>
+<h5 id="let暂存死区的错误"><a href="#let暂存死区的错误" class="headerlink" title="let暂存死区的错误"></a><code>let</code>暂存死区的错误</h5><p>在 ECMAScript 2015 中，<code>let</code>绑定不受变量提升的约束，这意味着<code>let</code>声明不会被提升到当前执行上下文的顶部。在块中的变量初始化之前，引用它将会导致<code>ReferenceError</code>（而使用<code>var</code>声明变量则恰恰相反，该变量的值是<code>undefined</code>）。该变量处于从块开始到初始化处理的“暂存死区”。👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function do_something() &#123;<br>    console.log(bar); // undefined<br>    console.log(foo); // ReferenceError: foo is not defined<br>    var bar = 1;<br>    let foo = 2;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>由于词法作用域，表达式<code>(foo + 55)</code>内的标识符<code>foo</code>会解析为<code>if</code>块的<code>foo</code>，而不是覆盖值为33的<code>foo</code>。在这一行中，<code>if</code>块的<code>foo</code>已经在词法环境中创建，但尚未达到（并终止）其初始化（这是语句本身的一部分）：它仍处于暂存死区。👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function test()&#123;<br>     var foo = 33;<br>     if (true) &#123;<br>        let foo = (foo + 55); // ReferenceError<br>     &#125;<br>&#125;<br>test();<br></code></pre></td></tr></table></figure>
+
+<h4 id="字面量-Literals"><a href="#字面量-Literals" class="headerlink" title="字面量 (Literals)"></a>字面量 (Literals)</h4><p>(译注：字面量是由语法表达式定义的常量；或，通过由一定字词组成的语词表达式定义的常量)<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Grammar_and_types">^3</a></p>
+<p>在JavaScript中，你可以使用各种字面量。这些字面量是脚本中按字面意思给出的固定的值，而不是变量。（译注：字面量是常量，其值是固定的，而且在程序脚本运行中不可更改，比如false，3.1415，thisIsStringOfHelloworld ，invokedFunction:myFunction(“myArgument”)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var fish = [&quot;Lion&quot;, , &quot;Angel&quot;];<br></code></pre></td></tr></table></figure>
+<p>👆在这个数组中，有两个已被赋值的元素，和一个空元素（fish[0]是”Lion”，fish[1]是undefined，而fish[2]是”Angel”；译注：此时数组的长度属性fish.length是3)。</p>
+<p>如果你在元素列表的尾部添加了一个逗号，它将会被忽略。在下面的例子中，数组的长度是3，并不存在myList[3]这个元素（译注：这是指数组的第4个元素噢，作者是在帮大家复习数组元素的排序命名方法）。元素列表中其它所有的逗号都表示一个新元素（的开始）。👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var myList = [&#x27;home&#x27;, , &#x27;school&#x27;, ];<br>// 尾部的逗号在早期版本的浏览器中会产生错误，因而编程时的最佳实践方式就是移除它们。<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2017-12-20"><a href="#2017-12-20" class="headerlink" title="2017-12-20"></a>2017-12-20</h4><p>ci:Case Insensitive, 即 “大小写不敏感”, a 和 A 会在字符判断中会被当做一样的。<br>utf8_unicode_ci和utf8_general_ci对中、英文来说没有实质的差别。<br>utf8_general_ci校对速度快，但准确度稍差。<br>utf8_unicode_ci准确度高，但校对速度稍慢。</p>
+<p>如果你的应用有德语、法语或者俄语，请一定使用utf8_unicode_ci。一般用utf8_general_ci就够了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/var/" rel="tag"># var</a>
+              <a href="/tags/let/" rel="tag"># let</a>
+              <a href="/tags/const/" rel="tag"># const</a>
+              <a href="/tags/%E5%AD%97%E9%9D%A2%E9%87%8F/" rel="tag"># 字面量</a>
+              <a href="/tags/literals/" rel="tag"># literals</a>
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/14/javascript_coping_and_hoisting/" rel="prev" title="JavaScript的变量提升及作用域">
+                  <i class="fa fa-chevron-left"></i> JavaScript的变量提升及作用域
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/19/execution_sequence_of_sql/" rel="next" title="SQL逻辑查询语句执行顺序">
+                  SQL逻辑查询语句执行顺序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

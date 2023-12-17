@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Javascript 面向对象编程(一)：封装最近一直在用百度的echarts做图表什么的，在配置项中的option是一个对象，，like this var option &#x3D; &amp;#123;&amp;#125;，，有时需要多个option对象，复制来复制去，也只是复制的变量，指向的还是同一个引用。。得好好学习下，翻来覆去还是阮一峰老师的总结最友好~   原文链接：Javascript 面向对象编程（一）：封">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javascript 面向对象编程(一)：封装">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/11/javascript_oop-encapsulation/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="Javascript 面向对象编程(一)：封装最近一直在用百度的echarts做图表什么的，在配置项中的option是一个对象，，like this var option &#x3D; &amp;#123;&amp;#125;，，有时需要多个option对象，复制来复制去，也只是复制的变量，指向的还是同一个引用。。得好好学习下，翻来覆去还是阮一峰老师的总结最友好~   原文链接：Javascript 面向对象编程（一）：封">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-11T13:16:16.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.759Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/11/javascript_oop-encapsulation/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/11/javascript_oop-encapsulation/","path":"2017/12/11/javascript_oop-encapsulation/","title":"Javascript 面向对象编程(一)：封装"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Javascript 面向对象编程(一)：封装 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Javascript-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B-%E4%B8%80-%EF%BC%9A%E5%B0%81%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">Javascript 面向对象编程(一)：封装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%94%9F%E6%88%90%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%8E%9F%E5%A7%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">一、生成实例对象的原始模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%8E%9F%E5%A7%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="nav-number">1.2.</span> <span class="nav-text">二、原始模式的改进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">三、构造函数模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">四、构造函数模式的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%94%E3%80%81Prototype%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">五、Prototype模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD%E3%80%81Prototype%E6%A8%A1%E5%BC%8F%E7%9A%84%E9%AA%8C%E8%AF%81%E6%96%B9%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">六、Prototype模式的验证方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-1-isPrototypeOf"><span class="nav-number">1.6.1.</span> <span class="nav-text">6.1 isPrototypeOf()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-2-hasOwnProperty"><span class="nav-number">1.6.2.</span> <span class="nav-text">6.2 hasOwnProperty()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-in%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.6.3.</span> <span class="nav-text">6.3 in运算符</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/11/javascript_oop-encapsulation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Javascript 面向对象编程(一)：封装 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Javascript 面向对象编程(一)：封装
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-11 21:16:16" itemprop="dateCreated datePublished" datetime="2017-12-11T21:16:16+08:00">2017-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Javascript-面向对象编程-一-：封装"><a href="#Javascript-面向对象编程-一-：封装" class="headerlink" title="Javascript 面向对象编程(一)：封装"></a>Javascript 面向对象编程(一)：封装</h3><p>最近一直在用百度的echarts做图表什么的，在配置项中的<code>option</code>是一个对象，，like this <code>var option = &#123;&#125;</code>，，有时需要多个<code>option</code>对象，复制来复制去，也只是复制的变量，指向的还是同一个引用。。得好好学习下，翻来覆去还是阮一峰老师的总结最友好~</p>
+<hr>
+<blockquote>
+<p>原文链接：<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html">Javascript 面向对象编程（一）：封装</a> - by 阮一峰</p>
+</blockquote>
+<p>学习Javascript，最难的地方是什么？<br>我觉得，Object（对象）最难。因为Javascript的Object模型很独特，和其他语言都不一样，初学者不容易掌握。<br>下面就是我的学习笔记，希望对大家学习这个部分有所帮助。我主要参考了以下两本书籍：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.packtpub.com/object-oriented-javascript-applications-libraries/book">《面向对象的Javascript》</a>（Object-Oriented JavaScript）</li>
+<li><a target="_blank" rel="noopener" href="http://www.wrox.com/WileyCDA/WroxTitle/Professional-JavaScript-for-Web-Developers-2nd-Edition.productCd-047022780X.html">《Javascript高级程序设计（第二版）》</a>（Professional JavaScript for Web Developers, 2nd Edition)</li>
+</ol>
+<p>它们都是非常优秀的Javascript读物，推荐阅读。<br>笔记分成三部分。今天的第一部分是讨论”封装”（Encapsulation），后面的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html">第二部分</a>和<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html">第三部分</a>讨论”继承”（Inheritance）。</p>
+<p>&#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; &#x3D;&#x3D;&#x3D;&#x3D; </p>
+<p>Javascript是一种基于对象（object-based）的语言，你遇到的所有东西几乎都是对象。但是，它又不是一种真正的面向对象编程（OOP）语言，因为它的语法中没有<code>class</code>（类）。</p>
+<p>那么，如果我们要把”属性”（property）和”方法”（method），封装成一个对象，甚至要从原型对象生成一个实例对象，我们应该怎么做呢？</p>
+<h4 id="一、生成实例对象的原始模式"><a href="#一、生成实例对象的原始模式" class="headerlink" title="一、生成实例对象的原始模式"></a><span id='实例对象原始模式'>一、生成实例对象的原始模式</h4><p>假定我们把猫看成一个对象，它有”名字”和”颜色”两个属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Cat = &#123;<br>    name : &#x27;&#x27;,<br>    color : &#x27;&#x27;<br>&#125; <br></code></pre></td></tr></table></figure>
+<p>现在，我们需要根据这个原型对象的规格（schema），生成两个实例对象。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat1 = &#123;&#125;; // 创建一个空对象<br>cat1.name = &quot;大毛&quot;; // 按照原型对象的属性赋值<br>cat1.color = &quot;黄色&quot;;<br><br>var cat2 = &#123;&#125;;<br>cat2.name = &quot;二毛&quot;;<br>cat2.color = &quot;黑色&quot;;<br></code></pre></td></tr></table></figure>
+<p>好了，这就是最简单的封装了，把两个属性封装在一个对象里面。但是，这样的写法有两个缺点，一是如果多生成几个实例，写起来就非常麻烦；二是<strong>实例与原型之间，没有任何办法，可以看出有什么联系。</strong></p>
+<h4 id="二、原始模式的改进"><a href="#二、原始模式的改进" class="headerlink" title="二、原始模式的改进"></a>二、原始模式的改进</h4><p>我们可以写一个函数，解决代码重复的问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color) &#123;<br>    return &#123;<br>        name:name,<br>        color:color<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后生成实例对象，就等于是在调用函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat1 = Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>var cat2 = Cat(&quot;二毛&quot;,&quot;黑色&quot;);<br></code></pre></td></tr></table></figure>
+<p>这种方法的问题依然是，<code>cat1</code>和<code>cat2</code>之间没有内在的联系，不能反映出它们是同一个原型对象的实例。</p>
+<h4 id="三、构造函数模式"><a href="#三、构造函数模式" class="headerlink" title="三、构造函数模式"></a>三、构造函数模式</h4><p>为了解决从原型对象生成实例的问题，Javascript提供了一个构造函数（<em>Constructor</em>）模式。</p>
+<p>所谓”构造函数”，其实就是一个普通函数，但是内部使用了<code>this</code>变量。对构造函数使用new运算符，就能生成实例，并且<code>this</code>变量会绑定在实例对象上。<br>比如，猫的原型对象现在可以这样写:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    this.name=name;<br>    this.color=color;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们现在就可以生成实例对象了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>var cat2 = new Cat(&quot;二毛&quot;,&quot;黑色&quot;);<br>alert(cat1.name); // 大毛<br>alert(cat1.color); // 黄色<br></code></pre></td></tr></table></figure>
+<p>这时<code>cat1</code>和<code>cat2</code>会自动含有一个<code>constructor</code>属性，指向它们的构造函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(cat1.constructor == Cat); //true<br>alert(cat2.constructor == Cat); //true<br></code></pre></td></tr></table></figure>
+<p>Javascript还提供了一个<code>instanceof</code>运算符，验证原型对象与实例对象之间的关系。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(cat1 instanceof Cat); //true<br>alert(cat2 instanceof Cat); //true<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><code>instanceof</code>不是驼峰命名，，类似的还有<code>typeof</code> ——来自someone</p>
+</blockquote>
+<h4 id="四、构造函数模式的问题"><a href="#四、构造函数模式的问题" class="headerlink" title="四、构造函数模式的问题"></a>四、构造函数模式的问题</h4><p>构造函数方法很好用，但是存在一个浪费内存的问题。<br>请看，我们现在为<code>Cat</code>对象添加一个不变的属性<code>type</code>（种类），再添加一个方法<code>eat</code>（吃）。那么，原型对象Cat就变成了下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    this.name = name;<br>    this.color = color;<br>    this.type = &quot;猫科动物&quot;;<br>    this.eat = function()&#123;alert(&quot;吃老鼠&quot;);&#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>还是采用同样的方法，生成实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>var cat2 = new Cat (&quot;二毛&quot;,&quot;黑色&quot;);<br>alert(cat1.type); // 猫科动物<br>cat1.eat(); // 吃老鼠<br></code></pre></td></tr></table></figure>
+<p>表面上好像没什么问题，但是实际上这样做，有一个很大的弊端。那就是对于每一个实例对象，<code>type</code>属性和<code>eat()</code>方法都是一模一样的内容，每一次生成一个实例，都必须为重复的内容，多占用一些内存。这样既不环保，也缺乏效率。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(cat1.eat == cat2.eat); //false<br></code></pre></td></tr></table></figure>
+<h4 id="五、Prototype模式"><a href="#五、Prototype模式" class="headerlink" title="五、Prototype模式"></a>五、Prototype模式</h4><p>Javascript规定，每一个构造函数都有一个<code>prototype</code>属性，指向另一个对象。这个对象的所有属性和方法，都会被构造函数的实例继承。<br>这意味着，我们<strong>可以把那些不变的属性和方法，直接定义在<code>prototype</code>对象上。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    this.name = name;<br>    this.color = color;<br>&#125;<br><br>//存储公共的属性和方法，达到所有实例共享的目的，永久不变；<br>Cat.prototype.type = &quot;猫科动物&quot;;<br>Cat.prototype.eat = function()&#123;alert(&quot;吃老鼠&quot;)&#125;;<br></code></pre></td></tr></table></figure>
+<p>然后，生成实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat1 = new Cat(&quot;大毛&quot;,&quot;黄色&quot;);<br>var cat2 = new Cat(&quot;二毛&quot;,&quot;黑色&quot;);<br>alert(cat1.type); // 猫科动物<br>cat1.eat(); // 吃老鼠<br></code></pre></td></tr></table></figure>
+<p>这时所有实例的type属性和eat()方法，其实都是同一个内存地址，指向prototype对象，因此就提高了运行效率。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(cat1.eat == cat2.eat); //true<br></code></pre></td></tr></table></figure>
+<h4 id="六、Prototype模式的验证方法"><a href="#六、Prototype模式的验证方法" class="headerlink" title="六、Prototype模式的验证方法"></a>六、Prototype模式的验证方法</h4><p>为了配合prototype属性，Javascript定义了一些辅助方法，帮助我们使用它。</p>
+<h5 id="6-1-isPrototypeOf"><a href="#6-1-isPrototypeOf" class="headerlink" title="6.1 isPrototypeOf()"></a>6.1 <code>isPrototypeOf()</code></h5><p>这个方法用来判断，某个<code>proptotype</code>对象和某个实例之间的关系。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(Cat.prototype.isPrototypeOf(cat1)); //true<br>alert(Cat.prototype.isPrototypeOf(cat2)); //true<br></code></pre></td></tr></table></figure>
+<h5 id="6-2-hasOwnProperty"><a href="#6-2-hasOwnProperty" class="headerlink" title="6.2 hasOwnProperty()"></a>6.2 <code>hasOwnProperty()</code></h5><p>每个实例对象都有一个<code>hasOwnProperty()</code>方法，用来判断某一个属性到底是本地属性，还是继承自<code>prototype</code>对象的属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(cat1.hasOwnProperty(&quot;name&quot;)); // true<br>alert(cat1.hasOwnProperty(&quot;type&quot;)); // false<br></code></pre></td></tr></table></figure>
+<h5 id="6-3-in运算符"><a href="#6-3-in运算符" class="headerlink" title="6.3 in运算符"></a>6.3 in运算符</h5><p><code>in</code>运算符可以用来判断，某个实例是否含有某个属性，不管是不是本地属性。 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">alert(&quot;name&quot; in cat1); // true<br>alert(&quot;type&quot; in cat1); // true<br></code></pre></td></tr></table></figure>
+<p><code>in</code>运算符还可以用来遍历某个对象的所有属性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">for(var prop in cat1) &#123; alert(&quot;cat1[&quot;+prop+&quot;]=&quot;+cat1[prop]); &#125;<br></code></pre></td></tr></table></figure>
+<p>未完，请继续阅读这个系列的第二部分<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html">《构造函数的继承》</a>和第三部分<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html">《非构造函数的继承》</a>。<br>（完）</p>
+<hr>
+<p>补充：</p>
+<ol>
+<li>函数声明与函数字面量<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Cat(name,color)&#123;<br>    this.name = name;<br>    this.color = color;<br>&#125;<br></code></pre></td></tr></table></figure>
+与<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Cat = function (name,color)&#123;<br>    this.name = name;<br>    this.color = color;<br>&#125;<br></code></pre></td></tr></table></figure>
+在实例化及使用时，用法相同。</li>
+<li>Json方式访问对象属性<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat = new Cat(&#x27;Command&#x27;,&#x27;black&#x27;);<br><br>//下面两种使用方式效果相同<br>alert(cat.name);<br>alert(cat[&#x27;name&#x27;]);<br></code></pre></td></tr></table></figure></li>
+<li>在第一种方式<a href="#%E5%AE%9E%E4%BE%8B%E5%AF%B9%E8%B1%A1%E5%8E%9F%E5%A7%8B%E6%A8%A1%E5%BC%8F">实例对象原始模式</a>中，其实实例与原型之间没有什么关系，如果非要扯上关系的话，，只能说『原型』和『实例』之间的格式比较相像。『实例』之间也没什么关系。。这种方式生成的对象是一次性的，无法复用，，在某种程度上，『原型』也是一个『实例』。</li>
+<li>有的博客上说<code>new</code>关键字可以省略，后来又查阅了些资料才知道，，原来真的是<del>可以省略</del>的:<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var cat = Cat(&#x27;cmd&#x27;,&#x27;black&#x27;);<br>console.log(cat);          //undefined<br>console.log(cat.name);     //Cannot read property &#x27;name&#x27; of undefined<br>console.log(window.name);  //cmd<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>对于js的new关键字，大家可以这样理解：<br><code>new</code>就是将函数内部的<code>this</code>的值，赋值给当前对象的<code>this</code>，如：<code>this.name（实例对象） = this.name（构造函数）</code><br>当没有<code>new</code>的时候，<code>this</code>就变为了<code>window</code>，也就解释了。</p>
+</blockquote>
+</li>
+</ol>
+<blockquote>
+<p>—— <a target="_blank" rel="noopener" href="http://blog.csdn.net/xi_2130/article/details/50110493">js创建对象之设计模式</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%89%8D%E7%AB%AF/" rel="tag"># 前端</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/10/2017_12_week_1st/" rel="prev" title="2017_12—第一周">
+                  <i class="fa fa-chevron-left"></i> 2017_12—第一周
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/13/2017_12_week_2nd/" rel="next" title="2017_12-第二周">
+                  2017_12-第二周 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2018-03-第三周又到周五了，，今天手头的工作差不多告一段落了，趁着热乎劲儿赶紧把这两天遇到的问题记录一下~ jQuery中$.load()动态加载页面脚本调试you know，我是一个写前端的Java程序员。。最近在做后台的数据表格页面时遇到一个问题，，大家应该都见过类似的后台点击白色框选地方的菜单项，右侧动态加载相应的内容，，每一个菜单项有一个点击事件，像这样👇 1&lt;a href&#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018_03-第3周">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="2018-03-第三周又到周五了，，今天手头的工作差不多告一段落了，趁着热乎劲儿赶紧把这两天遇到的问题记录一下~ jQuery中$.load()动态加载页面脚本调试you know，我是一个写前端的Java程序员。。最近在做后台的数据表格页面时遇到一个问题，，大家应该都见过类似的后台点击白色框选地方的菜单项，右侧动态加载相应的内容，，每一个菜单项有一个点击事件，像这样👇 1&lt;a href&#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135914-backstage.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135914-breakpoint-u.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-source-url.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar1.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar2.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar3.png">
+<meta property="article:published_time" content="2018-03-16T07:41:00.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.747Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="Source Map">
+<meta property="article:tag" content="jqGrid">
+<meta property="article:tag" content="Chrome DevTools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135914-backstage.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/","path":"2018/03/16/2018_03_week_3rd/","title":"2018_03-第3周"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2018_03-第3周 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2018-03-%E7%AC%AC%E4%B8%89%E5%91%A8"><span class="nav-number">1.</span> <span class="nav-text">2018-03-第三周</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jQuery%E4%B8%AD-load-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E9%A1%B5%E9%9D%A2%E8%84%9A%E6%9C%AC%E8%B0%83%E8%AF%95"><span class="nav-number">1.1.</span> <span class="nav-text">jQuery中$.load()动态加载页面脚本调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jqGrid%E4%B8%AD%E5%B0%86%E5%AF%BC%E8%88%AA%E6%A0%8F%E5%A4%8D%E5%88%B6%E5%88%B0%E8%A1%A8%E6%A0%BC%E4%B8%8A%E6%96%B9"><span class="nav-number">1.2.</span> <span class="nav-text">jqGrid中将导航栏复制到表格上方</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B3%E4%BA%8ESource-Map%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">关于Source Map动态调试</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B3%E4%BA%8EjqGrid%E5%AF%BC%E8%88%AA%E6%A0%8F%E5%A4%8D%E5%88%B6%E5%88%B0%E8%A1%A8%E6%A0%BC%E4%B8%8A%E6%96%B9"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">关于jqGrid导航栏复制到表格上方</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2018_03-第3周 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2018_03-第3周
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-03-16 15:41:00" itemprop="dateCreated datePublished" datetime="2018-03-16T15:41:00+08:00">2018-03-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%91%A8%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">周记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="2018-03-第三周"><a href="#2018-03-第三周" class="headerlink" title="2018-03-第三周"></a>2018-03-第三周</h3><p>又到周五了，，今天手头的工作差不多告一段落了，趁着热乎劲儿赶紧把这两天遇到的问题记录一下~</p>
+<h4 id="jQuery中-load-动态加载页面脚本调试"><a href="#jQuery中-load-动态加载页面脚本调试" class="headerlink" title="jQuery中$.load()动态加载页面脚本调试"></a>jQuery中$.load()动态加载页面脚本调试</h4><p><span id="dynamicDebug"></span><br>you know，我是一个写前端的Java程序员。。<br>最近在做后台的数据表格页面时遇到一个问题，，大家应该都见过类似的后台<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135914-backstage.png" alt="后台页面"><br>点击白色框选地方的菜单项，右侧动态加载相应的内容，，每一个菜单项有一个点击事件，像这样👇</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;javascript:clickMenu(&#x27;#(menu.url)&#x27;)&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// url为相对路径地址，最终指向某个html页面</span><br><span class="hljs-comment">// #mainContent指向右侧主页面</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">clickMenu</span>(<span class="hljs-params">url</span>)&#123;<br>    $(<span class="hljs-string">&#x27;#mainContent&#x27;</span>).<span class="hljs-title function_">load</span>(url);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>正常来说，如果我们想要调试页面中的JavaScript代码，只需要 Cmd+Alt+I 调出Chrome DevTools，选择 source，找到相应的代码段，添加断点即可。但是，，以$.load()的方式动态加载的页面在Source中根本无法找到。。这 就尴尬了！！！难道只能在页面javaScript代码段中手码<code>debugger</code>？！惨无人道！一点也不优雅！！<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135914-breakpoint-u.png" alt="常规打断点"></p>
+<p>一番求索，终于看到了希望，，在<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg">Stack Overflow</a>[^1]找到了类似的问题，，顺藤摸瓜，找到了一个唤作<a target="_blank" rel="noopener" href="https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/#toc-sourceurl">sourceURL</a>的东东，,只需要在要载入的页面中javascript代码添加一句<code>//# sourceURL=jsName.js</code>即可，然后就可以在 source 中找到了，接下来就可以愉快的打断点啦~👇<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-source-url.png" alt="sourceURL"></p>
+<p>另外，，我们可以再深入挖掘一下下，比如了解下阮一峰老师写的<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html">JavaScript Source Map 详解</a>，看到日期着实尴尬了下，2013年就有了，而我2018年才第一次见到，，介，也许就是传说中的差距。。</p>
+<h4 id="jqGrid中将导航栏复制到表格上方"><a href="#jqGrid中将导航栏复制到表格上方" class="headerlink" title="jqGrid中将导航栏复制到表格上方"></a>jqGrid中将导航栏复制到表格上方</h4><p>在<a href="#dynamicDebug">jQuery中$.load()动态加载页面脚本调试</a>中的第一张偏中，主页面表格左下角的导航栏是一些常见的操作，比如添加、删除、编辑、搜索和刷新，，但是放在左下角的话，着实不太方便。控制好表格的高度还好一些，不用像下滑动直接就能在左下角找到这些操作入口。但是，如果控制不好高度的话，还要将页面滑到底部，，这体验，相当不好，，如果用户首次登陆后台的话，可能会懵『卧槽，怎么添加数据？！！咋操作？？？』。我一直觉得不需要产品使用说明的设计才是好设计，，这样，把常用操作放在表格左上角，效果马上不一样了~</p>
+<p>在导航栏的设置项中，找到了<code>cloneToTop</code>选项，但是设置为<code>true</code>后，导航栏并没有cloneToTop..<br>在初始化设置项中找到了<code>toppager</code>，将值改为<code>true</code>之后，呦，的确上去了，，像这样<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar1.png" alt="jqgrid-toolbar-1"></p>
+<p>唯独导航栏没有上去！！！可恶，，于是又是一番求索，有成果~<br>原来，，设置<code>cloneToTop</code>的前提是<code>toppager</code>的值为<code>true</code>，，所以，接下来变成了这样👇<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar2.png" alt="jqgrid-toolbar-2"></p>
+<p>然后只需将分页和统计相关的div remove()就可以了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript">$(<span class="hljs-string">&quot;#merchantTable_toppager_center&quot;</span>).<span class="hljs-title function_">remove</span>();<br>$(<span class="hljs-string">&quot;#merchantTable_toppager_right&quot;</span>).<span class="hljs-title function_">remove</span>();<br><br><span class="hljs-comment">// 我将这两行代码放在了 loadComplete 回调函数中。</span><br></code></pre></td></tr></table></figure>
+<p><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901135915-jqgrid-toolbar3.png" alt="jqgrid-toolbar-3"></p>
+<p>完美~</p>
+<hr>
+<p>参考链接：</p>
+<h6 id="关于Source-Map动态调试"><a href="#关于Source-Map动态调试" class="headerlink" title="关于Source Map动态调试"></a>关于Source Map动态调试</h6><ol>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg">https://stackoverflow.com/questions/9092125/how-to-debug-dynamically-loaded-javascript-with-jquery-in-the-browsers-debugg</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/#toc-sourceurl">https://www.html5rocks.com/en/tutorials/developertools/sourcemaps/#toc-sourceurl</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html">http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html</a></li>
+</ol>
+<h6 id="关于jqGrid导航栏复制到表格上方"><a href="#关于jqGrid导航栏复制到表格上方" class="headerlink" title="关于jqGrid导航栏复制到表格上方"></a>关于jqGrid导航栏复制到表格上方</h6><ol>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3929896/adding-jqgrid-custom-navigation-to-top-toolbar">https://stackoverflow.com/questions/3929896/adding-jqgrid-custom-navigation-to-top-toolbar</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3552855/add-toolbar-in-the-bottom-of-the-header-using-jqgrid/3557663#3557663">https://stackoverflow.com/questions/3552855/add-toolbar-in-the-bottom-of-the-header-using-jqgrid/3557663#3557663</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Source-Map/" rel="tag"># Source Map</a>
+              <a href="/tags/jqGrid/" rel="tag"># jqGrid</a>
+              <a href="/tags/Chrome-DevTools/" rel="tag"># Chrome DevTools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/01/30/summary_of_2018_1st/" rel="prev" title="2018-01 小结">
+                  <i class="fa fa-chevron-left"></i> 2018-01 小结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/04/about_code_switch/" rel="next" title="关于语码转换">
+                  关于语码转换 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

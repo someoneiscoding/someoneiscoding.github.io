@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Context按照惯例先说上下文环境，，是这样，，公司需要做个功能:  对ERP用户和公司公众号用户做映射，然后向该用户推送相应角色的经营日报模板消息。 实现流程:1.通过微信接口生成带参二维码;2.用户用微信扫一扫功能扫描生成的带参二维码;3.获取二维码中的客户识别码和用户的openid;4.被动回复用户文本消息(附超链接),引导用户完成绑定过程。  Tips总的来说是没啥难度的，，过程还算顺利">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于『该公众号提供的服务出现故障，请稍后再试』">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="Context按照惯例先说上下文环境，，是这样，，公司需要做个功能:  对ERP用户和公司公众号用户做映射，然后向该用户推送相应角色的经营日报模板消息。 实现流程:1.通过微信接口生成带参二维码;2.用户用微信扫一扫功能扫描生成的带参二维码;3.获取二维码中的客户识别码和用户的openid;4.被动回复用户文本消息(附超链接),引导用户完成绑定过程。  Tips总的来说是没啥难度的，，过程还算顺利">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF%E6%8A%A5%E9%94%99.jpeg">
+<meta property="article:published_time" content="2018-10-11T03:54:37.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.760Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="微信">
+<meta property="article:tag" content="微信公众号">
+<meta property="article:tag" content="被动回复用户消息">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF%E6%8A%A5%E9%94%99.jpeg">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/","path":"2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/","title":"关于『该公众号提供的服务出现故障，请稍后再试』"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于『该公众号提供的服务出现故障，请稍后再试』 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Context"><span class="nav-number">1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tips"><span class="nav-number">2.</span> <span class="nav-text">Tips</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%8E%88%E6%9D%83%E6%B5%81%E7%A8%8B"><span class="nav-number">2.1.</span> <span class="nav-text">关于授权流程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#scancode-push"><span class="nav-number">2.1.1.</span> <span class="nav-text">scancode_push</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#scancode-waitmsg"><span class="nav-number">2.1.2.</span> <span class="nav-text">scancode_waitmsg</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF%E4%B8%AD%E7%9A%84%E9%93%BE%E6%8E%A5%E4%BC%98%E9%9B%85%E7%9A%84%E6%98%BE%E7%A4%BA%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">文本消息中的链接优雅的显示方式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%88%E4%BA%8E%E5%88%B0%E6%AD%A3%E9%A2%98%E5%84%BF%E4%BA%86"><span class="nav-number">3.</span> <span class="nav-text">终于到正题儿了</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/10/11/mistake_in_Wechat-public-account_passvely_reply_text_message/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于『该公众号提供的服务出现故障，请稍后再试』 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于『该公众号提供的服务出现故障，请稍后再试』
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-10-11 11:54:37" itemprop="dateCreated datePublished" datetime="2018-10-11T11:54:37+08:00">2018-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>按照惯例先说上下文环境，，<br>是这样，，公司需要做个功能:</p>
+<blockquote>
+<p>对ERP用户和公司公众号用户做映射，然后向该用户推送相应角色的经营日报模板消息。</p>
+<p>实现流程:<br>1.<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433542">通过微信接口生成带参二维码</a>;<br>2.用户用微信扫一扫功能扫描生成的带参二维码;<br>3.获取二维码中的客户识别码和用户的openid;<br>4.被动<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140543">回复用户文本消息</a>(附超链接),引导用户完成绑定过程。</p>
+</blockquote>
+<h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h4><p>总的来说是没啥难度的，，过程还算顺利。有两点值得一提，，</p>
+<h5 id="关于授权流程"><a href="#关于授权流程" class="headerlink" title="关于授权流程"></a>关于授权流程</h5><p>最开始的时候，是想让用户扫码之后直接跳转到绑定页面，完美~<br>然鹅，事实并非这样，，正常我们用浏览器、相机等APP扫描二维码的时候，如果二维码内容是链接的话，有的会直接访问，有的会提示是否访问这个链接。然而，<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141013">在微信中扫描二维码分为两种情况</a>，，</p>
+<blockquote>
+<ol>
+<li><strong>scancode_push</strong>：扫码推事件用户点击按钮后，微信客户端将调起扫一扫工具，完成扫码操作后显示扫描结果（如果是URL，将进入URL），且会将扫码的结果传给开发者，开发者可以下发消息。</li>
+<li><strong>scancode_waitmsg</strong>：扫码推事件且弹出“消息接收中”提示框用户点击按钮后，微信客户端将调起扫一扫工具，完成扫码操作后，将扫码的结果传给开发者，同时收起扫一扫工具，然后弹出“消息接收中”提示框，随后可能会收到开发者下发的消息。</li>
+</ol>
+</blockquote>
+<h6 id="scancode-push"><a href="#scancode-push" class="headerlink" title="scancode_push"></a>scancode_push</h6><p>倘若我们使用 scancode_push 的方式，，OK，如果二维码内容是URL的话，可以直接访问。但如此，，我们就不能使用微信生成带参二维码的接口生成二维码了，，因为，这种方式生成的二维码内容本质上是微信的链接:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;ticket&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;gQH47joAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL2taZ2Z3TVRtNzJXV1Brb3ZhYmJJAAIEZ23sUwMEmm</span><br><span class="hljs-string">3sUw==&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;expire_seconds&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">60</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;http://weixin.qq.com/q/kZgfwMTm72WWPkovabbI&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>ticket: 获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码。<br>expire_seconds: 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天）。<br><strong>url: 二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片</strong></p>
+</blockquote>
+<p>访问 URL 的链接无论如何是不能指向我们的绑定页面的。PASS！<br>那如果用其他工具把指向绑定页面的链接做成二维码呢？如此就可以访问页面了，，但是！！我们就获取不到用户的OpenID了。。因为，亲测这种方式是用户先访问页面(页面已然渲染好了)，然后下发通知(获取到openid)，，这样，页面还是无法获取到openid。。</p>
+<h6 id="scancode-waitmsg"><a href="#scancode-waitmsg" class="headerlink" title="scancode_waitmsg"></a>scancode_waitmsg</h6><p>看样子只能使用 scancode_waitmsg，这种方式既可以获取客户识别码，又可以获取到用户openid，，然鹅，之后只能下发消息，不能直接跳转到指定页面。在一堆汉字文本中显示链接真的好吗？！<br>就在这时，，【花点时间】给我推送消息了(其实我更喜欢『花加』,笑哭)。同样是文本消息，但是有超链接！！</p>
+<h5 id="文本消息中的链接优雅的显示方式"><a href="#文本消息中的链接优雅的显示方式" class="headerlink" title="文本消息中的链接优雅的显示方式"></a>文本消息中的链接优雅的显示方式</h5><p>对，，就是超链接，而不是赤果果的将网址堆在一堆汉字中。</p>
+<p>实现起来很简单，，就是把链接放在 a 标签的 href 属性中，剩下的就是拼接字符串儿了。。</p>
+<h4 id="终于到正题儿了"><a href="#终于到正题儿了" class="headerlink" title="终于到正题儿了"></a>终于到正题儿了</h4><p>终于，，然而，为什么每次收到文本消息前总是报错？<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131835-%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E6%96%87%E6%9C%AC%E6%B6%88%E6%81%AF%E6%8A%A5%E9%94%99.jpeg" alt="被动回复文本消息"></p>
+<p>本以为是ngrok不稳定的原因，，但报错问题出现的太规律了，应该不是它(事实上它太稳定了，感谢开源！)。<br>直到看到了<a target="_blank" rel="noopener" href="https://blog.csdn.net/buoll/article/details/54150865">微信开发出现“该公众号暂时无法提供服务，请稍后再试”的坑</a>，虽然最终遇到的问题不一样，但还是收到启发了，，那就是『第三方平台授权』的问题。因为我司之前做模板小程序的时候真的有将『北京众阳软件』公众号授权给『众阳宜商信息技术有限公司』第三方平台，，做授权测试嘛。但我记得后来改为只授权公众号的『开放平台账号管理权限』，其他权限都取消了呀？！咦，，登陆公众号微信后台之后，在『功能』-&gt;『自动回复』&gt;&gt;『被关注回复』中看到有第三方平台授权管理。哦，原来还有其他第三方平台，，唤作『魔盒』什么的。其中就将公众号的『消息回复』权限。怪不得，，每次被动回复前，先向『魔盒』服务器下发消息，失败后再向公众号服务器地址下发消息。所以，，每次所谓的服务器出现故障，是魔盒的问题！</p>
+<p>Binggo！！取消授权之后，一切都那么清净~</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/" rel="tag"># 微信</a>
+              <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7/" rel="tag"># 微信公众号</a>
+              <a href="/tags/%E8%A2%AB%E5%8A%A8%E5%9B%9E%E5%A4%8D%E7%94%A8%E6%88%B7%E6%B6%88%E6%81%AF/" rel="tag"># 被动回复用户消息</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/25/WeChat_third_platform/" rel="prev" title="微信第三方平台">
+                  <i class="fa fa-chevron-left"></i> 微信第三方平台
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/11/10/about_nginx_log_analyse/" rel="next" title="关于 nginx 日志分析">
+                  关于 nginx 日志分析 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

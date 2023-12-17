@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="其实，log4j就可以实现邮件报警功能，只需要简单的配置即可。其实，不光可以发邮件，还可以通过sockets将日志文件发送到网络中的指定地址。具体查看log4j的各个appender就好啦。error级别的日志发送邮件配置👇 123456789101112131415# Error级别的日志发送邮件log4j.appender.MAIL&#x3D;org.apache.log4j.net.SMTPAppe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="邮件报警的简单实现">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/09/20/simple_implementation_of_email_early_warning/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="其实，log4j就可以实现邮件报警功能，只需要简单的配置即可。其实，不光可以发邮件，还可以通过sockets将日志文件发送到网络中的指定地址。具体查看log4j的各个appender就好啦。error级别的日志发送邮件配置👇 123456789101112131415# Error级别的日志发送邮件log4j.appender.MAIL&#x3D;org.apache.log4j.net.SMTPAppe">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-20T14:54:00.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.761Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="邮件预警">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/09/20/simple_implementation_of_email_early_warning/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/09/20/simple_implementation_of_email_early_warning/","path":"2018/09/20/simple_implementation_of_email_early_warning/","title":"邮件报警的简单实现"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>邮件报警的简单实现 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Context"><span class="nav-number">1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%A4%B4%E9%9A%BE"><span class="nav-number">2.</span> <span class="nav-text">开头难</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%B3%E6%83%B3%E5%85%B6%E4%BB%96%E5%8A%9E%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">想想其他办法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/09/20/simple_implementation_of_email_early_warning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="邮件报警的简单实现 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          邮件报警的简单实现
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-20 22:54:00" itemprop="dateCreated datePublished" datetime="2018-09-20T22:54:00+08:00">2018-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>其实，log4j就可以实现邮件报警功能，只需要简单的配置即可。其实，不光可以发邮件，还可以通过sockets将日志文件发送到网络中的指定地址。具体查看log4j的各个appender就好啦。error级别的日志发送邮件配置👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># Error级别的日志发送邮件<br>log4j.appender.MAIL=org.apache.log4j.net.SMTPAppender<br>log4j.appender.MAIL.Threshold=ERROR<br>log4j.appender.MAIL.BufferSize=10<br>log4j.appender.MAIL.From=189********@163.com<br>log4j.appender.MAIL.SMTPHost=smtp.163.com<br>log4j.appender.MAIL.Subject=Error Message from *** Project<br># 可以发送多个用户中间用,去分隔<br>log4j.appender.MAIL.To=destination0@qq.com,destination1@qq.com<br># 邮箱帐号<br>log4j.appender.MAIL.SMTPUsername=189********@163.com<br># 邮箱密码<br>log4j.appender.MAIL.SMTPPassword=authcode<br>log4j.appender.MAIL.layout=org.apache.log4j.PatternLayout<br>log4j.appender.MAIL.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH\:mm\:ss&#125; [%c]-[%p] [%t] (%F\:%L) %X&#123;merchant_id&#125; -&gt;%m %n<br></code></pre></td></tr></table></figure>
+
+
+<p><strong>(PS：本篇内容无具体实现，只有实现思路)</strong></p>
+<p>(PPS: PS 是 postscript 的缩写，笑哭)</p>
+<h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>我司主力项目托管在阿里云服务器，有些业务需要调用客户服务器的一些接口(以HTTP请求的方式，，理论上效率并不是非常好，传说使用netty会好一些，挖坑待实现)。主力项目主要做统筹工作，类似微信开放平台中的第三方平台，然后客户授权相关权限给我司，然后我司代实现其业务逻辑，，但商品数据存放在用户服务器的数据库中，倘若将所有用户的商品数据同步到阿里云线上，一则是没必要，二则所有客户的商品数据也是不小的体量，三则也可能会有客户不希望将自己的数据代托管，，种种。所以采用的这种方式。</p>
+<p>于是，需求出现了，，为了保证阿里云服务器中的项目与客户服务器通讯的可靠性，需保证调用出现异常时，开发人员及时知晓并fix bug。所以异常报警势在必行。</p>
+<p>有点意思，，让我来~</p>
+<h4 id="开头难"><a href="#开头难" class="headerlink" title="开头难"></a>开头难</h4><p>于是，开始网上了解相关解决方案，，得到的大部分都服务器状态监测相关，比如<em>zabbix</em>、<em>nagios</em>(虽然不知道这俩货具体是啥。。待我用自己的服务器练练手先)。看上去比较『重』，，因为我目前只需要邮件报警的功能，，主要是我司服务器是 Windows 的。。</p>
+<p>好吧，这条路暂时走不通了。</p>
+<h4 id="想想其他办法"><a href="#想想其他办法" class="headerlink" title="想想其他办法"></a>想想其他办法</h4><p>异常报警，，那肯定是捕捉到异常之后的处理，所以应该在 catch 块儿中实现相关报警代码就行。按照<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_36751895/article/details/79411780">java 使用JavaMail 做异常邮件报警 ，支持163邮箱、outlook邮箱</a>中代码实现即可。后来发现项目框架中有相关的 MailUtil 工具类，倒是省事儿。虽然上面博客中的代码并未复用，但至少让我看到了成功的希望。然而，，实现<em>RuntimeException</em>，然后捕捉到异常后抛出新实现的异常类，，真的有必要么??我在捕捉到异常之后，为什么不直接发送邮件，反而继续向上层抛异常？上层还有未捕获异常的处理？？至少我的项目中没有；另外，，如果在每个方法中去<code>try&#123;&#125;catch(e)&#123;&#125;</code>，需要改动每个相关接口代码，太不优雅了。。</p>
+<p>有没有一种一劳永逸的方法，，一处设置，处处生效？？我首先想到的是过滤器，，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">try</span>&#123;<br>   doFilter();<br>&#125;<span class="hljs-keyword">catch</span>(Exception e)&#123;<br>  e.printStackTrace();<br>  <span class="hljs-comment">// 邮件报警</span><br>  <span class="hljs-comment">// 短信报警</span><br>  <span class="hljs-comment">// bulabula</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>但实现之后，发现异常并没有被抛出到过滤器中，，直接被其他逻辑catch捕捉处理了，，额。那就在 Route(或Controller) 级别的拦截器中处理，，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">try</span>&#123;<br>  invocation.invoke();<br>&#125;<span class="hljs-keyword">catch</span>(Exception e)&#123;<br>  <span class="hljs-comment">// 报警bulabula</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>完美！！然鹅，，业务中调用客户服务器中的接口需返回值，丫的！！<br>　<br>另外，所有与客户服务器交互的方法全被写在了 API.java 中，，其他业务中直接静态调用相应的方法即可。所以，用 Controller 级别的拦截器还不行。。</p>
+<p>权衡之下，最终以 action 为单位，自定义 catch 逻辑，返回相应的错误代码调用封装好的发送报警邮件的方法。同理，短信报警及其他报警形式。具体实现其实没什么难的，这里梳理下思路。</p>
+<hr>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_36751895/article/details/79411780">java 使用JavaMail 做异常邮件报警 ，支持163邮箱、outlook邮箱</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%82%AE%E4%BB%B6%E9%A2%84%E8%AD%A6/" rel="tag"># 邮件预警</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/07/27/ideal_life/" rel="prev" title="理想的生活">
+                  <i class="fa fa-chevron-left"></i> 理想的生活
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/25/WeChat_third_platform/" rel="next" title="微信第三方平台">
+                  微信第三方平台 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

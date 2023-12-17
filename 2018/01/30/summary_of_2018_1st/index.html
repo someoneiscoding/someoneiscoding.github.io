@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="2018年1月份小结最近一直在忙小程序的事情，也是公司的新项目。因为之前小程序的入口一直很深，使用起来比较麻烦，所以也没重视起来，，但是今年1月份，微信突然更新之后，有了『社交』小游戏–跳一跳，在朋友圈好一波刷屏。但对于我们来说，，最惹眼球的莫过于微信首页下拉呼出recent小程序。如此一来，小程序的使用场景顿时多了起来，公司也开始重视起来。 其实之前自己也一直想做一个小程序的，用来收集自己的位置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018-01 小结">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="2018年1月份小结最近一直在忙小程序的事情，也是公司的新项目。因为之前小程序的入口一直很深，使用起来比较麻烦，所以也没重视起来，，但是今年1月份，微信突然更新之后，有了『社交』小游戏–跳一跳，在朋友圈好一波刷屏。但对于我们来说，，最惹眼球的莫过于微信首页下拉呼出recent小程序。如此一来，小程序的使用场景顿时多了起来，公司也开始重视起来。 其实之前自己也一直想做一个小程序的，用来收集自己的位置">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-01-30T13:49:18.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.762Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="nginx">
+<meta property="article:tag" content="mongodb">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/","path":"2018/01/30/summary_of_2018_1st/","title":"2018-01 小结"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2018-01 小结 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2018%E5%B9%B41%E6%9C%88%E4%BB%BD%E5%B0%8F%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">2018年1月份小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2018-01 小结 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2018-01 小结
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-01-30 21:49:18" itemprop="dateCreated datePublished" datetime="2018-01-30T21:49:18+08:00">2018-01-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="2018年1月份小结"><a href="#2018年1月份小结" class="headerlink" title="2018年1月份小结"></a>2018年1月份小结</h3><p>最近一直在忙小程序的事情，也是公司的新项目。因为之前小程序的入口一直很深，使用起来比较麻烦，所以也没重视起来，，但是今年1月份，微信突然更新之后，有了『社交』小游戏–跳一跳，在朋友圈好一波刷屏。但对于我们来说，，最惹眼球的莫过于微信首页下拉呼出recent小程序。如此一来，小程序的使用场景顿时多了起来，公司也开始重视起来。</p>
+<p>其实之前自己也一直想做一个小程序的，用来收集自己的位置信息，，当然位置数据是自己主动提交的。如此，就可以做阶段性的总结了，比如生成个全年范围内的热力图什么的，看看自己过去一年中都在什么地方消耗时间了~</p>
+<p>其实，还想用小程序做另外一个项目的，关于LBS的，，已经把后台框架搭起来了，使用的Spring + Spring MVC + Mongodb；Spring 和 Spring MVC已经好久没用过(<del>好吧，，Spring和Spring MVC第一次用，在学校时老师还没教，就出来找工作了</del>)了，Mongodb更是从来没有接触过，所以一切从头开始。做完上个用纯Servlet搭的项目，感觉思维已经被禁锢了。。<br>不过，这个框架也挺有意思的，好像做游戏开发的都这样做，，整个项目只有一个Servlet，每个请求都带有一个messageId参数，不同的 messageId 代表不同的 Controler (中的不同的业务)，message中包含了所有的请求信息和用户的session，然后将message实例注入到相应messageId对应的接口所在的Controler中进行操作。</p>
+<blockquote>
+<p>用户请求 -》装配message -》将message以动态代理的方式注入相应的Controler -》根据message中的messageId，找到对应的接口 -》执行业务逻辑代码</p>
+</blockquote>
+<p>第一次见到这种『框架』，还是蛮受启发的。因为是某前辈程序员自己搭的，就是坑多了点儿，耦合也比较严重。。</p>
+<p>关于Mongodb，，当初学 MySQL 的时候，老师提到这是一种关系型数据库，与之相对的还有『非关系型数据库』，即NoSQL(全称Not Only SQL)。当时提到了Mongodb，觉得这个数据库名字特别好听，印象还挺深刻。。但具体它是什么，完全没概念。本来计划继续用 MySQL 的，但是中间想到一个问题，，怎么用 MySQL 在一个字段中存储未知数量的经纬度信息呢？？直接用逗号拼接？觉得不够优雅。。然后在网上看到有网友说可以尝试 Mongodb，而且 Mongodb 中还有原生的地理位置索引，相当方便。于是，就想尝试一下，，欧耶！新的训练集~刷了一遍Mongodb的入门视频，又刷了一遍SSM(Spring + Spring MVC + Mongodb)框架整合视频，然后开始依样画葫芦。有几点记录下：</p>
+<ol>
+<li>用@Autowried注入，但在调用相关实例的时候总是报错，具体报错信息记不得了，类似<code>org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name &#39;locationController&#39;: Unsatisfied dependency expressed through field &#39;locationDao&#39;;</code>网上几乎所有的方法都试了，还是不行，各种心灰意冷，，最后在一篇博客中得到启发，，那篇博客好像在讲注入什么的，还通过控制台的日志信息验证自己的想法。噢？然后我也去盯控制台，发现项目启动的时候没有关于Beans注入成功的信息，，丫丫！然后继续往上捣，发现applicationContext.xml没有被正确载入。。。。。重新修改web.xml配置文件路径，搞定！<br><code>Loading XML bean definitions from class path resource [applicationContext.xml]</code><br>…<br><code>Root WebApplicationContext: initialization completed in 1684 ms</code></li>
+<li>配置文件中关于 Mongodb 数据库连接的地方，同样，，网上的方法几乎都试了，还是不行。主要是配置文件中提示<code>cvc-complex-type.2.4.c: The matching wildcard is strict, but no declaration can be found for element &#39;mongo:mongo&#39;.</code>最后实在没辙，去 Mongodb 官网翻doc，，<strong>找到相应jar包的版本</strong>，发现人家用的<code>&lt;mongo:mongo-client&gt;</code>标签，不是<code>&lt;mongo:mongo&gt;</code>。。因为这段配置是在网上找的，而且都用的这个标签。。但我一般都会用最新版本的jar包，，好吧。</li>
+</ol>
+<p>别的还算顺利，，从搭环境到我把第一条位置信息持久化的Mongodb中已经两天了。。。但收获也是满满~</p>
+<p>关于微信小程序，，最近好像一直都在做关于前端的东西，博客中最近也分享的大多也是js的内容，但我明明是Java工程师。。。在上面的项目中遇到一个问题，，假如我想定时向数据库中插入位置信息，那常规实现起来可能是这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-built_in">setInterval</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>  wx.<span class="hljs-title function_">getLocation</span>(&#123;<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;wgs84&#x27;</span>,<br>      <span class="hljs-attr">success</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>) &#123;<br>        wx.<span class="hljs-title function_">getLocation</span>(&#123;<br>          <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;&#x27;</span>,<br>          <span class="hljs-attr">data</span>: &#123;<br>            ...<br>          &#125;,<br>          <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;json&#x27;</span>,<br>          <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,<br>          <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(res.<span class="hljs-property">data</span>);<br>          &#125;<br>        &#125;);<br>      &#125;<br>    &#125;);<br>&#125;,<span class="hljs-number">10000</span>);<br></code></pre></td></tr></table></figure>
+<p>这样的代码还是很可怕的，很容易陷入回调深渊。。想用<code>Promise</code>或者<code>async</code>和<code>await</code>，又怕某些手机支持到了ES5，于是想着有没有什么很好的解决办法，最好微信小程序也有个框架什么的。在网上做了做功课，发现了腾讯官方在Github上开源的一个框架<code>wepy</code>(<a target="_blank" rel="noopener" href="https://tencent.github.io/wepy/document.html#/">微信小程序组件化开发框架WePY官方文档</a>)。然后又开始做功课，看到文档上说是基于<a target="_blank" rel="noopener" href="https://cn.vuejs.org/">Vue.js</a>框架，OK，，又去刷Vue的视频。在讲到Vue中的v-model的时候，好像明白一点什么是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/MVVM/96310?fr=aladdin">MVVM</a>框架了。回过头再学wepy，，它像一个框架，又像一个翻译器。说到这儿，感觉又有点像本站所用<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">Hexo</a>，是一个博客框架。前者将.wyp文件翻译成<code>[.wxml,.wxss,.js,.json]</code>，后者将.md文件翻译成.html文件。这两者应该都是基于node.js。想想以前做前端项目时，完全不是一样的感觉。到目前为止，因为不了解node.js，，我只能说，嗯，有点意思~</p>
+<p>另外，，因为小程序代码包不能超过2M，所以今天尝试将目录中的静态资源文件放到服务器中，以节省空间。首先想到的是nginx，公司用的坑爹windows server 2008。事实证明的确坑爹，，已经可以在浏览器中访问本地图片列表了，但是点到某个具体的文件时就开始缓慢请求，最后报504错误。在自己Mac上的nginx模拟了下，虽然中间出了些问题，但最终还是解决了。只能将静态资源放到了tomcat中，不够优雅。。得改。<br>关于在mac中遇到问题，location中alias和root的区别，，</p>
+<blockquote>
+<p><strong>alias</strong></p>
+<hr>
+<p>syntax: alias file-path|directory-path;<br>default: no &#x2F;&#x2F; 无默认值<br>context: location &#x2F;&#x2F; 上下文环境，处于location配置项中<br>This directive assigns a path to be used for the indicated location. Note that it may look similar to the</p>
+<blockquote>
+<p><em><strong>root</strong></em></p>
+</blockquote>
+<p>&#x2F;&#x2F; 这条命令为表明的位置分配了一个路径。需要注意的是，alias看起来有些像root<br>directive, but the document root doesn’t change, just the file system path used for the request.<br>&#x2F;&#x2F; ？？？，但是文档根路径不会变，仅仅用来响应请求要访问的文件系统路径<br>For example:<br>location &#x2F;i&#x2F; {<br>  alias &#x2F;spool&#x2F;w3&#x2F;images&#x2F;;<br>}<br>The request “&#x2F;i&#x2F;top.gif” will return the file “&#x2F;spool&#x2F;w3&#x2F;images&#x2F;top.gif”.<br>&#x2F;&#x2F; “&#x2F;i&#x2F;top.gif”的请求实际得到的是”&#x2F;spool&#x2F;w3&#x2F;images&#x2F;top.gif”</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><strong>root</strong></p>
+<hr>
+<p>syntax: root path<br>default: root html<br>context: http, server, location, if in location<br>root specifies the document root for the requests. For example, with this configuration<br>location  &#x2F;i&#x2F; {<br>  root  &#x2F;spool&#x2F;w3;<br>}<br>A request for “&#x2F;i&#x2F;top.gif” will return the file “&#x2F;spool&#x2F;w3&#x2F;i&#x2F;top.gif”. You can use variables in the argument.<br>note: Keep in mind that the root will still append the directory to the request so that a request for “&#x2F;i&#x2F;top.gif” will not look in “&#x2F;spool&#x2F;w3&#x2F;top.gif” like might happen in an Apache-like alias configuration where the location match itself is dropped. Use the</p>
+<blockquote>
+<p>alias</p>
+</blockquote>
+<p>directive to achieve the Apache-like functionality.　<br>&#x2F;&#x2F; 记住，请求路径仍然会拼接在root所代指的路径后，所以请求”&#x2F;i&#x2F;top.gif”不会在”&#x2F;spool&#x2F;w3&#x2F;top.gif”路径下寻找；类似的像类Apache服务器中的配置???😂???,在类Apache服务器中使用alias来实现类似的功能。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"># nginx</a>
+              <a href="/tags/mongodb/" rel="tag"># mongodb</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/01/20/time_flies/" rel="prev" title="比尔盖茨">
+                  <i class="fa fa-chevron-left"></i> 比尔盖茨
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/03/16/2018_03_week_3rd/" rel="next" title="2018_03-第3周">
+                  2018_03-第3周 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Context最近一直没有更新文章是因为过得很充实，，一方面，现在在做小程序的线上商城，小程序这边倒没什么难的，难的是服务器端怎么设计架构，涉及到不同的客户,不同的客户门店组织架构又不一样，硬件条件也不一样，商品也不一样，还需要跟 ERP 的同事进行沟通。。另一方面，一直计划在房子合同到期(2019-04-04)之后换工作，所以积极准备面试，查漏补缺什么的。去年12月份时候，买了『深入理解Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于微观下i++的并发执行">
+<meta property="og:url" content="https://www.someoneiscoding.com/2019/03/08/about_java_microcosmic_i++/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="Context最近一直没有更新文章是因为过得很充实，，一方面，现在在做小程序的线上商城，小程序这边倒没什么难的，难的是服务器端怎么设计架构，涉及到不同的客户,不同的客户门店组织架构又不一样，硬件条件也不一样，商品也不一样，还需要跟 ERP 的同事进行沟通。。另一方面，一直计划在房子合同到期(2019-04-04)之后换工作，所以积极准备面试，查漏补缺什么的。去年12月份时候，买了『深入理解Java">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-%E5%A4%84%E7%90%86%E5%99%A8%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98%E4%B8%BB%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-java%E7%BA%BF%E7%A8%8B%E3%80%81%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E3%80%81%E4%B8%BB%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-%E5%86%85%E5%AD%98%E9%97%B4%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-MESI%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B.png">
+<meta property="article:published_time" content="2019-03-08T14:22:22.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.755Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="线程安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-%E5%A4%84%E7%90%86%E5%99%A8%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98%E4%B8%BB%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%E5%85%B3%E7%B3%BB.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2019/03/08/about_java_microcosmic_i++/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2019/03/08/about_java_microcosmic_i++/","path":"2019/03/08/about_java_microcosmic_i++/","title":"关于微观下i++的并发执行"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于微观下i++的并发执行 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Context"><span class="nav-number">1.</span> <span class="nav-text">Context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">Java内存模型与线程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A1%AC%E4%BB%B6%E7%9A%84%E6%95%88%E7%8E%87%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">硬件的效率与一致性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">Java内存模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#volatile%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">2.3.</span> <span class="nav-text">volatile关键字</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2019/03/08/about_java_microcosmic_i++/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于微观下i++的并发执行 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于微观下i++的并发执行
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-08 22:22:22" itemprop="dateCreated datePublished" datetime="2019-03-08T22:22:22+08:00">2019-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>最近一直没有更新文章是因为过得很充实，，<br>一方面，现在在做小程序的线上商城，小程序这边倒没什么难的，难的是服务器端怎么设计架构，涉及到不同的客户,不同的客户门店组织架构又不一样，硬件条件也不一样，商品也不一样，还需要跟 ERP 的同事进行沟通。。<br>另一方面，一直计划在房子合同到期(2019-04-04)之后换工作，所以积极准备面试，查漏补缺什么的。去年12月份时候，买了『深入理解Java虚拟机』和『Java并发编程的艺术』。前者全是干货，干到没法儿写博客做笔记，否则就是在照搬书上的内容了。后者，，额，有点晦涩，没有读下去的欲望，然后就放在省图计算机科学分类下的书架上了，嗯，上周末去省图发现那本书已经不见了🤣。<br>对了，与此同时，，发现了 vue-element-admin 框架，一直想试试 webpack，然后就在不忙的时候慢慢重构现有的后台页面。用封装好的组件写页面真省心，爽的飞起~</p>
+<p>嗯，，今天的主要内容来自『深入理解Java虚拟机』的第五部分第一章–<strong>Java内存模型与线程</strong>。</p>
+<p>这是第二次读这一部分了，，第一次读的时候大水漫灌囫囵吞枣，全局把握(大误)。这次读的时候主要的是抠细节，温故知新，受益匪浅！下面进入正题儿~</p>
+<h4 id="Java内存模型与线程"><a href="#Java内存模型与线程" class="headerlink" title="Java内存模型与线程"></a>Java内存模型与线程</h4><h5 id="硬件的效率与一致性"><a href="#硬件的效率与一致性" class="headerlink" title="硬件的效率与一致性"></a>硬件的效率与一致性</h5><blockquote>
+<p>由于计算机的存储设备与处理器的运算速度有几个量级的差距，所以<strong>现代计算机系统都不得不加入一层读写速度尽可能接近处理器运算速度的高速缓存(Cache)来作为内存与处理器之间的缓冲</strong>：将运算需要使用的数据复制到缓存中，让运算能快速进行，当运算结束后再从缓存同步回内存之中，这样处理器就无须等待缓慢的内存读写了。</p>
+</blockquote>
+<blockquote>
+<p><strong>基于高速缓存的存储交互很好的解决了处理器与内存之间的速度矛盾，但是也为计算机系统带来更高的复杂度，因为它引入了一个新的问题：缓存一致性(Cache Coherence)。</strong>在多处理器系统中，每个处理器都有自己的高速缓存，而他们又共享同一主存。</p>
+</blockquote>
+<blockquote>
+<p>– Page 361</p>
+</blockquote>
+<p><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-%E5%A4%84%E7%90%86%E5%99%A8%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98%E4%B8%BB%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92%E5%85%B3%E7%B3%BB.png" alt="处理器、高速缓存、主内存间的交互关系"></p>
+<h5 id="Java内存模型"><a href="#Java内存模型" class="headerlink" title="Java内存模型"></a>Java内存模型</h5><blockquote>
+<p><strong>Java 虚拟规范试图定义一种 Java 内存模型 (Java Memory Model, JMM) 来屏蔽掉各种硬件和操作系统的内存访问差异</strong>，以实现让 Java 程序在各种平台下都能达到一致的内存访问效果。</p>
+</blockquote>
+<blockquote>
+<p><strong>Java 内存模型的主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节。</strong>　</p>
+</blockquote>
+<blockquote>
+<p><strong>Java 内存模型规定了所有的变量都存储在主内存(Main Memory)中，每条线程还有自己的工作内存(Working Memory)，线程中保存了被该线程使用到的变量的主内存的副本拷贝，线程对变量的所有操作(读取、赋值等)都必须在工作内存中进行，而不能直接读写主内存中的变量。</strong>不同线程之间也无法直接访问对方工作内存中的变量，线程间变量值的传递均需要通过主内存来完成。<br>– Page 362-363<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-java%E7%BA%BF%E7%A8%8B%E3%80%81%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E3%80%81%E4%B8%BB%E5%86%85%E5%AD%98%E9%97%B4%E7%9A%84%E4%BA%A4%E4%BA%92.png" alt="Java线程、工作内存、主内存间的交互关系"></p>
+</blockquote>
+<blockquote>
+<p>关于主内存和工作内存之间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存之类的实现细节，Java 内存模型中定义了一下 8 种操作来完成，虚拟机实现时必须保证下面提及的每一种操作都是原子的、不可再分的( double 和 long 例外)。</p>
+<ul>
+<li><span id="lock"><strong>lock</strong>(锁定)</span>：作用于主内存的变量，它把一个变量标识为一条线程独占的状态。</li>
+<li><span id="unlock"><strong>unlock</strong>(解锁)</span>：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定。</li>
+<li><strong>read</strong>(读取)：作用于主内存的变量，它把一个变量的值从主内存传输到线程的工作内存中，以便随后的 load 动作使用。</li>
+<li><strong>load</strong>(载入): 作用于工作内存的变量，它把read操作的从主内存中得到的变量值放入工作的变量副本中。</li>
+<li><strong>use</strong>(使用)：作用于工作内存的变量，它把工作内存中的一个变量的值传递给执行引擎，每当虚拟机遇到一个需要使用到变量的值的字节码指令时将会执行这个操作。</li>
+<li><strong>assign</strong>(赋值)：作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存中的变量，每当虚拟机遇到一个给变量赋值的字节码指令时执行这个操作。</li>
+<li><strong>write</strong>(写入)：作用于主内存的变量，它把 store 操作从工作内存中得到的变量的值放入主内存的变量中。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>– Page 365</p>
+</blockquote>
+<p>需要注意的是，上面👆提及的每一种操作都是原子的，，而不是『从内存中读取变量，然后修改变量，然后回写到内存』这整个过程是原子的。这意味着多线程情况下，不加干预时上面8种操作在线程间是交替进行的。如对主内存中的变量a、b 进行访问时，一种可能出现的顺序是 read a, read b, load b, load a..<br><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-%E5%86%85%E5%AD%98%E9%97%B4%E4%BA%A4%E4%BA%92%E6%93%8D%E4%BD%9C.png" alt="@内存间交互操作"></p>
+<h5 id="volatile关键字"><a href="#volatile关键字" class="headerlink" title="volatile关键字"></a>volatile关键字</h5><blockquote>
+<p>当一个变量定义为 volatile 之后，它将具备两种特性，第一是保证此变量对所有线程的可见性，这里“可见性”是指当一条线程修改了这个变量的值，新值对于其他线程来说是立即得知的。而普通变量无法做到这一点，普通变量的值，在线程间传递均需要通过主内存来完成。例如，线程 A 修改一个普通变量的值，然后向主内存进行回写，另外一条线程 B 在线程A回写完成之后再从主内存进行读取操作，新变量的值才会对线程 B 可见。</p>
+</blockquote>
+<blockquote>
+<p>– Page 366</p>
+</blockquote>
+<p>不得不说的是，读到这里的时候很困惑，，volatile 是如何让被修改后的变量值立即被其他线程得知的呢？？？<br>这就不得不提到<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/MESI%E5%8D%8F%E8%AE%AE/22742331">MESI协议</a>，MESI协议使用四个状态位描述每一个<a target="_blank" rel="noopener" href="http://ifeve.com/disruptor-cacheline-padding/">缓存行(Cache Line)</a>。关于缓存行，在这篇文章中只需要知道它是 <strong>cache 和 RAM 交换数据的最小单位,通常为 64 Byte</strong>就可以了。</p>
+<p>ok，下面简单说说MESI协议。</p>
+<ul>
+<li>**M(Modified)**：表示当前 Cache 行中包含的数据与内存中的数据不一致，而且它仅在本 CPU 的 Cache 中有效，其他 CPU 的 Cache 中不存在拷贝，即这个 Cache 行的数据是当前处理器系统中最新的数据拷贝。当 CPU 对这个 Cache 行进行替换操作时，必然会引发系统总线的写周期，将 Cache 行中数据与内存中的数据同步。</li>
+<li>**E(Exclusive)**：与 Modified 状态类似，唯一的区别是 Modified 状态表示当前 Cache Line 中的数据与内存中的数据不一致，而 Exclusive 状态下的 Cache 与内存中的数据一致。</li>
+<li>**S(Shared)**：表示缓存行中包含的数据有效，而且在当前 CPU 和其他 CPU 中至少存在一个副本。在该缓存行中的数据是当前处理器系统中最新的数据拷贝，而且与内存中的数据一致。<br>**I(Invalid)**：表示当前缓存行中数据无效。</li>
+</ul>
+<p>在 MESI 缓存一致性协议下，我们看看在Java中 i++ 操作是怎么执行的。</p>
+<blockquote>
+<p>两个 CPU A、B(即多核多线程)同时执行 i++ 的操作，假设 i 初始值为0：</p>
+</blockquote>
+<ol>
+<li>CPU A 从主内存中读入(read) i 到工作内存，并载入(load)到副本，此时其他 CPU 的缓存中并不存在变量 i，所以 CPU A 中缓存行状态为 Exclusive。</li>
+<li>CPU B 从主内存中读入(read) i 到工作内存，并载入(load)到副本，发现 CPU A 的缓存中已经存在变量 i 了，那么CPU B 中工作缓存的相关缓存行设置为 Shared，CPU A 中的相关缓存行也设置为 Shared。</li>
+<li>CPU A 开始执行 i++，i 值加一等于一，但是只是在寄存器中，并未写入缓存，此时状态还是 Shared。</li>
+<li>CPU B 开始执行 i++，i值加一等于一，同上，还是 Shared。</li>
+<li>CPU A 将计算后的值重新赋值(assign)给缓存中的副本，i 值为1，缓存行状态改为 Modified，此时 CPU B 的缓存行状态改为 Invalid。</li>
+<li>CPU B 准备比赋值给缓存中 i 的副本时，发现缓存行已处于无效(Invalid)状态，需要从内存中重新读取(read)，又因为 CPU A 中相关缓存行中有变量 i 且为 Modified 状态，那么要求CPU A 将计算后的 i 值回写入(write)内存，内存中的 i 值为1，CPU A的缓存行状态为 Exclusive，CPU B 将内存中的 i 值读入(read+load)自己的缓存中的变量i的副本，此时CPU A、B 的缓存行都为 Shared，i 值都为1。</li>
+<li>CPU B 将 工作内存中的 i 值副本写入(write)到内存中，i 值副本此时为1，内存中的 i 值亦为1，即把1赋值给1，CPU B 中缓存行的状态变为 Modified，CPU A中的缓存行值变为Invalid。</li>
+</ol>
+<p><img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131637-MESI%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E6%A8%A1%E5%9E%8B.png" alt="@MESI缓存一致性模型"></p>
+<p>以上👆即为不加人为干预情况(使用volatile、synchronized关键字)下 i++ 在多核多线程架构中可能产生的执行结果。所以 MESI 缓存一致性协议并不能保证<em>内存一致性</em>。另外，在上面的例子中，表述并不算太严谨，，比如关于提到的『工作内存』，在『深入理解Java虚拟机』中是这么说的：</p>
+<blockquote>
+<p>为了获取更好的运行速度，虚拟机(甚至是硬件系统本身的优化措施)可能会让工作内存优先存储于寄存器和高速缓存中，因为程序运行时主要访问读写的是工作内存。<br>– Page 364</p>
+</blockquote>
+<p>还有，在1、2中，CPU A、B read 并 load i 到工作内存中的副本中，在书中是这样说的：</p>
+<blockquote>
+<p>Java 内存模型只要求read、load和store、write操作必须按顺序执行，而没有保证是连续执行。也就是说，read与Load之间、stire与write之间是可插入其他质量的。如对内存中的变量a、b进行访问时，一种可能出现的顺序是read a、read b、load b、load a。<br>– Page365</p>
+</blockquote>
+<p>👆诸如此类，，所以，嗯，注意领会精神。</p>
+<p>OK，进行下一话题..<br>倘若此时我们使用 volatile 关键字修饰变量 i。因为 volatile 表示不使用寄存器的值，每次都从内存读(不包括缓存)。所以，在上边例子中的第三步，assign 工作内存中 i 的副本之后，立即将值回写到主内存中。书中的表述为：</p>
+<blockquote>
+<p>有 volatile 修饰的变量，在编译成汇编语言之后，比不使用 volatile 修饰变量多了一行<code>lock addl $0x0,(%esp)</code>,查询 IA32 手册得知，它的作用是使得本 CPU 的 Cache 写入了内存，该写入动作也会引起别的 CPU 或者别的内核无效化(Invalidate)其 Cache，这种操作相当于对 Cache 中的变量做了一次前面介绍Java内存模式中所说的“store”和“write”操作。所以通过这样一个操作，可让前面 volatile 变量的修改对其他 CPU 立即可见。</p>
+</blockquote>
+<p>写到这里，我们可能会觉得 i++ 被 volatile 修饰过之后，就可得到期望的 i 值。然而即使这样，我们得到的 i 值依然比期望值要小。</p>
+<blockquote>
+<p>问题就出在自增运算“i++”之中，我们用 javap 反编译这段代码后会发现只有一行 i++ 的代码在 Class 文件中是由4条字节码指令构成的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">// i 为静态变量<br>0:  getstatic<br>3:  iconst_1<br>4:  iadd<br>5:  putstatic<br></code></pre></td></tr></table></figure>
+<p>从字节码层面上很容易就分析出并发失败的原因了：当 getstatic 指令把 i 值取到操作栈时，volatile 关键字保证了 i 的值在此时是正确的，但是在执行 iconst_1、iadd 这些指令的时候，其他线程可能已经把 i 的值加大了，而在操作栈顶的值就变成了过期的数据，所以 putstatic 指令执行后就可能把较小的 i 值同步回主内存之中。<br>(PS: 一条字节码指令，也并不意味着执行这条指令就是一个原子操作。一条字节码指令在解释执行时，解释器将要运行许多行代码才能实现它的语义，如果是编译执行，一条字节码指令也可能转化为若干条本地机器码指令。)</p>
+</blockquote>
+<blockquote>
+<p>由于 volatile 变量只能保证可见性，在不符合一下两条规则的运算场景中，我们仍要通过锁(使用synchronized和java.util.conrurrent中的原子类)来保证原子性。</p>
+<ul>
+<li>运算结果并不依赖变量的当前值，或者能够确保只有单一线程修改变量的值。</li>
+<li>变量不需要与其他的状态变量共同参与不变约束</li>
+</ul>
+</blockquote>
+<p>所以，，此时如果要解决 i++ 的问题，靠 volatile 关键字是不行的，要么将 volatile 关键字改为 synchronized 关键字上锁(lock 作用于主内存，它把一个变量标识为一条线程独占的状态。)；要么，将 i++ 替换为 Java 并发工具包中的 AtomicInteger 类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">AtomicInteger</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicInteger</span>(<span class="hljs-number">0</span>);<br>...<br>AtomicInteger.incrementAndGet();<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>参考链接：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/11/15/java-lock.html">不可不说的Java“锁”事</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chuliang/p/8206748.html">缓存一致性协议 mesi</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/nch_ren/article/details/78924808">volatile实现可见性的原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/atsky0328/article/details/80422183">cache一致性协议，MESI和MOESI</a></li>
+<li><a target="_blank" rel="noopener" href="http://item.jd.com/11252778.html">周志明-深入理解Java虚拟机</a></li>
+<li>[一针见血系列[8]: 什么叫内存可见性？什么叫寄存器可见性？(<a target="_blank" rel="noopener" href="http://swiftlet.net/archives/3024">http://swiftlet.net/archives/3024</a>)</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/43624414">MESI与内存屏障</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8/" rel="tag"># 线程安全</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/12/31/ProustQA_2018/" rel="prev" title="普鲁斯特问卷-2018">
+                  <i class="fa fa-chevron-left"></i> 普鲁斯特问卷-2018
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/03/13/Java_happens_before/" rel="next" title="先行发生原则">
+                  先行发生原则 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

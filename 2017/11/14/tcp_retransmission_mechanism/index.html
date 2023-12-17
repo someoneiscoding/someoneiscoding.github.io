@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TCP重传机制TCP要保证所有的数据包都可以到达，所以，必需要有重传机制。 注意，接收端给发送端的ACK只会确认最后一个连续的包。比如，发送端发了#1,#2,#3,#4,#5一共五份数据，接收端收到了#1，#2，于是返回ACK&#x3D;3，然后收到了#4（#3未收到），此时的TCP会怎么办？我们要知道，seq和ACK是以字节数为单位，所以返回ack的时候，不能跳着确认，只能确认最大的连续收到的包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP重传机制">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/11/14/tcp_retransmission_mechanism/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="TCP重传机制TCP要保证所有的数据包都可以到达，所以，必需要有重传机制。 注意，接收端给发送端的ACK只会确认最后一个连续的包。比如，发送端发了#1,#2,#3,#4,#5一共五份数据，接收端收到了#1，#2，于是返回ACK&#x3D;3，然后收到了#4（#3未收到），此时的TCP会怎么办？我们要知道，seq和ACK是以字节数为单位，所以返回ack的时候，不能跳着确认，只能确认最大的连续收到的包">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131859-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6.png">
+<meta property="og:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131859-SACK.jpg">
+<meta property="article:published_time" content="2017-11-14T15:26:01.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.762Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="网络编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131859-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6.png">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/11/14/tcp_retransmission_mechanism/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/11/14/tcp_retransmission_mechanism/","path":"2017/11/14/tcp_retransmission_mechanism/","title":"TCP重传机制"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TCP重传机制 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">TCP重传机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6"><span class="nav-number">1.0.1.</span> <span class="nav-text">超时重传机制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">快速重传机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SACK-%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">SACK 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Duplicate-SACK-%E2%80%93-%E9%87%8D%E5%A4%8D%E6%94%B6%E5%88%B0%E6%95%B0%E6%8D%AE%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.</span> <span class="nav-text">Duplicate SACK – 重复收到数据的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9AACK%E4%B8%A2%E5%8C%85"><span class="nav-number">1.3.1.</span> <span class="nav-text">示例一：ACK丢包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A%E7%BD%91%E7%BB%9C%E5%BB%B6%E8%AF%AF"><span class="nav-number">1.3.2.</span> <span class="nav-text">示例二：网络延误</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/11/14/tcp_retransmission_mechanism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TCP重传机制 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP重传机制
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-14 23:26:01" itemprop="dateCreated datePublished" datetime="2017-11-14T23:26:01+08:00">2017-11-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="TCP重传机制"><a href="#TCP重传机制" class="headerlink" title="TCP重传机制"></a>TCP重传机制</h3><p>TCP要保证所有的数据包都可以到达，所以，必需要有重传机制。</p>
+<p>注意，接收端给发送端的<code>ACK</code>只会确认最后一个连续的包。比如，发送端发了#1,#2,#3,#4,#5一共五份数据，接收端收到了#1，#2，于是返回<code>ACK</code>&#x3D;3，然后收到了#4（#3未收到），此时的TCP会怎么办？我们要知道，<code>seq</code>和<code>ACK</code>是以字节数为单位，所以返回<code>ack</code>的时候，不能跳着确认，只能确认最大的连续收到的包，不然，发送端就以为之前的都收到了。</p>
+<h5 id="超时重传机制"><a href="#超时重传机制" class="headerlink" title="超时重传机制"></a>超时重传机制</h5><p>一种是不返回<code>ack</code>，死等#3，当发送方发现收不到#3的<code>ack</code>超时后，会重传#3。一旦接收方收到#3后，会<code>ack</code>返回4——意味着#3和#4都收到了。</p>
+<p>但是，这种方式会有比较严重的问题，那就是因为要死等#3，所以会导致#4和#5即便已经收到了，而发送方也完全不知道发生了什么事，因为没有收到<code>ACK</code>，所以，发送方可能会悲观地认为也丢了，所以有可能也会导致4#和#5的重传。</p>
+<p>对此有两种选择：</p>
+<ol>
+<li>仅重传 timeout 的包。也就是第3份数据。</li>
+<li>重传 timeout 后所有的数据，也就是#3，#4，#5这三份数据。</li>
+</ol>
+<p>第一种会节省带宽，但是慢；第二种会快一点，但是会浪费带宽，也可能会做无用功。但总体来说都不好。因为都在等 timeout，timeout 可能会很长。</p>
+<h4 id="快速重传机制"><a href="#快速重传机制" class="headerlink" title="快速重传机制"></a>快速重传机制</h4><p>于是，TCP引入了一种叫 <em>Fast Retransmit</em> 的算法，不以时间驱动，而以数据驱动重传。也就是说，如果包没有连续到达，就<code>ack</code>最后那个可能被丢了的包，如果发送方连续收到3次相同的<code>ack</code>，就重传。<em>Fast Retransmit</em> 的好处是不用等 timeout 了再重传。</p>
+<p>比如：如果发送方发出了#1，#2，#3，#4，#5份数据，第一份先到送了，于是就<code>ack</code>回2，结果#2因为某些原因没收到，3到达了，于是还是<code>ack</code>回2，后面的#4和#5都到了，但是还是<code>ack</code>回#2，因为2还是没有收到，于是发送端收到了三个<code>ack</code>&#x3D;2的确认，知道了#2还没有到，于是就马上重传#2。然后，接收端收到了#2，此时因为#3，#4，#5都收到了，于是<code>ack</code>回6。示意图如下：<img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131859-%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E6%9C%BA%E5%88%B6.png" alt="快速重传机制"></p>
+<p><em>Fast Retransmit</em> 只解决了一个问题，就是timeout 的问题，它依然面临一个艰难的选择，就是重传之前的一个，还是重传所有的问题。对于上面的示例来说，是重传#2呢,还是重传#2，#3，#4，#5呢？因为发送端并不清楚这连续的3个<code>ack</code>(#2)是谁传回来的？也许发送端发了20份数据，是#6，#10，#20传来的呢。这样，发送端很有可能要重传从#2到#20的这堆数据（这就是某些TCP的实际的实现）。可见，这是一把双刃剑。</p>
+<h4 id="SACK-方法"><a href="#SACK-方法" class="headerlink" title="SACK 方法"></a>SACK 方法</h4><p>另外一种更好的方式叫：<em>Selective Acknowledgment</em> (SACK)（参看RFC 2018），这种方式需要在TCP头里加一个<code>SACK</code>的东西，<code>ACK</code>还是<em>Fast Retransmit</em>的	<code>ACK</code>，SACK则是汇报收到的数据碎版。参看下图：<img src="https://someoneiscoding-gallery-1257225696.cos.ap-guangzhou.myqcloud.com/blog/20190901131859-SACK.jpg" alt="SACK"></p>
+<p>这样，在发送端就可以根据回传的<code>SACK</code>来知道哪些数据到了，哪些没有到。于是就优化了<em>Fast Retransmit</em> 的算法。当然，这个协议需要两边都支持。在 Linux下，可以通过tcp_sack参数打开这个功能（Linux 2.4后默认打开）。</p>
+<p>这里还需要注意一个问题——接收方Reneging，所谓Reneging的意思就是接收方有权把已经报给发送端<code>SACK</code>里的数据给丢了。这样干是不被鼓励的，因为这个事会把问题复杂化了，但是，接收方这么做可能会有些极端情况，比如要把内存给别的更重要的东西。所以，发送方也不能完全依赖<code>SACK</code>，还是要依赖<code>ACK</code>，并维护Timeout，如果后续的<code>ack</code>没有增长，那么还是要把<code>SACK</code>的东西重传，另外，接收端这边永远不能把<code>SACK</code>的包标记为<code>ACK</code>。</p>
+<p>注意：<code>SACK</code>会消费发送方的资源，,试想，如果一个攻击者给数据发送方发一堆<code>SACK</code>的选项，这会导致发送方开始要重传甚至遍历已经发出的数据，这会消耗很多发送端的资源。详细的东西请参看《TCP SACK的性能权衡》</p>
+<h4 id="Duplicate-SACK-–-重复收到数据的问题"><a href="#Duplicate-SACK-–-重复收到数据的问题" class="headerlink" title="Duplicate SACK – 重复收到数据的问题"></a>Duplicate SACK – 重复收到数据的问题</h4><p>Duplicate SACK又称D-SACK，其主要使用了	<code>SACK</code>来告诉发送方有哪些数据被重复接收了。RFC-2833 里有详细描述和示例。下面举几个例子（来源于RFC-2833）</p>
+<p><code>D-SACK</code>使用了<code>SACK</code>的第一个段来做标志，如果<code>SACK</code>的第一个段的范围被<code>ACK</code>所覆盖，那么就是<code>D-SACK</code>;如果<code>SACK</code>的第一个段的范围被<code>SACK</code>的第二个段覆盖，那么就是<code>D-SACK</code>。</p>
+<h5 id="示例一：ACK丢包"><a href="#示例一：ACK丢包" class="headerlink" title="示例一：ACK丢包"></a>示例一：ACK丢包</h5><p>下面的示例中，丢了两个<code>ACK</code>，所以，发送端重传了第一个数据包（3000-3499），于是接收端发现重复收到，于是回了一个<code>SACK</code>&#x3D;3000-3500，因为<code>ACK</code>都到了#4000意味着收到了#4000之前的所有数据，所以这个<code>SACK</code>就是<code>D-SACK</code>——旨在告诉发送端我收到了重复的数据，而且我们的发送端还知道，数据包没有丢，丢的是<code>ACK</code>包。</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">Transmitted</th>
+<th align="center">Received</th>
+<th align="center">ACK Sent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Segment</td>
+<td align="center">Segment</td>
+<td align="center">(Including SACK Blocks)</td>
+</tr>
+<tr>
+<td align="center">3000-3499</td>
+<td align="center">3000-3499</td>
+<td align="center">3500 (ACK dropped)</td>
+</tr>
+<tr>
+<td align="center">3500-3999</td>
+<td align="center">3500-3999</td>
+<td align="center">4000 (ACK dropped)</td>
+</tr>
+<tr>
+<td align="center">3000-3499</td>
+<td align="center">3000-3499</td>
+<td align="center">4000, SACK&#x3D;3000-3500</td>
+</tr>
+</tbody></table>
+</blockquote>
+<h5 id="示例二：网络延误"><a href="#示例二：网络延误" class="headerlink" title="示例二：网络延误"></a>示例二：网络延误</h5><p>下面的示例中，网络包（1000-1499）被网络给延误了，导致发送方没有收到<code>ACK</code>，而后面到达的三个包触发了<em>Fast Retransmit</em> 算法，所以重传，但重传时，被延误的包又到了，所以，回了一个<code>SACK</code>&#x3D;1000-1500，因为<code>ACK</code>已到了#3000，所以，这个<code>SACK</code>是<code>D-SACK</code>——标识收到了重复的包。</p>
+<p>这个案例下，发送端知道之前因为“Fast Retransmit算法”触发的重传不是因为发出去的包丢了，也不是因为回应的ACK包丢了，而是因为网络延时了。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Transmitted</th>
+<th align="center">Received</th>
+<th align="center">ACK Sent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Segment</td>
+<td align="center">Segment</td>
+<td align="center">(Including SACK Blocks)</td>
+</tr>
+<tr>
+<td align="center">500-999</td>
+<td align="center">500-999</td>
+<td align="center">1000</td>
+</tr>
+<tr>
+<td align="center">1000-1499</td>
+<td align="center">(delayed)</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">1500-1999</td>
+<td align="center">1500-1999</td>
+<td align="center">1000, SACK&#x3D;1500-2000</td>
+</tr>
+<tr>
+<td align="center">2000-2499</td>
+<td align="center">2000-2499</td>
+<td align="center">1000, SACK&#x3D;1500-2500</td>
+</tr>
+<tr>
+<td align="center">2500-2999</td>
+<td align="center">2500-2999</td>
+<td align="center">1000, SACK&#x3D;1500-3000</td>
+</tr>
+<tr>
+<td align="center">1000-1499</td>
+<td align="center">1000-1499</td>
+<td align="center">3000</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">1000-1499</td>
+<td align="center">3000, SACK&#x3D;1000-1500</td>
+</tr>
+</tbody></table>
+<p>可见，引入了<code>D-SACK</code>，有这么几个好处：</p>
+<ol>
+<li>可以让发送方知道，是发出去的包丢了，还是回来的ACK包丢了。</li>
+<li>是不是自己的 timeout太小了，导致重传。</li>
+<li>网络上出现了先发的包后到的情况（又称reordering）</li>
+<li>网络上是不是把我的数据包给复制了。</li>
+</ol>
+<p>知道这些东西可以很好得帮助TCP了解网络情况，从而可以更好的做网络上的流控。<br>Linux下的<code>tcp_dsack</code>参数用于开启这个功能（Linux 2.4后默认打开）</p>
+<hr>
+<p>转载自：<a target="_blank" rel="noopener" href="http://www.uml.org.cn/safe/201407041.asp?artid=2511">http://www.uml.org.cn/safe/201407041.asp?artid=2511</a> 作者：火龙果软件</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/TCP/" rel="tag"># TCP</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag"># 网络编程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/10/19/establishment_release_of_tcp-connections/" rel="prev" title="TCP连接的建立与释放">
+                  <i class="fa fa-chevron-left"></i> TCP连接的建立与释放
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/02/execution_sequence_of_javascript/" rel="next" title="JavaScript执行顺序">
+                  JavaScript执行顺序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

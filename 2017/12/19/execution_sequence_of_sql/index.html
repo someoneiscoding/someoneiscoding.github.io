@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="SQL逻辑查询语句执行顺序 转载自 SQL逻辑查询语句执行顺序 - by 果冻想  测试表结构：👇 12345678910111213CREATE TABLE table1 (     customer_id VARCHAR(10) NOT NULL,     city VARCHAR(10) NOT NULL,     PRIMARY KEY(customer_id) )ENGINE&#x3D;INNO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL逻辑查询语句执行顺序">
+<meta property="og:url" content="https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="SQL逻辑查询语句执行顺序 转载自 SQL逻辑查询语句执行顺序 - by 果冻想  测试表结构：👇 12345678910111213CREATE TABLE table1 (     customer_id VARCHAR(10) NOT NULL,     city VARCHAR(10) NOT NULL,     PRIMARY KEY(customer_id) )ENGINE&#x3D;INNO">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-12-19T14:35:24.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.757Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="Mysql">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/","path":"2017/12/19/execution_sequence_of_sql/","title":"SQL逻辑查询语句执行顺序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SQL逻辑查询语句执行顺序 | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL%E9%80%BB%E8%BE%91%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.</span> <span class="nav-text">SQL逻辑查询语句执行顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SQL%E9%80%BB%E8%BE%91%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F-1"><span class="nav-number">1.1.</span> <span class="nav-text">SQL逻辑查询语句执行顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CFROM%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.2.</span> <span class="nav-text">执行FROM语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CON%E8%BF%87%E6%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">执行ON过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%A4%96%E9%83%A8%E8%A1%8C"><span class="nav-number">1.4.</span> <span class="nav-text">添加外部行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CWHERE%E8%BF%87%E6%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">执行WHERE过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CGROUP-BY%E5%88%86%E7%BB%84"><span class="nav-number">1.6.</span> <span class="nav-text">执行GROUP BY分组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CHAVING%E8%BF%87%E6%BB%A4"><span class="nav-number">1.7.</span> <span class="nav-text">执行HAVING过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SELECT%E5%88%97%E8%A1%A8"><span class="nav-number">1.8.</span> <span class="nav-text">SELECT列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CDISTINCT%E5%AD%90%E5%8F%A5"><span class="nav-number">1.9.</span> <span class="nav-text">执行DISTINCT子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CORDER-BY%E5%AD%90%E5%8F%A5"><span class="nav-number">1.10.</span> <span class="nav-text">执行ORDER BY子句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8CLIMIT%E5%AD%90%E5%8F%A5"><span class="nav-number">1.11.</span> <span class="nav-text">执行LIMIT子句</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SQL逻辑查询语句执行顺序 | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SQL逻辑查询语句执行顺序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-19 22:35:24" itemprop="dateCreated datePublished" datetime="2017-12-19T22:35:24+08:00">2017-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="SQL逻辑查询语句执行顺序"><a href="#SQL逻辑查询语句执行顺序" class="headerlink" title="SQL逻辑查询语句执行顺序"></a>SQL逻辑查询语句执行顺序</h3><blockquote>
+<p>转载自 <a target="_blank" rel="noopener" href="http://www.jellythink.com/archives/924">SQL逻辑查询语句执行顺序</a> - by 果冻想</p>
+</blockquote>
+<p>测试表结构：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">CREATE TABLE table1<br> (<br>     customer_id VARCHAR(10) NOT NULL,<br>     city VARCHAR(10) NOT NULL,<br>     PRIMARY KEY(customer_id)<br> )ENGINE=INNODB DEFAULT CHARSET=UTF8;<br><br> CREATE TABLE table2<br> (<br>     order_id INT NOT NULL auto_increment,<br>     customer_id VARCHAR(10),<br>     PRIMARY KEY(order_id)<br> )ENGINE=INNODB DEFAULT CHARSET=UTF8;<br></code></pre></td></tr></table></figure>
+<p>测试数据：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">INSERT INTO table1(customer_id,city) VALUES(&#x27;163&#x27;,&#x27;hangzhou&#x27;);<br> INSERT INTO table1(customer_id,city) VALUES(&#x27;9you&#x27;,&#x27;shanghai&#x27;);<br> INSERT INTO table1(customer_id,city) VALUES(&#x27;tx&#x27;,&#x27;hangzhou&#x27;);<br> INSERT INTO table1(customer_id,city) VALUES(&#x27;baidu&#x27;,&#x27;hangzhou&#x27;);<br><br> INSERT INTO table2(customer_id) VALUES(&#x27;163&#x27;);<br> INSERT INTO table2(customer_id) VALUES(&#x27;163&#x27;);<br> INSERT INTO table2(customer_id) VALUES(&#x27;9you&#x27;);<br> INSERT INTO table2(customer_id) VALUES(&#x27;9you&#x27;);<br> INSERT INTO table2(customer_id) VALUES(&#x27;9you&#x27;);<br> INSERT INTO table2(customer_id) VALUES(&#x27;tx&#x27;);<br> INSERT INTO table2(customer_id) VALUES(NULL);<br></code></pre></td></tr></table></figure>
+<p>SQL逻辑查询测试语句👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#使用上述SQL查询语句来获得来自杭州，并且订单数少于2的客户。<br>SELECT a.customer_id, COUNT(b.order_id) as total_orders<br> FROM table1 AS a<br> LEFT JOIN table2 AS b<br> ON a.customer_id = b.customer_id<br> WHERE a.city = &#x27;hangzhou&#x27;<br> GROUP BY a.customer_id<br> HAVING count(b.order_id) &lt; 2<br> ORDER BY total_orders DESC;<br></code></pre></td></tr></table></figure>
+<h4 id="SQL逻辑查询语句执行顺序-1"><a href="#SQL逻辑查询语句执行顺序-1" class="headerlink" title="SQL逻辑查询语句执行顺序"></a>SQL逻辑查询语句执行顺序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">(7)     SELECT <br>(8)     DISTINCT &lt;select_list&gt;<br>(1)     FROM &lt;left_table&gt;<br>(3)     &lt;join_type&gt; JOIN &lt;right_table&gt;<br>(2)     ON &lt;join_condition&gt;<br>(4)     WHERE &lt;where_condition&gt;<br>(5)     GROUP BY &lt;group_by_list&gt;<br>(6)     HAVING &lt;having_condition&gt;<br>(9)     ORDER BY &lt;order_by_condition&gt;<br>(10)    LIMIT &lt;limit_number&gt;<br></code></pre></td></tr></table></figure>
+<p>👆上面在每条语句的前面都标明了执行顺序号，不要问我怎么知道这个顺序的。我也是读各种“武林秘籍”才得知的，如果你有功夫，去阅读一下MySQL的源码，也会得出这个结果的。</p>
+<p>好了，上面我标出了各条查询规则的执行先后顺序，那么各条查询语句是如何执行的呢？这就是我今天这篇博文的重点内容。Go on…</p>
+<h4 id="执行FROM语句"><a href="#执行FROM语句" class="headerlink" title="执行FROM语句"></a>执行<code>FROM</code>语句</h4><p>在这些SQL语句的执行过程中，都会产生一个虚拟表，用来保存SQL语句的执行结果（这是重点），我现在就来跟踪这个虚拟表的变化，得到最终的查询结果的过程，来分析整个SQL逻辑查询的执行顺序和过程。</p>
+<p>第一步，执行<code>FROM</code>语句。我们首先需要知道最开始从哪个表开始的，这就是<code>FROM</code>告诉我们的。现在有了<code>&lt;left_table&gt;</code>和<code>&lt;right_table&gt;</code>两个表，我们到底从哪个表开始，还是从两个表进行某种联系以后再开始呢？它们之间如何产生联系呢？——笛卡尔积</p>
+<p>关于什么是笛卡尔积，请自行Google补脑。经过<code>FROM</code>语句对两个表执行笛卡尔积，会得到一个虚拟表，暂且叫VT1（vitual table 1），内容如下：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 9you        | shanghai |        1 | 163         |<br>| baidu       | hangzhou |        1 | 163         |<br>| tx          | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        2 | 163         |<br>| baidu       | hangzhou |        2 | 163         |<br>| tx          | hangzhou |        2 | 163         |<br>| 163         | hangzhou |        3 | 9you        |<br>| 9you        | shanghai |        3 | 9you        |<br>| baidu       | hangzhou |        3 | 9you        |<br>| tx          | hangzhou |        3 | 9you        |<br>| 163         | hangzhou |        4 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| baidu       | hangzhou |        4 | 9you        |<br>| tx          | hangzhou |        4 | 9you        |<br>| 163         | hangzhou |        5 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| baidu       | hangzhou |        5 | 9you        |<br>| tx          | hangzhou |        5 | 9you        |<br>| 163         | hangzhou |        6 | tx          |<br>| 9you        | shanghai |        6 | tx          |<br>| baidu       | hangzhou |        6 | tx          |<br>| tx          | hangzhou |        6 | tx          |<br>| 163         | hangzhou |        7 | NULL        |<br>| 9you        | shanghai |        7 | NULL        |<br>| baidu       | hangzhou |        7 | NULL        |<br>| tx          | hangzhou |        7 | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>总共有28（<code>table1</code>的记录条数 * <code>table2</code>的记录条数）条记录。这就是VT1👆的结果，接下来的操作就在VT1👆的基础上进行。</p>
+<h4 id="执行ON过滤"><a href="#执行ON过滤" class="headerlink" title="执行ON过滤"></a>执行<code>ON</code>过滤</h4><p>执行完笛卡尔积以后，接着就进行<code>ON a.customer_id = b.customer_id</code>条件过滤，根据<code>ON</code>中指定的条件，去掉那些不符合条件的数据，得到VT2表👇，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        3 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| tx          | hangzhou |        6 | tx          |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>👆VT2就是经过<code>ON</code>条件筛选以后得到的有用数据，而接下来的操作将在VT2👆的基础上继续进行。</p>
+<h4 id="添加外部行"><a href="#添加外部行" class="headerlink" title="添加外部行"></a>添加外部行</h4><p>这一步只有在连接类型为<code>OUTER JOIN</code>时才发生，如<code>LEFT OUTER JOIN</code>、<code>RIGHT OUTER JOIN</code>和<code>FULL OUTER JOIN</code>。在大多数的时候，我们都是会省略掉<code>OUTER</code>关键字的，但<code>OUTER</code>表示的就是外部行的概念。</p>
+<p><code>LEFT OUTER JOIN</code>把左表记为保留表，得到的结果为：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        3 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| tx          | hangzhou |        6 | tx          |<br>| baidu       | hangzhou |     NULL | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p><code>RIGHT OUTER JOIN</code>把右表记为保留表，得到的结果为：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        3 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| tx          | hangzhou |        6 | tx          |<br>| NULL        | NULL     |        7 | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p><code>FULL OUTER JOIN</code>把左右表都作为保留表，得到的结果为：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        3 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| tx          | hangzhou |        6 | tx          |<br>| baidu       | hangzhou |     NULL | NULL        |<br>| NULL        | NULL     |        7 | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>添加外部行的工作就是在VT2表的基础上添加保留表中被过滤条件过滤掉的数据，非保留表中的数据被赋予NULL值，最后生成虚拟表VT3。</p>
+<p>由于我在准备的测试SQL查询逻辑语句中使用的是<code>LEFT JOIN</code>，过滤掉了以下这条数据：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">| baidu       | hangzhou |     NULL | NULL        |<br></code></pre></td></tr></table></figure>
+<p>现在就把这条数据添加到VT2表中，得到的VT3表如下：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| 9you        | shanghai |        3 | 9you        |<br>| 9you        | shanghai |        4 | 9you        |<br>| 9you        | shanghai |        5 | 9you        |<br>| tx          | hangzhou |        6 | tx          |<br>| baidu       | hangzhou |     NULL | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>接下来的操作都会在该VT3表上进行。</p>
+<h4 id="执行WHERE过滤"><a href="#执行WHERE过滤" class="headerlink" title="执行WHERE过滤"></a>执行<code>WHERE</code>过滤</h4><p>对添加外部行得到的VT3进行<code>WHERE</code>过滤，只有符合<code>&lt;where_condition&gt;</code>的记录才会输出到虚拟表VT4中。当我们执行<code>WHERE a.city = &#39;hangzhou&#39;</code>的时候，就会得到以下内容，并存在虚拟表VT4中：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| 163         | hangzhou |        2 | 163         |<br>| tx          | hangzhou |        6 | tx          |<br>| baidu       | hangzhou |     NULL | NULL        |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>但是在使用WHERE子句时，需要注意以下两点：</p>
+<ol>
+<li>由于数据还没有分组，因此现在还不能在<code>WHERE</code>过滤器中使用<code>where_condition=MIN(col)</code>这类对分组统计的过滤；</li>
+<li>由于还没有进行列的选取操作，因此在<code>SELECT</code>中使用列的别名也是不被允许的，如：<code>SELECT city as c FROM t WHERE c=&#39;shanghai&#39;;</code>是不允许出现的。</li>
+</ol>
+<h4 id="执行GROUP-BY分组"><a href="#执行GROUP-BY分组" class="headerlink" title="执行GROUP BY分组"></a>执行<code>GROUP BY</code>分组</h4><p><code>GROUP BY</code>子句主要是对使用<code>WHERE</code>子句得到的虚拟表进行分组操作。我们执行测试语句中的<code>GROUP BY a.customer_id</code>，就会得到以下内容：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| 163         | hangzhou |        1 | 163         |<br>| baidu       | hangzhou |     NULL | NULL        |<br>| tx          | hangzhou |        6 | tx          |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>得到的内容会存入虚拟表VT5👆中，此时，我们就得到了一个VT5👆虚拟表，接下来的操作都会在该表上完成。</p>
+<h4 id="执行HAVING过滤"><a href="#执行HAVING过滤" class="headerlink" title="执行HAVING过滤"></a>执行<code>HAVING</code>过滤</h4><p><code>HAVING</code>子句主要和<code>GROUP BY</code>子句配合使用，对分组得到的VT5虚拟表进行条件过滤。当我执行测试语句中的<code>HAVING count(b.order_id) &lt; 2</code>时，将得到以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+----------+----------+-------------+<br>| customer_id | city     | order_id | customer_id |<br>+-------------+----------+----------+-------------+<br>| baidu       | hangzhou |     NULL | NULL        |<br>| tx          | hangzhou |        6 | tx          |<br>+-------------+----------+----------+-------------+<br></code></pre></td></tr></table></figure>
+<p>👆这就是虚拟表VT6。</p>
+<h4 id="SELECT列表"><a href="#SELECT列表" class="headerlink" title="SELECT列表"></a><code>SELECT</code>列表</h4><p>现在才会执行到<code>SELECT</code>子句，不要以为<code>SELECT</code>子句被写在第一行，就是第一个被执行的。</p>
+<p>我们执行测试语句中的<code>SELECT a.customer_id, COUNT(b.order_id) as total_orders</code>，从虚拟表VT6中选择出我们需要的内容。我们将得到以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+--------------+<br>| customer_id | total_orders |<br>+-------------+--------------+<br>| baidu       |            0 |<br>| tx          |            1 |<br>+-------------+--------------+<br></code></pre></td></tr></table></figure>
+<p>不，还没有完，👆这只是虚拟表VT7。</p>
+<h4 id="执行DISTINCT子句"><a href="#执行DISTINCT子句" class="headerlink" title="执行DISTINCT子句"></a>执行<code>DISTINCT</code>子句</h4><p>如果在查询中指定了<code>DISTINCT</code>子句，则会创建一张内存临时表（如果内存放不下，就需要存放在硬盘了）。这张临时表的表结构和上一步产生的虚拟表VT7是一样的，不同的是对进行<code>DISTINCT</code>操作的列增加了一个唯一索引，以此来除重复数据。<br>由于我的测试SQL语句中并没有使用DISTINCT，所以，在该查询中，这一步不会生成一个虚拟表。</p>
+<h4 id="执行ORDER-BY子句"><a href="#执行ORDER-BY子句" class="headerlink" title="执行ORDER BY子句"></a>执行<code>ORDER BY</code>子句</h4><p>对虚拟表中的内容按照指定的列进行排序，然后返回一个新的虚拟表，我们执行测试SQL语句中的<code>ORDER BY total_orders DESC</code>，就会得到以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">+-------------+--------------+<br>| customer_id | total_orders |<br>+-------------+--------------+<br>| tx          |            1 |<br>| baidu       |            0 |<br>+-------------+--------------+<br></code></pre></td></tr></table></figure>
+<p>可以看到这是对<code>total_orders</code>列进行降序排列的。上述结果会存储在VT8👆中。</p>
+<h4 id="执行LIMIT子句"><a href="#执行LIMIT子句" class="headerlink" title="执行LIMIT子句"></a>执行<code>LIMIT</code>子句</h4><p><code>LIMIT</code>子句从上一步得到的VT8虚拟表中选出从指定位置开始的指定行数据。对于没有应用<code>ORDER BY</code>的<code>LIMIT</code>子句，得到的结果同样是无序的，所以，很多时候，我们都会看到<code>LIMIT</code>子句会和<code>ORDER BY</code>子句一起使用。</p>
+<p>MySQL数据库的LIMIT支持如下形式的选择：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">LIMIT n, m<br></code></pre></td></tr></table></figure>
+<p>表示从第n条记录开始选择m条记录。而很多开发人员喜欢使用该语句来解决分页问题。对于小数据，使用LIMIT子句没有任何问题，当数据量非常大的时候，使用<code>LIMIT n, m</code>是非常低效的。因为LIMIT的机制是每次都是从头开始扫描，如果需要从第60万行开始，读取3条数据，就需要先扫描定位到60万行，然后再进行读取，而扫描的过程是一个非常低效的过程。所以，对于大数据处理时，是非常有必要在应用层建立一定的缓存机制（貌似现在的大数据处理，都有缓存哦）。各位，请期待我的缓存方面的文章哦。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/19/2017_12_week_3rd/" rel="prev" title="2017_12-第三周">
+                  <i class="fa fa-chevron-left"></i> 2017_12-第三周
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/19/exists-and-in_in_MySQL/" rel="next" title="浅析MySQL中exists与in的使用">
+                  浅析MySQL中exists与in的使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
