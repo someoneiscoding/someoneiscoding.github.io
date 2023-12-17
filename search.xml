@@ -306,18 +306,19 @@
   <entry>
     <title>2023_12—第二周</title>
     <url>/2023/12/16/2023_12_week_2nd/</url>
-    <content><![CDATA[<h3 id="2023-12-16"><a href="#2023-12-16" class="headerlink" title="2023-12-16"></a>2023-12-16</h3><h4 id="Context"><a href="#Context" class="headerlink" title="Context"></a>Context</h4><p>之前小程序中有左滑删除的功能，但对应的 slide-view 组件不是很好用，下滑翻页时也会触发左滑，想着换个组件。于是，找到了 weui 中的 <strong>Slideview</strong><a href="%5Bweui-Slideview%5D(https://wechat-miniprogram.github.io/weui/docs/slideview.html#%E4%BB%A3%E7%A0%81%E5%BC%95%E5%85%A5)">^1</a>。</p>
-<h4 id="整合WEUI"><a href="#整合WEUI" class="headerlink" title="整合WEUI"></a>整合WEUI</h4><p>顺利的话，按照 WEUI 的快速上手教程就 OK 了，然而我小程序的框架是用的是 Wepy[^2]，事情并没有这么简单。</p>
-<p>我的预期是 通过 useExtendedLib[^3] 扩展库 的方式引入，这种方式引入的组件将不会计入代码包大小。</p>
+    <content><![CDATA[<h3 id="2023-12-16"><a class="header-anchor" href="#2023-12-16">¶</a>2023-12-16</h3>
+<h4 id="Context"><a class="header-anchor" href="#Context">¶</a>Context</h4>
+<p>之前小程序中有左滑删除的功能，但对应的 slide-view 组件不是很好用，下滑翻页时也会触发左滑，想着换个组件。于是，找到了 weui 中的 <strong>Slideview</strong><sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>。</p>
+<h4 id="整合WEUI"><a class="header-anchor" href="#整合WEUI">¶</a>整合WEUI</h4>
+<p>顺利的话，按照 WEUI 的快速上手教程就 OK 了，然而我小程序的框架是用的是 Wepy<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>，事情并没有这么简单。</p>
+<p>我的预期是 通过 useExtendedLib<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup> 扩展库 的方式引入，这种方式引入的组件将不会计入代码包大小。</p>
 <p>OK, 首先在 <code>app.wpy</code>中增加以下内容：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#useExtendedLib</span><br><span class="hljs-attr">&quot;useExtendedLib&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;weui&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
-
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#useExtendedLib</span></span><br><span class="line"><span class="attr">&quot;useExtendedLib&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;weui&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>然后在对应的页面中增加以下配置：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><code class="hljs json">usingComponents<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;mp-slideview&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;weui-miniprogram/slideview/slideview&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
-
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">usingComponents<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;mp-slideview&quot;</span><span class="punctuation">:</span> <span class="string">&quot;weui-miniprogram/slideview/slideview&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>按照预期，接下来就是直接引用对应的标签了，然而编译时会直接报错：</p>
 <blockquote>
-<p>Can’t resolve &#x2F;weui-miniprogram&#x2F;***</p>
+<p>Can’t resolve /weui-miniprogram/***</p>
 </blockquote>
 <p>一顿操作，我们在 Wepy 的 GitHub 仓库找到了相关的 [issue#2680](wepy2 不能通过useExtendedLib扩展的方式引入weui #2680)，里边提到：</p>
 <blockquote>
@@ -325,17 +326,26 @@
 <p><a href="https://github.com/Tencent/wepy/pull/2758">支持useExtendedLib导入weui #2758</a></p>
 </blockquote>
 <p>时间是 2021-08-04，既然支持了，OK 那我们就按照上边 issue#2758 的做就可以啦，也就是把 <code>usingComponents</code> 部分改动下：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// 增加 raw:</span><br>usingComponents<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;mp-slideview&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;raw:weui-miniprogram/slideview/slideview&quot;</span><span class="hljs-punctuation">,</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
-
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 增加 raw:</span></span><br><span class="line">usingComponents<span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;mp-slideview&quot;</span><span class="punctuation">:</span> <span class="string">&quot;raw:weui-miniprogram/slideview/slideview&quot;</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>改动后编译果然不报错了，但页面还是异常的，打开编译后的文件发现，结果与文中提到的预期不一样，<code>raw</code> 前缀依然还在，，手动在编辑器中去掉之后，页面正常了。</p>
 <p>但，，这也不是个事儿啊，既然提到已经解决了，那应该是解决了，，再找找吧，然后看到了 issue#2680 中提到的：</p>
 <blockquote>
 <p><strong><a href="https://github.com/SpringHgui">SpringHgui</a></strong> commented on Nov 30, 2021</p>
-<p> 使用这个插件解决 <a href="https://www.npmjs.com/package/wepy-cli-extend">wepy-cli-extend</a></p>
+<p>使用这个插件解决 <a href="https://www.npmjs.com/package/wepy-cli-extend">wepy-cli-extend</a></p>
 </blockquote>
 <p>安装这个插件后国人解决了，，但为啥这个评论是 2021-11-30 的？前边 2021-08-04 评论不是说已经解决了么，笑哭。</p>
 <hr>
-<p>[^2]: <a href="https://wepyjs.github.io/wepy-docs/2.x/#/?id=wepy-2-alpha">WePY 2</a><br>[^3]: <a href="https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#useExtendedLib">useExtendedLib</a></p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a href="https://wechat-miniprogram.github.io/weui/docs/slideview.html#%E4%BB%A3%E7%A0%81%E5%BC%95%E5%85%A5">weui-Slideview</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p><a href="https://wepyjs.github.io/wepy-docs/2.x/#/?id=wepy-2-alpha">WePY 2</a> <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a href="https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#useExtendedLib">useExtendedLib</a> <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
 ]]></content>
       <categories>
         <category>周记</category>
