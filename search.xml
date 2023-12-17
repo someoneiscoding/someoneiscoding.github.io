@@ -3304,9 +3304,8 @@
     <title>关于我</title>
     <url>/about/index.html</url>
     <content><![CDATA[<hr style="margin: 20px 0;">
-<div style="display:flex;flex-direction: row;flex-wrap: wrap;justify-content: space-around;align-items: flex-start;"><ul style="width: 256px;"><li><strong>半路出家的初级程序员</strong></li><li><strong>全马PB324Finisher</strong></li><li><strong>信息收集爱好者</strong></li><li><strong>轻微数据洁癖</strong></li><li><strong>终生学习者</strong></li><strong>…</strong><li><strong>嗯，永远是人民的小学生~</strong></li></ul><iframe src='./photoDot/index.html' style="margin-top: 14px;border: 0;width:256px;height: 256px;">
+<div style="display:flex;flex-direction: row;flex-wrap: wrap;justify-content: space-around;align-items: flex-start;"><ul style="width: 256px;"><li><strong>半路出家的初级程序员</strong></li><li><strong>全马PB324Finisher</strong></li><li><strong>信息收集爱好者</strong></li><li><strong>轻微数据洁癖</strong></li><li><strong>终生学习者</strong></li><strong>…</strong><li><strong>嗯，永远是人民的小学生~</strong></li></ul><iframe src='./photoDot/index.html' style="margin-top: 14px;border: 0;width:256px;height: 256px;" scrolling="no">
 </div>
-
 ]]></content>
   </entry>
   <entry>
