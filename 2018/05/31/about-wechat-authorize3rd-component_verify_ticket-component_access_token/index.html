@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/Keyboard-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/Keyboard-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/Keyboard-16x16.png">
+  <link rel="mask-icon" href="/images/Keyboard.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.someoneiscoding.com","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="独立的小程序已经满足不了我司的需求了，继而准备做微信第三方平台，，今天主要想总结下获取微信授权第三方平台流程中遇到的一些问题，，主要是Java代码(用php开发的朋友可以 Command + W 了…)。 ¶推送 component_verify_ticket 协议 这一部分，官方文档真心惜墨。。对首次进行开发第三方授权开发的程序员来说真心不友好，在此提出批评(白天已经骂过无数次娘了🙂)！ ¶关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于获取微信第三方平台的 component_verify_ticket 和 component_access_token">
+<meta property="og:url" content="https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/index.html">
+<meta property="og:site_name" content="程序员的自我修养">
+<meta property="og:description" content="独立的小程序已经满足不了我司的需求了，继而准备做微信第三方平台，，今天主要想总结下获取微信授权第三方平台流程中遇到的一些问题，，主要是Java代码(用php开发的朋友可以 Command + W 了…)。 ¶推送 component_verify_ticket 协议 这一部分，官方文档真心惜墨。。对首次进行开发第三方授权开发的程序员来说真心不友好，在此提出批评(白天已经骂过无数次娘了🙂)！ ¶关">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-31T13:12:06.000Z">
+<meta property="article:modified_time" content="2023-12-16T02:43:36.754Z">
+<meta property="article:author" content="小哪吒">
+<meta property="article:tag" content="小程序">
+<meta property="article:tag" content="微信">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/","path":"2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/","title":"关于获取微信第三方平台的 component_verify_ticket 和 component_access_token"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于获取微信第三方平台的 component_verify_ticket 和 component_access_token | 程序员的自我修养</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">程序员的自我修养</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E9%80%81-component-verify-ticket-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.</span> <span class="nav-text">推送 component_verify_ticket 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E-POST-%E6%95%B0%E6%8D%AE%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.1.</span> <span class="nav-text">关于 POST 数据示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E7%AC%AC%E4%B8%89%E6%96%B9%E5%B9%B3%E5%8F%B0-component-access-token"><span class="nav-number">2.</span> <span class="nav-text">获取第三方平台 component_access_token</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="小哪吒"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">小哪吒</p>
+  <div class="site-description" itemprop="description">呓语</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于获取微信第三方平台的 component_verify_ticket 和 component_access_token | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于获取微信第三方平台的 component_verify_ticket 和 component_access_token
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-05-31 21:12:06" itemprop="dateCreated datePublished" datetime="2018-05-31T21:12:06+08:00">2018-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>独立的小程序已经满足不了我司的需求了，继而准备做微信第三方平台，，今天主要想总结下获取微信授权第三方平台流程中遇到的一些问题，，主要是Java代码(用php开发的朋友可以 Command + W 了…)。</p>
+<h4 id="推送-component-verify-ticket-协议"><a class="header-anchor" href="#推送-component-verify-ticket-协议">¶</a>推送 component_verify_ticket 协议</h4>
+<p>这一部分，官方文档真心惜墨。。对首次进行开发第三方授权开发的程序员来说真心不友好，在此提出批评(白天已经骂过无数次娘了🙂)！</p>
+<h5 id="关于-POST-数据示例"><a class="header-anchor" href="#关于-POST-数据示例">¶</a>关于 POST 数据示例</h5>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">AppId</span>&gt;</span><span class="tag">&lt;/<span class="name">AppId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">CreateTime</span>&gt;</span><span class="tag">&lt;/<span class="name">CreateTime</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">InfoType</span>&gt;</span><span class="tag">&lt;/<span class="name">InfoType</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ComponentVerifyTicket</span>&gt;</span><span class="tag">&lt;/<span class="name">ComponentVerifyTicket</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>👆上边的 XML 其实是解密之后的格式。。推送过来时候我们获取到的数据是经过加密的，，像这样👇<span id="encodedData"></span></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">AppId</span>&gt;</span>&lt;![CDATA[wx5a062835463d1c61]]&gt;<span class="tag">&lt;/<span class="name">AppId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Encrypt</span>&gt;</span>&lt;![CDATA[3KAGFTaD32rFYsXMmjK/6Hk7nfJzrgIqQs4tqlFA5ORsuMhFvMM9P0cUKEoW9v+2oJztVFRI/OV09szzN7QqqxgapTGLYcyKnbViqs+uSnVkwc5YBM4YkAKGU2Yyp89/6tXU0FloSfUvM8bHZteed44Wo3B3diuhA3JIOK/viBfdfgODTZCe/q/JFt7yYc2Cr3ojtmR1n2M+PdQTfs3bf7tLlR4yURD5kXYrJkZPK7giNzE+uEgn52SUAAhLnAc68hWm0rnPhvPgVARSqL3sHK5xtxihoXcX0h15j8Al3KbZ3IqIdM/SIJrB0mnDx8hOnoI8UaBmChVWS8iz/Ygp/lr8mT37WK0bVeFKm2PkNBG91/icsxOacEJCuXdj/yD+rthlB2OQbmbdFPXw/8QPCNjHdj2RmEL78flwrRQeoNOHYvmMBtoU9jm0WAix6db8siyCA2CNFsC/QxD84p0N/Q==]]&gt;<span class="tag">&lt;/<span class="name">Encrypt</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>那么加密后的数据是怎样获取到的呢？？最开始的时候百思不得其解，要崩溃，都做噩梦了。。其实在后边的<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318479&amp;token=&amp;lang=zh_CN">消息加解密接入指引</a>提到了一些，，总之呢，我们可以通过<code>request.getParameter(paraName)</code>获取到四个参数，分别是👇</p>
+<ul>
+<li>时间戳 timestamp</li>
+<li>随机数 nonce</li>
+<li>加密类型 encrypt_type(值为aes)</li>
+<li>消息体签名 msg_signature(用于验证消息体的正确性)</li>
+</ul>
+<p>这四个参数呢主要用来解密 经过<a href="#encodedData">加密的 xml 数据</a>，即所谓的 postdata。</p>
+<p>// <strong>说到这儿，，不得不提下官方给出的<a target="_blank" rel="noopener" href="https://wximg.gtimg.com/shake_tv/mpwiki/cryptoDemo.zip">加解密示例代码</a></strong>。<br>
+其实，这5种语言的示例代码的场景是用来加解密微信公众号与用户互动的消息的，所以xml结构中有<code>ToUserName</code>标签。而实际上在本文的场景中，是不存在<code>ToUserName</code>标签的，取而代之的是<code>AppId</code>标签，，这一点，在官方文档中的<a target="_blank" rel="noopener" href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419318479&amp;token=&amp;lang=zh_CN">消息加解密接入指引</a>也有提到，只不过比较隐晦。。👇</p>
+<blockquote>
+<p>公众号第三方平台可能会接收到两种类型的消息：</p>
+</blockquote>
+<ol>
+<li>用户发送给公众号的消息（由公众号第三方平台代收）。此时，消息XML体中，ToUserName（即接收者）为公众号的原始 ID（可通过《接口说明》中的获取授权方信息接口来获得）。</li>
+<li><strong>微信服务器发送给服务自身的事件推送（如取消授权通知，Ticket 推送等）。此时，消息XML体中没有 ToUserName 字段，而是 AppId 字段，即公众号服务的 AppId</strong>。这种系统事件推送通知（现在包括推送 component_verify_ticket 协议和推送取消授权通知），服务开发者收到后也需进行解密，接收到后只需直接返回字符串“success”。</li>
+</ol>
+<p>(PS: 这个 postdata 在官方给的解密加密示例代码中(Java版)的体现即 <code>replyMsg</code>)</p>
+<p>OK, 那么问题来了 postdata 又是怎么获取的嘞？？？文档中好像并没有提到(难道是我没看到？！？) 😤，，无力吐槽，直接甩代码👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取加密后的 postdata</span></span><br><span class="line"><span class="type">String</span> <span class="variable">encodedPostdata</span> <span class="operator">=</span> HttpKit.readData(getRequest());</span><br><span class="line"></span><br><span class="line"><span class="comment">// readData()方法实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">readData</span><span class="params">(HttpServletRequest request)</span> &#123;</span><br><span class="line">    <span class="type">BufferedReader</span> <span class="variable">br</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        StringBuilder ret;</span><br><span class="line">        br = request.getReader();</span><br><span class="line">        <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> br.readLine();</span><br><span class="line">        <span class="keyword">if</span> (line != <span class="literal">null</span>) &#123;</span><br><span class="line">            ret = <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">            ret.append(line);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ((line = br.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">            ret.append(<span class="string">&#x27;\n&#x27;</span>).append(line);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret.toString();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (br != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;br.close();&#125; <span class="keyword">catch</span> (IOException e) &#123;LogKit.error(e.getMessage(), e);&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，，我们就获得了加密后的 postdata 数据了，剩下的就是进行解密了，，解密之后，需要把 xml 格式的数据转为 Map，这样就可以愉快的<code>get(&quot;ComponentVerifyTicket&quot;)</code>了~ 贴下核心代码 👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 部分引入的包</span></span><br><span class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilder;</span><br><span class="line"><span class="keyword">import</span> javax.xml.parsers.DocumentBuilderFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.Document;</span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.Element;</span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.Node;</span><br><span class="line"><span class="keyword">import</span> org.w3c.dom.NodeList;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="type">WXBizMsgCrypt</span> <span class="variable">pc</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WXBizMsgCrypt</span>(String token, String encodingAesKey, String component_appid);</span><br><span class="line">    <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> pc.decryptMsg(msg_signature, timestamp, nonce, encodedPostdata);</span><br><span class="line">    Map&lt;String, String&gt; data = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, String&gt;();</span><br><span class="line">    <span class="type">DocumentBuilderFactory</span> <span class="variable">documentBuilderFactory</span> <span class="operator">=</span> DocumentBuilderFactory.newInstance();</span><br><span class="line">    <span class="type">DocumentBuilder</span> <span class="variable">documentBuilder</span> <span class="operator">=</span> documentBuilderFactory.newDocumentBuilder();</span><br><span class="line">    <span class="type">InputStream</span> <span class="variable">stream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(result.getBytes(<span class="string">&quot;UTF-8&quot;</span>));</span><br><span class="line">    <span class="type">Document</span> <span class="variable">doc</span> <span class="operator">=</span> documentBuilder.parse(stream);</span><br><span class="line">    doc.getDocumentElement().normalize();</span><br><span class="line">    <span class="type">NodeList</span> <span class="variable">nodeList</span> <span class="operator">=</span> doc.getDocumentElement().getChildNodes();</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">idx</span> <span class="operator">=</span> <span class="number">0</span>; idx &lt; nodeList.getLength(); ++idx) &#123;</span><br><span class="line">        <span class="type">Node</span> <span class="variable">node</span> <span class="operator">=</span> nodeList.item(idx);</span><br><span class="line">        <span class="keyword">if</span> (node.getNodeType() == Node.ELEMENT_NODE) &#123;</span><br><span class="line">            <span class="type">Element</span> <span class="variable">element</span> <span class="operator">=</span> (Element) node;</span><br><span class="line">            data.put(element.getNodeName(), element.getTextContent());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 至此 通过 data.get(&quot;ComponentVerifyTicket&quot;) 就可以获取 component_verify_ticket 了~</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        stream.close();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        <span class="comment">// do nothing</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="获取第三方平台-component-access-token"><a class="header-anchor" href="#获取第三方平台-component-access-token">¶</a>获取第三方平台 component_access_token</h4>
+<p>这一步相对来说就没那么复杂了，，只遇到一个问题，就是appid参数缺失，微信返回信息如下👇</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;errcode&quot;</span><span class="punctuation">:</span><span class="number">41002</span><span class="punctuation">,</span><span class="attr">&quot;errmsg&quot;</span><span class="punctuation">:</span><span class="string">&quot;appid missing hint: [M07502974]&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是，，官方文档中是这样写的</p>
+<blockquote>
+<p>POST数据示例:</p>
+<blockquote>
+<p>{<br>
+“component_appid”:“appid_value” ,<br>
+“component_appsecret”: “appsecret_value”,<br>
+“component_verify_ticket”: “ticket_value”<br>
+}</p>
+</blockquote>
+<p>请求参数说明<br>
+|          参数          |       说明         |<br>
+|:----------------------|:------------------:|<br>
+|component_appid        |	第三方平台appid    |<br>
+|component_appsecret    |	第三方平台appsecret|<br>
+|component_verify_ticket|	微信后台推送的ticket，此ticket会定时推送，具体请见本页的推送说明|</p>
+</blockquote>
+<p>所以，，post请求的数据为 json 格式的字符串，f**k。。。代码实现接上文component_verify_ticket部分👇</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="string">&quot;component_verify_ticket&quot;</span>.equals(data.get(<span class="string">&quot;InfoType&quot;</span>))) &#123;</span><br><span class="line">    <span class="comment">// 以下涉及到Redis部分，为伪代码，，领会精神即可</span></span><br><span class="line">    <span class="comment">// TODO 把component_verify_ticket保存到 Redis 中</span></span><br><span class="line">    redis.set(<span class="string">&quot;component_verify_ticket&quot;</span>, data.get(<span class="string">&quot;ComponentVerifyTicket&quot;</span>));</span><br><span class="line">    <span class="comment">// TODO 检查 component_access_token 是否存在(过期)(有效期为两小时，过期前提前申请) 。如果过期，则重新向微信服务器申请。</span></span><br><span class="line">    <span class="keyword">if</span>(!redis.exists(<span class="string">&quot;component_access_token&quot;</span>)) &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> <span class="string">&quot;https://api.weixin.qq.com/cgi-bin/component/api_component_token&quot;</span>;</span><br><span class="line">        Map&lt;String, String&gt; params = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, String&gt;();</span><br><span class="line">        params.put(<span class="string">&quot;component_appid&quot;</span>, component_appid;</span><br><span class="line">        params.put(<span class="string">&quot;component_appsecret&quot;</span>, component_appsecret);</span><br><span class="line">        params.put(<span class="string">&quot;component_verify_ticket&quot;</span>, data.get(<span class="string">&quot;ComponentVerifyTicket&quot;</span>));</span><br><span class="line">        <span class="comment">// json格式的字符串，mmp</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">para</span> <span class="operator">=</span> JsonKit.toJson(params);</span><br><span class="line">        <span class="comment">// ApiResult 为 JFinal-weixin 框架工具类</span></span><br><span class="line">        <span class="type">ApiResult</span> <span class="variable">apiResult</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ApiResult</span>(HttpUtils.post(url, para));</span><br><span class="line">        logger.debug(apiResult.getJson());</span><br><span class="line">        <span class="keyword">if</span> (!apiResult.isSucceed()) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;微信返回的错误码 &gt;&gt;&quot;</span> + apiResult.getErrorMsg());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(StrKit.notBlank(apiResult.get(<span class="string">&quot;component_access_token&quot;</span>)+<span class="string">&quot;&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">// 提前十分钟失效(默认两个小时(7200s)有效)，申请新的~</span></span><br><span class="line">            redis.setex(<span class="string">&quot;component_access_token&quot;</span>, (Integer.parseInt(apiResult.get(<span class="string">&quot;expires_in&quot;</span>)+<span class="string">&quot;&quot;</span>)-<span class="number">600</span>), apiResult.get(<span class="string">&quot;component_access_token&quot;</span>)+<span class="string">&quot;&quot;</span>);</span><br><span class="line">            logger.info(<span class="string">&quot;component_access_token 加入 Redis 成功~&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            logger.debug(<span class="string">&#x27;wtf?!&#x27;</span>);</span><br><span class="line">            <span class="comment">// renderError(apiResult.getErrorMsg());</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 未知错误..</span></span><br><span class="line">    <span class="comment">// renderCommonError(9999);</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 至此，以后需要 component_access_token 的时候，直接从 Redis 中取就是啦~ </span></span><br></pre></td></tr></table></figure>
+<p>明天修改下小程序模板中登陆部分的代码就好啦，，以上如果有更好的实现方式，欢迎指教~</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="小哪吒 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="小哪吒 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag"># 小程序</a>
+              <a href="/tags/%E5%BE%AE%E4%BF%A1/" rel="tag"># 微信</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/04/about_code_switch/" rel="prev" title="关于语码转换">
+                  <i class="fa fa-chevron-left"></i> 关于语码转换
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/06/06/WeChat-third-party-platform-mina/" rel="next" title="微信第三方平台小程序爬坑">
+                  微信第三方平台小程序爬坑 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">冀ICP备18000816号 </a>
+      <img src="/images/beian_icon.png" alt="">
+  </div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">小哪吒</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

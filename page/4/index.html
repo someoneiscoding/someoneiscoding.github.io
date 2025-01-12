@@ -1065,7 +1065,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -1083,7 +1083,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/" class="post-title-link" itemprop="url">关于获取微信第三方平台的 component_verify_ticket 和 component_access_token</a>
+          <a href="/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/" class="post-title-link" itemprop="url">关于获取微信第三方平台的 component_verify_ticket 和 component_access_token</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1123,12 +1123,14 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>独立的小程序已经满足不了我司的需求了，继而准备做微信第三方平台，，今天主要想总结下获取微信授权第三方平台流程中遇到的一些问题，，主要是Java代码(用php开发的朋友可以 Command + W 了..)。</p>
-<h4 id="推送-component-verify-ticket-协议"><a href="#推送-component-verify-ticket-协议" class="headerlink" title="推送 component_verify_ticket 协议"></a>推送 component_verify_ticket 协议</h4><p>这一部分，官方文档真心惜墨。。对首次进行开发第三方授权开发的程序员来说真心不友好，在此提出批评(白天已经骂过无数次娘了🙂)！</p>
-<h5 id="关于-POST-数据示例"><a href="#关于-POST-数据示例" class="headerlink" title="关于 POST 数据示例"></a>关于 POST 数据示例</h5><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">xml</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">AppId</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">AppId</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">CreateTime</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">CreateTime</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">InfoType</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">InfoType</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">ComponentVerifyTicket</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ComponentVerifyTicket</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">xml</span>&gt;</span><br></code></pre></td></tr></table></figure>
+          <p>独立的小程序已经满足不了我司的需求了，继而准备做微信第三方平台，，今天主要想总结下获取微信授权第三方平台流程中遇到的一些问题，，主要是Java代码(用php开发的朋友可以 Command + W 了…)。</p>
+<h4 id="推送-component-verify-ticket-协议"><a class="header-anchor" href="#推送-component-verify-ticket-协议">¶</a>推送 component_verify_ticket 协议</h4>
+<p>这一部分，官方文档真心惜墨。。对首次进行开发第三方授权开发的程序员来说真心不友好，在此提出批评(白天已经骂过无数次娘了🙂)！</p>
+<h5 id="关于-POST-数据示例"><a class="header-anchor" href="#关于-POST-数据示例">¶</a>关于 POST 数据示例</h5>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">xml</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">AppId</span>&gt;</span><span class="tag">&lt;/<span class="name">AppId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">CreateTime</span>&gt;</span><span class="tag">&lt;/<span class="name">CreateTime</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">InfoType</span>&gt;</span><span class="tag">&lt;/<span class="name">InfoType</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ComponentVerifyTicket</span>&gt;</span><span class="tag">&lt;/<span class="name">ComponentVerifyTicket</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xml</span>&gt;</span></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/#more" rel="contents">
+              <a class="btn" href="/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

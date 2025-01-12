@@ -14,7 +14,7 @@ https://www.someoneiscoding.com/2021/09/04/about_newSingleThreadExecutor/
 https://www.someoneiscoding.com/2021/06/11/transation-isolated/
 https://www.someoneiscoding.com/2021/01/23/ProustQA_2020/
 https://www.someoneiscoding.com/2020/01/01/ProustQA_2019/
-https://www.someoneiscoding.com/2019/08/31/Fate&FreeWill/
+https://www.someoneiscoding.com/2019/08/31/Fate-FreeWill/
 https://www.someoneiscoding.com/2019/08/03/Monitor-The_Universal_Key_of_Concurrent_Programming/
 https://www.someoneiscoding.com/2019/07/16/What_kind_of_intelligent_system_does_the_world_need/
 https://www.someoneiscoding.com/2019/06/09/existential_psychodynamics/
@@ -37,7 +37,7 @@ https://www.someoneiscoding.com/2018/07/12/Abstraction_Maslow's-hierarchy-of-nee
 https://www.someoneiscoding.com/2018/07/08/truly_random/
 https://www.someoneiscoding.com/2018/06/25/branch_prediction/
 https://www.someoneiscoding.com/2018/06/06/WeChat-third-party-platform-mina/
-https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket&component_access_token/
+https://www.someoneiscoding.com/2018/05/31/about-wechat-authorize3rd-component_verify_ticket-component_access_token/
 https://www.someoneiscoding.com/2018/05/04/about_code_switch/
 https://www.someoneiscoding.com/2018/03/16/2018_03_week_3rd/
 https://www.someoneiscoding.com/2018/01/30/summary_of_2018_1st/
