@@ -150,7 +150,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-count">67</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -178,6 +178,103 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="小哪吒">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="程序员的自我修养">
+      <meta itemprop="description" content="呓语">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 程序员的自我修养">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/12/19/execution_sequence_of_sql/" class="post-title-link" itemprop="url">SQL逻辑查询语句执行顺序</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-19 22:35:24" itemprop="dateCreated datePublished" datetime="2017-12-19T22:35:24+08:00">2017-12-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="SQL逻辑查询语句执行顺序"><a href="#SQL逻辑查询语句执行顺序" class="headerlink" title="SQL逻辑查询语句执行顺序"></a>SQL逻辑查询语句执行顺序</h3><blockquote>
+<p>转载自 <a target="_blank" rel="noopener" href="http://www.jellythink.com/archives/924">SQL逻辑查询语句执行顺序</a> - by 果冻想</p>
+</blockquote>
+<p>测试表结构：👇</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">CREATE TABLE table1<br> (<br>     customer_id VARCHAR(10) NOT NULL,<br>     city VARCHAR(10) NOT NULL,<br>     PRIMARY KEY(customer_id)<br> )ENGINE=INNODB DEFAULT CHARSET=UTF8;<br><br> CREATE TABLE table2<br> (<br>     order_id INT NOT NULL auto_increment,<br>     customer_id VARCHAR(10),<br>     PRIMARY KEY(order_id)<br> )ENGINE=INNODB DEFAULT CHARSET=UTF8;<br></code></pre></td></tr></table></figure>
+<p>测试数据：👇</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/12/19/execution_sequence_of_sql/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1057,105 +1154,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://www.someoneiscoding.com/2017/12/02/execution_sequence_of_javascript/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="小哪吒">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="程序员的自我修养">
-      <meta itemprop="description" content="呓语">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 程序员的自我修养">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/12/02/execution_sequence_of_javascript/" class="post-title-link" itemprop="url">JavaScript执行顺序</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2017-12-02 13:40:30" itemprop="dateCreated datePublished" datetime="2017-12-02T13:40:30+08:00">2017-12-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2023-12-16 10:43:36" itemprop="dateModified" datetime="2023-12-16T10:43:36+08:00">2023-12-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Java%E5%90%8E%E6%97%B6%E4%BB%A3/" itemprop="url" rel="index"><span itemprop="name">Java后时代</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="JavaScript执行顺序"><a href="#JavaScript执行顺序" class="headerlink" title="JavaScript执行顺序"></a>JavaScript执行顺序</h3><p>JavaScript(以下简称js) 是一种<strong>描述型脚本语言</strong>，由浏览器进行动态的解析与执行。由于js编写位置比较灵活，所以处在不同位置的js代码执行顺序也是不同的。js和其他编程语言相比比较随意，所以js代码中充满各种奇葩的写法。苦逼的公司造就<del>苦逼程序员</del>全栈工程师，工作中总是经常自己写些简单的前端页面，经常被js的执行顺序袭扰，索性找个大块儿时间好好学习总结下，理解各型各色的写法，希望能对js的语言特性有深入的理解。</p>
-<h4 id="函数的声明和调用"><a href="#函数的声明和调用" class="headerlink" title="函数的声明和调用"></a>函数的声明和调用</h4><p>函数的定义方式大体有以下两种，浏览器对于不同的方式有不同的解析顺序。 </p>
-<ol>
-<li>使用<code>function</code>关键字声明一个函数，再指定一个函数名，叫<strong>函数声明</strong>。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function Fn1()&#123; <br>    alert(&quot;Hello World!&quot;); <br>&#125; <br></code></pre></td></tr></table></figure></li>
-<li>使用<code>function</code>关键字声明一个函数，但未给函数命名，最后将匿名函数赋予一个变量，叫<strong>函数表达式</strong>，这是最常见的函数表达式语法形式。<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">var Fn2 = function()&#123; <br>    alert(&quot;Hello World!&quot;); <br>&#125; <br></code></pre></td></tr></table></figure>
-如果遇到函数声明，则进行预处理(类似C语言的编译)；如果遇到函数表达式，则只是将函数赋值给一个变量，不进行预处理，待调用的时候再进行处理。<br>@(#函数声明)<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Fn1();<br>function Fn1()&#123;<br>    alert(&quot;Hello World!&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
-👆↑ 这段代码()可以正常运行，弹出”Hello World!”警告对话框。浏览器对Fn1()进行了预处理，再从Fn1()；开始运行。</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/12/02/execution_sequence_of_javascript/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1171,7 +1169,7 @@
   </div>
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2023</span>
+    <span itemprop="copyrightYear">2025</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

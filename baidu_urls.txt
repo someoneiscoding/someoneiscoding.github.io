@@ -1,3 +1,4 @@
+https://www.someoneiscoding.com/2024/01/12/ProustQA_2024/
 https://www.someoneiscoding.com/2023/12/16/2023_12_week_2nd/
 https://www.someoneiscoding.com/2023/12/16/knowledge&make-money/
 https://www.someoneiscoding.com/2023/12/16/javascript_oop-inheritance_of_constructor/
@@ -47,4 +48,3 @@ https://www.someoneiscoding.com/2018/01/13/High_walls_and_eggs/
 https://www.someoneiscoding.com/2018/01/10/Death_and_religion/
 https://www.someoneiscoding.com/2018/01/02/ProustQA_2017/
 https://www.someoneiscoding.com/2017/12/19/exists-and-in_in_MySQL/
-https://www.someoneiscoding.com/2017/12/19/execution_sequence_of_sql/
